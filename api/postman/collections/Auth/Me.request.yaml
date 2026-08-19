@@ -1,0 +1,9 @@
+$kind: http-request
+name: Me
+url: "{{url}}/auth/me"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 4134749362591839

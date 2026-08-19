@@ -1,0 +1,9 @@
+$kind: http-request
+name: Delete Me
+url: "{{url}}/users"
+method: DELETE
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 3060812683895732

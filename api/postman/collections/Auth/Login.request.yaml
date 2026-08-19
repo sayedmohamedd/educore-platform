@@ -1,0 +1,27 @@
+$kind: http-request
+name: Login
+description: ""
+url: "{{url}}/auth/login"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"email\":\"admin@educore.com\",\r
+
+    \    // \"email\":\"teacher1@educore.com\",\r
+
+    \    // \"email\":\"student1@educore.com\",\r
+
+    \    \"password\":\"test1234\"\r
+
+    }"
+auth:
+  type: noauth
+scripts:
+  - type: afterResponse
+    code: "// set the access token from the response to an environment variable\r
+
+      pm.environment.set(\"access_token\", pm.response.json().data.accessToken);"
+    language: text/javascript
+order: 2572332395933964

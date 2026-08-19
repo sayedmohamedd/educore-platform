@@ -1,0 +1,10 @@
+$kind: http-request
+name: Submit Course
+url: '{{url}}/courses/{{courseId}}/submit'
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{access_token}}'
+order: 1000000000007

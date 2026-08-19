@@ -1,0 +1,22 @@
+$kind: http-request
+name: Register
+url: http://localhost:8000/api/v1/auth/register
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"fullName\":\"sayed mohamed\",\r
+
+    \    \"email\":\"admin@gmail.com\",\r
+
+    \    \"password\":\"test1234\"\r
+
+    }"
+scripts:
+  - type: afterResponse
+    code: "// set the access token from the response to an environment variable\r
+
+      pm.environment.set(\"access_token\", pm.response.json().data.accessToken);"
+    language: text/javascript
+order: 1785987426267

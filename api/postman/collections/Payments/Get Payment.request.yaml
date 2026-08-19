@@ -1,0 +1,10 @@
+$kind: http-request
+name: Get Payment
+url: '{{url}}/payments/{{paymentId}}'
+method: GET
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{access_token}}'
+order: 2000000000013

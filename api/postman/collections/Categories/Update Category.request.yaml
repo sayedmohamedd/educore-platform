@@ -1,0 +1,13 @@
+$kind: http-request
+name: Update Category
+url: '{{url}}/categories/{{categoryId}}'
+method: PATCH
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{access_token}}'
+body:
+  type: json
+  content: '{"name":"Updated Category","description":"Updated description"}'
+order: 2000000000003

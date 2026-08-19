@@ -1,0 +1,8 @@
+$kind: http-request
+url: "{{url}}/users/me"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 2637101256513576

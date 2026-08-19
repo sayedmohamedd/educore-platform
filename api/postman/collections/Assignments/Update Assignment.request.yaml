@@ -1,0 +1,13 @@
+$kind: http-request
+name: Update Assignment
+url: '{{url}}/assignments/{{assignmentId}}'
+method: PATCH
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{access_token}}'
+body:
+  type: json
+  content: '{"title":"Updated Assignment Title","description":"Updated description"}'
+order: 2000000000031

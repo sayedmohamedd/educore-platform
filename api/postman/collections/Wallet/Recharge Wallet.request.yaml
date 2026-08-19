@@ -1,0 +1,13 @@
+$kind: http-request
+name: Recharge Wallet
+url: '{{url}}/wallet/recharge'
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{access_token}}'
+body:
+  type: json
+  content: '{"amount":100}'
+order: 2000000000016

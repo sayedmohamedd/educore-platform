@@ -1,0 +1,18 @@
+$kind: http-request
+name: Enroll in Course
+url: '{{url}}/courses/{{courseId}}/enroll'
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{access_token}}'
+scripts:
+  - type: afterResponse
+    code: |-
+      const res = pm.response.json();
+      if (res && res.data && res.data.id) {
+        pm.environment.set("enrollmentId", res.data.id);
+      }
+    language: text/javascript
+order: 2000000000007

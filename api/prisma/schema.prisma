@@ -1,0 +1,455 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Get a free hosted Postgres database in seconds: `npx create-db`
+
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id       String @id @default(uuid())
+  fullName String
+  email    String @unique
+  password String
+
+  role Roles @default(STUDENT)
+
+  avatarId String? @unique
+  avatar   Media?  @relation("UserAvatar", fields: [avatarId], references: [id])
+
+  uploadedMedia Media[] @relation("MediaUploader")
+
+  teacherProfile TeacherProfile?
+
+  refreshTokens         RefreshToken[]
+  enrollments           Enrollment[]
+  lessonProgress        LessonProgress[]
+  assignmentSubmissions AssignmentSubmission[]
+  notifications         Notification[]
+  reviews               Review[]
+  payments              Payment[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model RefreshToken {
+  id        String @id @default(uuid())
+  tokenHash String @unique
+
+  userId String
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  expiresAt DateTime  @default(dbgenerated("now() + interval '7 days'")) @db.Timestamptz
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+}
+
+model TeacherProfile {
+  id     String @id @default(cuid())
+  userId String @unique
+  user   User   @relation(fields: [userId], references: [id])
+
+  bio       String?
+  title     String?
+  expertise String?
+  phone     String?
+
+  status TeacherStatus @default(PENDING)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  courses     Course[]
+  wallet      Wallet?
+  withdrawals Withdrawal[]
+}
+
+enum TeacherStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum Roles {
+  STUDENT
+  ADMIN
+  INSTRUCTOR
+}
+
+// courses
+enum CourseStatus {
+  DRAFT
+  SUBMITTED
+  APPROVED
+  PUBLISHED
+  REJECTED
+}
+
+model Course {
+  id          String       @id @default(cuid())
+  title       String
+  description String?
+  price       Decimal      @db.Decimal(10, 2)
+  status      CourseStatus @default(DRAFT)
+
+  teacherId String
+  teacher   TeacherProfile @relation(fields: [teacherId], references: [id])
+
+  thumbnailId String? @unique
+  thumbnail   Media?  @relation(fields: [thumbnailId], references: [id])
+
+  categories CourseCategory[]
+  sections   Section[]
+
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  enrollments Enrollment[]
+  reviews     Review[]
+  payments    Payment[]
+}
+
+model Category {
+  id          String  @id @default(cuid())
+  name        String  @unique
+  description String?
+
+  courses CourseCategory[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model CourseCategory {
+  courseId   String
+  categoryId String
+
+  course   Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  category Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+
+  @@id([courseId, categoryId])
+}
+
+model Section {
+  id       String @id @default(cuid())
+  courseId String
+  title    String
+  order    Int
+
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  lessons Lesson[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([courseId, order])
+}
+
+model Lesson {
+  id          String  @id @default(cuid())
+  sectionId   String
+  videoId     String? @unique
+  title       String
+  description String?
+
+  duration Int?
+  order    Int
+  isFree   Boolean @default(false)
+
+  section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
+  video   Media?  @relation(fields: [videoId], references: [id])
+
+  createdAt      DateTime         @default(now())
+  updatedAt      DateTime         @updatedAt
+  lessonProgress LessonProgress[]
+  quiz           Quiz?
+  assignment     Assignment?
+
+  @@unique([sectionId, order])
+}
+
+// Media
+
+enum MediaType {
+  IMAGE
+  VIDEO
+  DOCUMENT
+}
+
+model Media {
+  id           String    @id @default(cuid())
+  url          String
+  publicId     String    @unique
+  type         MediaType
+  resourceType String?
+  filename     String?
+  size         Int?
+  mimeType     String?
+
+  uploaderId String?
+  uploader   User?   @relation("MediaUploader", fields: [uploaderId], references: [id])
+
+  avatarOf User? @relation("UserAvatar")
+
+  courseThumbnail Course?
+  lessonVideo     Lesson?
+
+  createdAt             DateTime               @default(now())
+  updatedAt             DateTime               @updatedAt
+  assignmentSubmissions AssignmentSubmission[]
+  payments              Payment[]
+}
+
+// Enrollments
+model Enrollment {
+  id       String @id @default(cuid())
+  userId   String
+  courseId String
+
+  // ⚠️ اتعدلت لـ Int? عشان تتطابق مع الـ Payment.id
+  paymentId String? @unique
+
+  user    User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  payment Payment? @relation(fields: [paymentId], references: [id])
+
+  enrolledAt DateTime @default(now())
+
+  @@unique([userId, courseId])
+}
+
+model LessonProgress {
+  id          String   @id @default(cuid())
+  userId      String
+  lessonId    String
+  completedAt DateTime @default(now())
+
+  user   User   @relation(fields: [userId], references: [id], onDelete: Cascade)
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lessonId])
+}
+
+//  quizzes
+model Quiz {
+  id        String     @id @default(cuid())
+  lessonId  String     @unique
+  title     String
+  lesson    Lesson     @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  questions Question[]
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model Question {
+  id        String           @id @default(cuid())
+  quizId    String
+  text      String
+  order     Int
+  quiz      Quiz             @relation(fields: [quizId], references: [id], onDelete: Cascade)
+  options   QuestionOption[]
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@unique([quizId, order])
+}
+
+model QuestionOption {
+  id         String  @id @default(cuid())
+  questionId String
+  text       String
+  isCorrect  Boolean @default(false)
+  order      Int
+
+  question Question @relation(fields: [questionId], references: [id], onDelete: Cascade)
+
+  @@unique([questionId, order])
+}
+
+// assignments
+model Assignment {
+  id          String    @id @default(cuid())
+  lessonId    String    @unique
+  title       String
+  description String?
+  dueDate     DateTime?
+
+  lesson      Lesson                 @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  submissions AssignmentSubmission[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AssignmentSubmission {
+  id           String @id @default(cuid())
+  assignmentId String
+  studentId    String
+
+  content     String?
+  fileId      String?
+  grade       Float?
+  feedback    String?
+  submittedAt DateTime  @default(now())
+  gradedAt    DateTime?
+
+  assignment Assignment @relation(fields: [assignmentId], references: [id], onDelete: Cascade)
+  student    User       @relation(fields: [studentId], references: [id])
+  file       Media?     @relation(fields: [fileId], references: [id])
+
+  @@unique([assignmentId, studentId])
+}
+
+// Notifications
+enum NotificationType {
+  COURSE_APPROVED
+  ASSIGNMENT_GRADED
+  NEW_COURSE
+  WALLET_RECHARGED
+  COURSE_REJECTED
+}
+
+model Notification {
+  id      String           @id @default(cuid())
+  userId  String
+  type    NotificationType
+  title   String
+  message String
+  isRead  Boolean          @default(false)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+}
+
+model Review {
+  id       String @id @default(cuid())
+  userId   String
+  courseId String
+  comment  String
+  rating   Int?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  course    Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([userId, courseId])
+}
+
+// Payment
+// 1. Enums
+enum PaymentStatus {
+  PENDING
+  APPROVED
+  REJECTED
+  REFUNDED
+}
+
+enum TransactionType {
+  COURSE_EARNING
+  PLATFORM_EARNING
+  REFUND
+  WITHDRAWAL
+}
+
+// 2. Models
+model Payment {
+  id       String  @id @default(cuid())
+  userId   String // ⚠️ اتعدلت لـ String عشان تتطابق مع نوع الـ User.id
+  courseId String // ⚠️ اتعدلت لـ String عشان تتطابق مع نوع الـ Course.id
+  adminId  String? // ⚠️ اتعدلت لـ String لو الأدمن هو كمان User
+  amount   Decimal @db.Decimal(10, 2)
+
+  receiptFileId String
+  receiptFile   Media? @relation(fields: [receiptFileId], references: [id])
+
+  status          PaymentStatus @default(PENDING)
+  rejectionReason String?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  // العلاقات (Relations)
+  user   User   @relation(fields: [userId], references: [id])
+  course Course @relation(fields: [courseId], references: [id])
+
+  // ⚠️ التعديل بتاع الـ 1-to-1: شيلنا الـ enrollmentId والـ @relation من هنا
+  enrollment Enrollment?
+
+  transactions Transaction[]
+}
+
+model Wallet {
+  id      String  @id @default(cuid())
+  balance Decimal @default(0.0) @db.Decimal(10, 2)
+
+  teacherProfileId String         @unique
+  teacherProfile   TeacherProfile @relation(fields: [teacherProfileId], references: [id], onDelete: Cascade)
+
+  // العلاقات
+  transactions Transaction[]
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model PlatformWallet {
+  id        String   @id @default(cuid())
+  balance   Decimal  @default(0.0) @db.Decimal(10, 2)
+  updatedAt DateTime @updatedAt
+
+  // لو حابب تربط حركات المنصة بيها مباشرة:
+  transactions Transaction[]
+}
+
+model Transaction {
+  id        String          @id @default(cuid())
+  walletId  String
+  paymentId String?
+  amount    Decimal         @db.Decimal(10, 2)
+  type      TransactionType
+  createdAt DateTime        @default(now())
+
+  // العلاقات
+  wallet           Wallet          @relation(fields: [walletId], references: [id])
+  payment          Payment?        @relation(fields: [paymentId], references: [id])
+  platformWallet   PlatformWallet? @relation(fields: [platformWalletId], references: [id])
+  platformWalletId String?
+  withdrawal       Withdrawal?     @relation(fields: [withdrawalId], references: [id], onDelete: SetNull)
+  withdrawalId     String?         @unique
+}
+
+// Withdrawals
+enum WithdrawalStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+model Withdrawal {
+  id               String           @id @default(cuid())
+  teacherProfileId String
+  amount           Decimal          @db.Decimal(10, 2)
+  status           WithdrawalStatus @default(PENDING)
+  rejectionReason  String?
+
+  // بيانات الحساب اللي هيتحول عليه (مثلا: رقم فودافون كاش، إنستاباي، أو بنك)
+  bankDetails String? // أو ممكن تخليه JSON حسب احتياجك
+
+  // العلاقات
+  teacherProfile TeacherProfile @relation(fields: [teacherProfileId], references: [id], onDelete: Cascade)
+
+  // ربطه بالـ Transaction عشان كل عملية سحب تسمع في Ledger المحفظة
+  transaction Transaction?
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

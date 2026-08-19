@@ -1,0 +1,17 @@
+$kind: http-request
+name: Update Section
+url: '{{url}}/sections/{{sectionId}}'
+method: PATCH
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{access_token}}'
+body:
+  type: json
+  content: |-
+    {
+      "title": "Updated Section Title",
+      "order": 2
+    }
+order: 1000000000015

@@ -1,0 +1,18 @@
+$kind: http-request
+name: Update Course
+url: '{{url}}/courses/{{courseId}}'
+method: PATCH
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{access_token}}'
+body:
+  type: json
+  content: |-
+    {
+      "title": "Updated Course Title",
+      "description": "Updated description",
+      "price": 600
+    }
+order: 1000000000004

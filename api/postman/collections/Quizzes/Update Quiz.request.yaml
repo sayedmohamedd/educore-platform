@@ -1,0 +1,16 @@
+$kind: http-request
+name: Update Quiz
+url: "{{url}}/quizzes/{{quizId}}"
+method: PATCH
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+body:
+  type: json
+  content: "{\r
+
+    \  \"title\": \"NestJS Basics\"\r
+
+    }"
+order: 2000000000026

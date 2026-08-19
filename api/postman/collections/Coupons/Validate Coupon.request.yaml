@@ -1,0 +1,13 @@
+$kind: http-request
+name: Validate Coupon
+url: '{{url}}/coupons/validate'
+method: POST
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{access_token}}'
+body:
+  type: json
+  content: '{"code":"SAVE20","courseId":"{{courseId}}"}'
+order: 2000000000021

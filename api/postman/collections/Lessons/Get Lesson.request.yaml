@@ -1,0 +1,9 @@
+$kind: http-request
+name: Get Lesson
+url: "{{url}}/lessons/cmsli2bu7000fp0f375thhici"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 1000000000018

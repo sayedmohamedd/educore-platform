@@ -1,0 +1,17 @@
+$kind: http-request
+name: Update Teacher
+url: '{{url}}/teachers/{{teacherId}}'
+method: PATCH
+auth:
+  type: bearer
+  credentials:
+    - key: token
+      value: '{{access_token}}'
+body:
+  type: json
+  content: |-
+    {
+      "bio": "Experienced NestJS developer",
+      "specialization": "Backend Development"
+    }
+order: 1000000000012
