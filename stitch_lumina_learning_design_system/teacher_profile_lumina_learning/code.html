@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Teacher Profile | Lumina Learning</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        body { font-family: 'Plus Jakarta Sans', sans-serif; }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+        .gradient-text {
+            background: linear-gradient(135deg, #4648d4 0%, #6b38d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .profile-gradient-bg {
+            background: radial-gradient(circle at top right, rgba(96, 99, 238, 0.08), transparent),
+                        radial-gradient(circle at bottom left, rgba(132, 85, 239, 0.05), transparent);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "primary-fixed-dim": "#c0c1ff",
+                        "outline-variant": "#c7c4d7",
+                        "on-surface-variant": "#464554",
+                        "error": "#ba1a1a",
+                        "secondary": "#6b38d4",
+                        "surface-variant": "#dae2fd",
+                        "inverse-surface": "#283044",
+                        "on-tertiary-container": "#f4fffb",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "surface-tint": "#494bd6",
+                        "error-container": "#ffdad6",
+                        "surface-bright": "#faf8ff",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "on-tertiary-fixed": "#00201c",
+                        "on-primary-fixed": "#07006c",
+                        "on-secondary-fixed": "#23005c",
+                        "tertiary-fixed": "#71f8e4",
+                        "surface-container": "#eaedff",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "on-surface": "#131b2e",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "secondary-fixed": "#e9ddff",
+                        "surface-dim": "#d2d9f4",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-container": "#fffbff",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#c0c1ff",
+                        "on-secondary": "#ffffff",
+                        "primary-container": "#6063ee",
+                        "tertiary": "#00685d",
+                        "surface-container-low": "#f2f3ff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-high": "#e2e7ff",
+                        "outline": "#767586",
+                        "inverse-on-surface": "#eef0ff",
+                        "tertiary-container": "#008376",
+                        "on-primary": "#ffffff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-background": "#131b2e",
+                        "on-error": "#ffffff",
+                        "surface-container-highest": "#dae2fd",
+                        "primary-fixed": "#e1e0ff",
+                        "primary": "#4648d4",
+                        "surface": "#faf8ff",
+                        "on-secondary-container": "#fffbff",
+                        "background": "#faf8ff",
+                        "secondary-container": "#8455ef"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "1.25rem",
+                        "3xl": "1.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "container-max": "1280px",
+                        "base": "8px",
+                        "md": "24px",
+                        "xl": "64px",
+                        "sm": "12px",
+                        "lg": "40px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "caption": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-surface text-on-surface profile-gradient-bg min-h-screen">
+<!-- TopNavBar Implementation from JSON -->
+<nav class="fixed top-0 w-full z-50 bg-surface/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
+<div class="flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-8">
+<span class="text-headline-md font-headline-md font-extrabold text-primary">Lumina Learning</span>
+<div class="hidden md:flex gap-6">
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Courses</a>
+<a class="font-body-md text-body-md text-primary font-bold border-b-2 border-primary" href="#">Mentors</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Pricing</a>
+<a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors duration-200" href="#">Resources</a>
+</div>
+</div>
+<div class="flex items-center gap-4">
+<div class="flex gap-2">
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="search">search</span>
+</button>
+<button class="p-2 text-on-surface-variant hover:text-primary transition-colors">
+<span class="material-symbols-outlined" data-icon="notifications">notifications</span>
+</button>
+</div>
+<button class="hidden md:block px-6 py-2 bg-primary text-on-primary rounded-xl font-label-md hover:opacity-90 active:scale-95 transition-all">Get Started</button>
+</div>
+</div>
+</nav>
+<main class="pt-32 pb-xl px-gutter max-w-container-max mx-auto">
+<!-- Header Section -->
+<section class="mb-xl flex flex-col md:flex-row items-center md:items-start gap-8">
+<div class="relative group">
+<div class="absolute -inset-1 bg-gradient-to-tr from-primary to-secondary rounded-full blur opacity-25 group-hover:opacity-40 transition duration-1000"></div>
+<div class="relative w-40 h-40 md:w-56 md:h-56 rounded-full overflow-hidden border-4 border-surface shadow-xl">
+<img class="w-full h-full object-cover" data-alt="A professional portrait of a woman in her late 30s with a warm, confident expression. She has short, styled dark hair and is wearing a modern navy blue blazer. The background is a brightly lit, high-end design studio with soft bokeh showing architectural sketches and colorful mood boards. The lighting is soft and flattering, emphasizing a premium and approachable academic persona." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAyvlrjsUxGPzmw4MqDJtOmqXrIesdzCP90kIcuj70uMFbb-0PiemB-Tk-4CSlK75jEu7uUIcl1CcG6TUTRGX3Dv3VXmeS8ymNTBuPFqPRyrgnH1vGPb3WTrxHV0LupAN9XSmlw-SJNZD_sJNA816JYDCauyH59FoCBPw6k5Q8QpY3pC0h4yaQASt3psvVhJg_rvn1_XjD3zg_f4bgVOCTQf2fuwp1kViYEtVtT_hL-KRElheTuSxkZeo3334qehQZ0V7NjHmKX0PI"/>
+</div>
+</div>
+<div class="flex-1 text-center md:text-left pt-4">
+<div class="flex flex-col md:flex-row md:items-center gap-4 mb-2">
+<h1 class="font-display-lg text-[40px] md:text-display-lg text-on-surface">Dr. Elena Sterling</h1>
+<span class="inline-flex items-center px-4 py-1 bg-primary-fixed text-on-primary-fixed-variant rounded-full text-caption font-bold tracking-wide self-center md:self-auto">VERIFIED MENTOR</span>
+</div>
+<p class="font-headline-md text-headline-md text-on-surface-variant mb-6">Lead UX Architect &amp; Design Systems Lead</p>
+<div class="flex flex-wrap justify-center md:justify-start gap-3">
+<a class="flex items-center gap-2 px-4 py-2 bg-surface-container-low rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">language</span>
+<span class="font-label-md text-label-md">Portfolio</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-2 bg-surface-container-low rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">hub</span>
+<span class="font-label-md text-label-md">LinkedIn</span>
+</a>
+<a class="flex items-center gap-2 px-4 py-2 bg-surface-container-low rounded-xl text-on-surface-variant hover:bg-surface-container-high transition-colors" href="#">
+<span class="material-symbols-outlined text-[18px]">alternate_email</span>
+<span class="font-label-md text-label-md">Twitter</span>
+</a>
+</div>
+</div>
+<div class="hidden lg:flex flex-col gap-4">
+<button class="px-8 py-4 bg-gradient-to-r from-primary to-secondary text-on-primary rounded-2xl font-headline-md shadow-lg hover:shadow-primary/20 hover:-translate-y-1 transition-all duration-300">
+                    Book a Mentorship
+                </button>
+<button class="px-8 py-4 border-2 border-primary text-primary rounded-2xl font-headline-md hover:bg-primary/5 transition-all duration-300">
+                    Follow Profile
+                </button>
+</div>
+</section>
+<!-- Bento Grid Stats & Bio -->
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-gutter mb-xl">
+<!-- Bio Section -->
+<div class="lg:col-span-8 glass-card p-md md:p-lg rounded-3xl">
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-6">About Elena</h2>
+<div class="font-body-lg text-body-lg text-on-surface-variant space-y-4 leading-relaxed max-w-3xl">
+<p>With over 15 years of experience in the digital product space, I've had the privilege of shaping user experiences for Fortune 500 companies and agile startups alike. My philosophy centers on the intersection of human psychology and scalable design systems.</p>
+<p>At Lumina Learning, I focus on bridging the gap between theoretical UX concepts and industry-ready execution. My courses are designed to empower the next generation of designers with both the technical skills and the strategic mindset needed to thrive in a rapidly evolving technological landscape.</p>
+</div>
+<div class="mt-8 flex flex-wrap gap-4">
+<span class="px-4 py-2 bg-surface-variant text-on-primary-fixed-variant rounded-lg font-label-md">Design Systems</span>
+<span class="px-4 py-2 bg-surface-variant text-on-primary-fixed-variant rounded-lg font-label-md">Accessibility</span>
+<span class="px-4 py-2 bg-surface-variant text-on-primary-fixed-variant rounded-lg font-label-md">Interaction Design</span>
+<span class="px-4 py-2 bg-surface-variant text-on-primary-fixed-variant rounded-lg font-label-md">UX Strategy</span>
+</div>
+</div>
+<!-- Stats Column -->
+<div class="lg:col-span-4 flex flex-col gap-gutter">
+<div class="glass-card p-md rounded-3xl flex items-center gap-6 group hover:scale-[1.02] transition-transform duration-300">
+<div class="w-16 h-16 bg-primary-container/10 flex items-center justify-center rounded-2xl text-primary">
+<span class="material-symbols-outlined text-[32px]">groups</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Total Students</p>
+<p class="font-headline-lg text-headline-lg text-on-surface">12,450+</p>
+</div>
+</div>
+<div class="glass-card p-md rounded-3xl flex items-center gap-6 group hover:scale-[1.02] transition-transform duration-300">
+<div class="w-16 h-16 bg-secondary-container/10 flex items-center justify-center rounded-2xl text-secondary">
+<span class="material-symbols-outlined text-[32px]">menu_book</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Active Courses</p>
+<p class="font-headline-lg text-headline-lg text-on-surface">08</p>
+</div>
+</div>
+<div class="glass-card p-md rounded-3xl flex items-center gap-6 group hover:scale-[1.02] transition-transform duration-300">
+<div class="w-16 h-16 bg-tertiary-container/10 flex items-center justify-center rounded-2xl text-tertiary">
+<span class="material-symbols-outlined text-[32px]" style="font-variation-settings: 'FILL' 1;">star</span>
+</div>
+<div>
+<p class="font-label-md text-label-md text-on-surface-variant">Student Rating</p>
+<p class="font-headline-lg text-headline-lg text-on-surface">4.9 / 5.0</p>
+</div>
+</div>
+</div>
+</div>
+<!-- Courses Section -->
+<section>
+<div class="flex justify-between items-end mb-8">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface mb-2">Popular Courses</h2>
+<p class="font-body-md text-body-md text-on-surface-variant">Master design with Dr. Sterling's expert guidance.</p>
+</div>
+<button class="font-label-md text-label-md text-primary flex items-center gap-1 hover:gap-2 transition-all">
+                    View all courses <span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-md">
+<!-- Course Card 1 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+<div class="relative h-48 w-full">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A clean, minimalist 3D abstract background featuring floating glass geometric shapes in violet and indigo. The scene is lit with soft studio lighting and has a premium, modern feel suitable for a course on Design Systems. The composition is dynamic yet balanced with plenty of negative space for text overlays." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAdXjZAZtTXDiXk_YGNDZF12QJ4AoTybqZHVY35R43PTC1oh8mzsdBB0fY0MArtLpJZsHRnMSCA96HuYTTceICKEPz9Zzrt4HY3CtHeFRvI2AcrM4eZSkhL8Z1-zchFL9WJNavDoxMnSX8kdOexy1RToipE2QsO9dBblDLigLUA6g01aIEbb5kH1BOsnNyv1P1VlyISpBxwuJ7XH4aw4e9t4Cq7sip8DKaoN00FKMybRVmBAxk8am9i1fJKQLnEfyHhmTNi_HNLF7s"/>
+<div class="absolute bottom-4 left-4 z-20 text-on-primary">
+<span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-caption font-bold">INTERMEDIATE</span>
+</div>
+</div>
+<div class="p-md">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2 group-hover:text-primary transition-colors">Mastering Design Systems 2.0</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-2">Learn how to build, maintain, and scale design systems that work for enterprise applications.</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+<span class="font-label-md text-label-md">12h 45m</span>
+</div>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-bold">4.9</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Course Card 2 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+<div class="relative h-48 w-full">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A macro photography shot of an advanced computer chip with glowing fiber-optic threads weaving through it. The lighting consists of neon blue and soft purple highlights against a dark, metallic background. The image conveys a high-tech, futuristic aesthetic perfect for a course about Interaction Design and advanced digital interfaces." src="https://lh3.googleusercontent.com/aida-public/AB6AXuAjGEK5peKnSBUH7aZZsZ1shHag6tNgFZjOLONeXkGRSsWPb9HxGnpfuGirW0000W5O0E27X17509YrgckrrIhIms0HNGh7TKMBO1FNwqzg5WHmYazZayB7aga_P5zpCUcRp2JId_rwlPaheohxWz_rQmCvIQy9K8n-uISHfm_v0GAFjUIBfF0Rn5qtPNJOuqI2HpRJyhUB1Tejo-TN5j7kZ-mw53s3jF18pwxkLKY0vcgiLsJZmN2CTvkLuelFZqUvcHiXhKfMEV4"/>
+<div class="absolute bottom-4 left-4 z-20 text-on-primary">
+<span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-caption font-bold">ADVANCED</span>
+</div>
+</div>
+<div class="p-md">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2 group-hover:text-primary transition-colors">Interaction &amp; Motion Principles</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-2">Bring your static designs to life with meaningful animations and micro-interactions.</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+<span class="font-label-md text-label-md">08h 30m</span>
+</div>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-bold">5.0</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Course Card 3 -->
+<div class="bg-surface-container-lowest rounded-3xl overflow-hidden shadow-sm hover:shadow-md transition-shadow group cursor-pointer">
+<div class="relative h-48 w-full">
+<div class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent z-10"></div>
+<img class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500" data-alt="A modern office workspace with high-end digital design tools. A large curved monitor displays complex heatmaps and user journey flows. Soft morning light streams through a window, illuminating a sleek desk with a minimalist tablet and a high-quality coffee cup. The overall feeling is professional, focused, and intellectually stimulating, representing the work of a UX researcher." src="https://lh3.googleusercontent.com/aida-public/AB6AXuDb88mLWkhlMuuvV8KD-W0NBK9ftXd8ZZbUtquYY4FpQkLYGKySRerEuLOu1VeVpCeGnNd4yJuraYKVegW1CQd5NGrtrkXsnYYDqeeUOQ9axsuNlyVxAHEE-VpK7Cs4Q_ofAgvTMsUMcVU9kECjWQQlaPGisoFyfhfADyAZZ9A2W7dS-N0IvClL5YBlGMG8tUUBhDTgcg1ASZeZJWLaFjDITBvaMcTaH8wMHo2m9CbQwtgxetWxOWV9UKmP2Qif_fB7lb5Oh-58-WY"/>
+<div class="absolute bottom-4 left-4 z-20 text-on-primary">
+<span class="px-3 py-1 bg-white/20 backdrop-blur-md rounded-full text-caption font-bold">ALL LEVELS</span>
+</div>
+</div>
+<div class="p-md">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-2 group-hover:text-primary transition-colors">Psychology-Driven UX Research</h3>
+<p class="font-body-md text-body-md text-on-surface-variant mb-6 line-clamp-2">Understand the 'Why' behind user behavior to create more impactful and intuitive experiences.</p>
+<div class="flex justify-between items-center">
+<div class="flex items-center gap-2 text-on-surface-variant">
+<span class="material-symbols-outlined text-[20px]">timer</span>
+<span class="font-label-md text-label-md">15h 20m</span>
+</div>
+<div class="flex items-center gap-1 text-tertiary">
+<span class="material-symbols-outlined text-[18px]" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-bold">4.8</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer Implementation from JSON -->
+<footer class="w-full mt-xl bg-inverse-surface py-lg px-gutter max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-4 gap-lg">
+<div class="md:col-span-1">
+<span class="font-headline-md text-headline-md text-surface-bright block mb-4">Lumina Learning</span>
+<p class="font-caption text-caption text-surface-variant opacity-80 leading-relaxed">Empowering the world's best creators through expert-led education and mentorship programs.</p>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-surface-bright mb-4">Product</h4>
+<ul class="space-y-2">
+<li><a class="font-caption text-caption text-surface-variant opacity-80 hover:opacity-100 transition-opacity" href="#">Courses</a></li>
+<li><a class="font-caption text-caption text-surface-variant opacity-80 hover:opacity-100 transition-opacity" href="#">Mentors</a></li>
+<li><a class="font-caption text-caption text-surface-variant opacity-80 hover:opacity-100 transition-opacity" href="#">Pricing</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-surface-bright mb-4">Legal</h4>
+<ul class="space-y-2">
+<li><a class="font-caption text-caption text-surface-variant opacity-80 hover:opacity-100 transition-opacity" href="#">Privacy Policy</a></li>
+<li><a class="font-caption text-caption text-surface-variant opacity-80 hover:opacity-100 transition-opacity" href="#">Terms of Service</a></li>
+<li><a class="font-caption text-caption text-surface-variant opacity-80 hover:opacity-100 transition-opacity" href="#">Cookie Policy</a></li>
+</ul>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-surface-bright mb-4">Newsletter</h4>
+<div class="flex gap-2">
+<input class="bg-surface-container-lowest/10 border-none rounded-lg text-surface-bright placeholder:text-surface-variant/50 w-full" placeholder="Email" type="email"/>
+<button class="bg-primary text-on-primary p-2 rounded-lg"><span class="material-symbols-outlined">send</span></button>
+</div>
+<p class="font-caption text-caption text-surface-variant opacity-60 mt-4">© 2024 Lumina Learning. All rights reserved.</p>
+</div>
+</footer>
+<script>
+        // Micro-interactions for smooth hovering
+        document.querySelectorAll('.glass-card').forEach(card => {
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                card.style.setProperty('--mouse-x', `${x}px`);
+                card.style.setProperty('--mouse-y', `${y}px`);
+            });
+        });
+    </script>
+</body></html>

@@ -1,0 +1,487 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Transactions &amp; Purchases | Lumina Learning</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            vertical-align: middle;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #faf8ff;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: transparent;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #dae2fd;
+            border-radius: 10px;
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-container-lowest": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "inverse-surface": "#283044",
+                        "on-surface": "#131b2e",
+                        "on-secondary-fixed": "#23005c",
+                        "secondary": "#6b38d4",
+                        "background": "#faf8ff",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-error": "#ffffff",
+                        "surface-variant": "#dae2fd",
+                        "surface-container-highest": "#dae2fd",
+                        "surface-bright": "#faf8ff",
+                        "outline": "#767586",
+                        "on-background": "#131b2e",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "surface-dim": "#d2d9f4",
+                        "outline-variant": "#c7c4d7",
+                        "tertiary-container": "#008376",
+                        "on-primary-fixed": "#07006c",
+                        "inverse-on-surface": "#eef0ff",
+                        "secondary-container": "#8455ef",
+                        "on-primary": "#ffffff",
+                        "error": "#ba1a1a",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "primary-fixed": "#e1e0ff",
+                        "surface-tint": "#494bd6",
+                        "tertiary": "#00685d",
+                        "tertiary-fixed": "#71f8e4",
+                        "on-secondary-container": "#fffbff",
+                        "inverse-primary": "#c0c1ff",
+                        "primary": "#4648d4",
+                        "on-surface-variant": "#464554",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "on-error-container": "#93000a",
+                        "primary-container": "#6063ee",
+                        "surface-container": "#eaedff",
+                        "on-tertiary-container": "#f4fffb",
+                        "surface-container-high": "#e2e7ff",
+                        "secondary-fixed": "#e9ddff",
+                        "on-primary-container": "#fffbff",
+                        "error-container": "#ffdad6",
+                        "surface": "#faf8ff",
+                        "on-tertiary-fixed": "#00201c",
+                        "surface-container-low": "#f2f3ff",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-tertiary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "md": "24px",
+                        "xs": "4px",
+                        "container-max": "1280px",
+                        "sm": "12px",
+                        "lg": "40px",
+                        "xl": "64px",
+                        "gutter": "24px",
+                        "base": "8px"
+                    },
+                    "fontFamily": {
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "caption": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+                    }
+                },
+            },
+        }
+    </script>
+</head>
+<body class="bg-background text-on-background min-h-screen flex">
+<!-- SideNavBar (Shared Component) -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-surface border-r border-outline-variant/30 flex flex-col py-md px-sm z-50">
+<div class="px-md mb-xl flex items-center gap-3">
+<div class="w-10 h-10 bg-primary-container rounded-xl flex items-center justify-center text-white">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">school</span>
+</div>
+<div>
+<h1 class="font-headline-md text-headline-md font-bold text-primary leading-none">Lumina Learning</h1>
+<p class="text-on-surface-variant font-label-md text-[11px] opacity-70">Student Portal</p>
+</div>
+</div>
+<nav class="flex-1 space-y-2">
+<a class="flex items-center gap-3 py-3 px-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-md text-label-md">My Courses</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-md text-label-md">Assignments</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">mail</span>
+<span class="font-label-md text-label-md">Messages</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 bg-primary-fixed dark:bg-secondary-container text-on-primary-fixed-variant dark:text-on-secondary-container rounded-xl mx-2 shadow-sm transition-all duration-300 translate-x-1" href="#">
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">payments</span>
+<span class="font-label-md text-label-md">Transactions</span>
+</a>
+<a class="flex items-center gap-3 py-3 px-4 text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto pt-md border-t border-outline-variant/20 mx-2">
+<div class="bg-primary-container/10 p-4 rounded-2xl mb-4">
+<p class="text-primary font-label-md text-xs mb-2">Upgrade Pro</p>
+<p class="text-on-surface-variant text-[11px] leading-tight mb-3">Unlock unlimited access to all expert mentors.</p>
+<button class="w-full py-2 bg-primary text-white rounded-lg text-[12px] font-bold shadow-sm hover:scale-[1.02] transition-transform">Get Started</button>
+</div>
+<a class="flex items-center gap-3 py-2 px-4 text-on-surface-variant hover:text-primary transition-colors" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-3 py-2 px-4 text-error hover:opacity-80 transition-opacity" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+</div>
+</aside>
+<!-- Main Content Area -->
+<main class="flex-1 ml-[280px] p-xl relative overflow-hidden">
+<!-- Atmospheric Background Shapes -->
+<div class="absolute -top-24 -right-24 w-96 h-96 bg-primary/5 rounded-full blur-3xl pointer-events-none"></div>
+<div class="absolute -bottom-24 -left-24 w-80 h-80 bg-secondary/5 rounded-full blur-3xl pointer-events-none"></div>
+<!-- Header -->
+<header class="flex justify-between items-center mb-lg relative z-10">
+<div>
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Transactions</h2>
+<p class="text-on-surface-variant font-body-md">Manage and review your financial activities across Lumina.</p>
+</div>
+<div class="flex gap-sm">
+<button class="flex items-center gap-2 px-md py-sm bg-white border border-outline-variant/30 rounded-xl font-label-md hover:bg-surface-container-low transition-all">
+<span class="material-symbols-outlined text-[20px]">download</span>
+                    Export Report
+                </button>
+<button class="flex items-center gap-2 px-md py-sm bg-primary text-white rounded-xl font-label-md shadow-lg shadow-primary/20 hover:scale-[1.02] transition-all">
+<span class="material-symbols-outlined text-[20px]">add</span>
+                    New Request
+                </button>
+</div>
+</header>
+<!-- Summary Grid -->
+<div class="grid grid-cols-1 md:grid-cols-3 gap-md mb-xl relative z-10">
+<!-- Total Volume Card -->
+<div class="bg-white p-md rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white hover:translate-y-[-4px] hover:shadow-[0px_10px_30px_rgba(15,23,42,0.08)] transition-all duration-300">
+<div class="flex justify-between items-start mb-md">
+<div class="w-12 h-12 bg-primary/10 rounded-2xl flex items-center justify-center text-primary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">account_balance_wallet</span>
+</div>
+<span class="px-2 py-1 bg-green-100 text-green-700 rounded-lg text-[10px] font-bold uppercase tracking-wider">+12.5%</span>
+</div>
+<h4 class="text-on-surface-variant font-label-md text-sm mb-1">Total Volume</h4>
+<p class="font-headline-md text-headline-md text-on-surface">$142,850.00</p>
+<div class="mt-4 pt-4 border-t border-outline-variant/10">
+<p class="text-[12px] text-on-surface-variant">Last updated: <span class="text-on-surface">2 hours ago</span></p>
+</div>
+</div>
+<!-- Pending Withdrawals Card -->
+<div class="bg-white p-md rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] border border-white hover:translate-y-[-4px] hover:shadow-[0px_10px_30px_rgba(15,23,42,0.08)] transition-all duration-300">
+<div class="flex justify-between items-start mb-md">
+<div class="w-12 h-12 bg-secondary/10 rounded-2xl flex items-center justify-center text-secondary">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">pending_actions</span>
+</div>
+<span class="px-2 py-1 bg-secondary/10 text-secondary rounded-lg text-[10px] font-bold uppercase tracking-wider">8 Pending</span>
+</div>
+<h4 class="text-on-surface-variant font-label-md text-sm mb-1">Pending Withdrawals</h4>
+<p class="font-headline-md text-headline-md text-on-surface">$12,430.25</p>
+<div class="mt-4 pt-4 border-t border-outline-variant/10">
+<p class="text-[12px] text-on-surface-variant">Average processing: <span class="text-on-surface">24h</span></p>
+</div>
+</div>
+<!-- Net Earnings Card -->
+<div class="bg-gradient-to-br from-primary to-secondary p-md rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.12)] border border-white/10 hover:translate-y-[-4px] transition-all duration-300 relative overflow-hidden">
+<div class="relative z-10">
+<div class="flex justify-between items-start mb-md">
+<div class="w-12 h-12 bg-white/20 backdrop-blur-md rounded-2xl flex items-center justify-center text-white">
+<span class="material-symbols-outlined text-[28px]" style="font-variation-settings: 'FILL' 1;">trending_up</span>
+</div>
+</div>
+<h4 class="text-white/80 font-label-md text-sm mb-1">Net Revenue</h4>
+<p class="font-headline-md text-headline-md text-white">$124,200.00</p>
+<div class="mt-4 pt-4 border-t border-white/10">
+<p class="text-[12px] text-white/70">Performance: <span class="text-white font-bold">Excellent</span></p>
+</div>
+</div>
+<div class="absolute top-0 right-0 w-32 h-32 bg-white/10 rounded-full -mr-16 -mt-16 blur-2xl"></div>
+</div>
+</div>
+<!-- Tabs Section -->
+<section class="relative z-10">
+<div class="mb-md flex items-center justify-between border-b border-outline-variant/30">
+<div class="flex gap-lg">
+<button class="pb-4 font-label-md text-label-md text-primary border-b-2 border-primary transition-all duration-200" id="tab-purchases" onclick="switchTab('purchases')">
+                        All Purchases
+                    </button>
+<button class="pb-4 font-label-md text-label-md text-on-surface-variant hover:text-primary transition-all duration-200" id="tab-withdrawals" onclick="switchTab('withdrawals')">
+                        Withdraw Requests
+                    </button>
+</div>
+<div class="pb-3 flex gap-md">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant text-[20px]">search</span>
+<input class="pl-10 pr-4 py-2 bg-surface-container-low border-none rounded-xl text-sm focus:ring-2 focus:ring-primary/20 w-64 transition-all" placeholder="Search transactions..." type="text"/>
+</div>
+<button class="p-2 hover:bg-surface-container rounded-lg transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">filter_list</span>
+</button>
+</div>
+</div>
+<!-- Table Container (All Purchases - Hidden by default for demo logic) -->
+<div class="hidden" id="content-purchases">
+<div class="bg-white rounded-[20px] shadow-sm overflow-hidden border border-outline-variant/10">
+<div class="p-md text-center py-xl">
+<div class="w-20 h-20 bg-surface-container-low rounded-full flex items-center justify-center mx-auto mb-4">
+<span class="material-symbols-outlined text-[40px] text-on-surface-variant/40">shopping_bag</span>
+</div>
+<h3 class="font-headline-md text-on-surface mb-2">No Recent Purchases</h3>
+<p class="text-on-surface-variant max-w-sm mx-auto mb-6">You haven't made any course purchases yet. Explore our catalog to find your next favorite course!</p>
+<button class="bg-primary text-white px-md py-sm rounded-xl font-bold">Explore Courses</button>
+</div>
+</div>
+</div>
+<!-- Withdraw Requests Table -->
+<div class="block" id="content-withdrawals">
+<div class="bg-white rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] overflow-hidden border border-outline-variant/10">
+<table class="w-full text-left border-collapse">
+<thead>
+<tr class="bg-surface-container-low">
+<th class="px-md py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-[11px]">Teacher Name</th>
+<th class="px-md py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-[11px]">Amount</th>
+<th class="px-md py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-[11px]">Requested Date</th>
+<th class="px-md py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-[11px]">Payment Method</th>
+<th class="px-md py-4 font-label-md text-on-surface-variant uppercase tracking-wider text-[11px] text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/10">
+<!-- Row 1 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A professional studio portrait of a senior male educator with grey hair and glasses, wearing a sharp navy blue blazer over a white shirt. The background is a soft, out-of-focus modern office setting with warm wood accents and abundant natural daylight, maintaining a high-end educational aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuBjN9-5HZTlLHd8zkAi3d-BBsxk0geWenBjImv3qXafwKBe26OnkImCjaebNXp_t1O6goYF2hIZVwNJknWKXY4QUS46_gwxyKWp5bT1PY6d59HapQkPh3C5oxBM63mPH1urJaiFakvnlSfGeXKD6MR-BHxPMwM3vQVsxzKb0RwX2BqCEuwVqMgT0V7-Zc2n7XtotvbPfm43ELlMKwqO_Gvj05gdFN_MCGEmzQB3DlgNN_1jPTIQ-4neqr65x9-ZXZC_co-zKHUEgVk"/>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Dr. Julian Vance</p>
+<p class="text-[11px] text-on-surface-variant">Senior Math Instructor</p>
+</div>
+</div>
+</td>
+<td class="px-md py-4 font-bold text-on-surface">$2,450.00</td>
+<td class="px-md py-4 text-on-surface-variant text-sm">Oct 24, 2024</td>
+<td class="px-md py-4">
+<div class="flex items-center gap-2 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">account_balance</span>
+                                        Bank Transfer (****9201)
+                                    </div>
+</td>
+<td class="px-md py-4">
+<div class="flex justify-end gap-2">
+<button class="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm font-bold hover:bg-primary hover:text-white transition-all">Approve</button>
+<button class="px-4 py-2 text-error rounded-lg text-sm font-bold hover:bg-error/10 transition-all">Reject</button>
+</div>
+</td>
+</tr>
+<!-- Row 2 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A vibrant, cinematic close-up of a young female teacher with a welcoming smile, her hair styled in a professional updo. She is dressed in a minimalist indigo sweater, standing in a brightly lit digital learning studio with subtle bokeh of neon-light icons in the background, reinforcing a high-tech, modern educational environment." src="https://lh3.googleusercontent.com/aida-public/AB6AXuD1wd5foN24OsRco7ghIKJKH1ZuLdWHlIelHPmWgnNsYERNfw002wN-QaGYJ6czqcd35mzeQyB_yYWTvKHmE0ljxRlkMd8ax_Yn3moSHFP-qjjotU4bPjoTc7WpERrv9dwHlbtgJMoQzuklDRYpFuvmrOd41yKLZe5FdlT4DwpSnqNREr6qrAe_dvS4CLnKMeNxs-8jjaODsf2fyqJaqN-vMz86zXYf-mzoyXyzjIOku9qAQT3ZehqZFZR_AlYe3QhHmV3ureChkmo"/>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Elena Rodriguez</p>
+<p class="text-[11px] text-on-surface-variant">Creative Arts Mentor</p>
+</div>
+</div>
+</td>
+<td class="px-md py-4 font-bold text-on-surface">$890.50</td>
+<td class="px-md py-4 text-on-surface-variant text-sm">Oct 23, 2024</td>
+<td class="px-md py-4">
+<div class="flex items-center gap-2 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">payments</span>
+                                        PayPal (elena.r@email.com)
+                                    </div>
+</td>
+<td class="px-md py-4">
+<div class="flex justify-end gap-2">
+<button class="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm font-bold hover:bg-primary hover:text-white transition-all">Approve</button>
+<button class="px-4 py-2 text-error rounded-lg text-sm font-bold hover:bg-error/10 transition-all">Reject</button>
+</div>
+</td>
+</tr>
+<!-- Row 3 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A portrait of a male computer science teacher with a friendly expression, wearing a charcoal grey hoodie. He is sitting in a futuristic, sleek workspace with multi-monitor setups visible behind him, displaying lines of glowing code. The lighting is crisp and cool, punctuated by subtle indigo and violet reflections." src="https://lh3.googleusercontent.com/aida-public/AB6AXuA1ZUANUw6ZlOHXNstvWpgso9flzR4UKPtwLzxuEiHkzmNMfTeiDTOgWgRnXuhXoWFBuC9VYRnP9A6SJ6CDcipQKy9JivUCdFxjlA-VQqd6vDuazTORY-hdc2q7RXQFTn4BB_J0mpWPBxd03BiYsxxHjmXwJnYJeScTgWx28lzmJ0LW8XcQ0fC5cDjUd4Oic8uluZwMTNllIE7ymHGk14nRFcBIWQiUEy4QLwhGYgptCHW5GxjwpZ4o8FlvJ831cKC-9x0Wl9B3SDk"/>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Marcus Chen</p>
+<p class="text-[11px] text-on-surface-variant">Software Engineering Lead</p>
+</div>
+</div>
+</td>
+<td class="px-md py-4 font-bold text-on-surface">$5,200.00</td>
+<td class="px-md py-4 text-on-surface-variant text-sm">Oct 23, 2024</td>
+<td class="px-md py-4">
+<div class="flex items-center gap-2 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">account_balance</span>
+                                        Wire Transfer (****0043)
+                                    </div>
+</td>
+<td class="px-md py-4">
+<div class="flex justify-end gap-2">
+<button class="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm font-bold hover:bg-primary hover:text-white transition-all">Approve</button>
+<button class="px-4 py-2 text-error rounded-lg text-sm font-bold hover:bg-error/10 transition-all">Reject</button>
+</div>
+</td>
+</tr>
+<!-- Row 4 -->
+<tr class="hover:bg-surface-container-lowest transition-colors">
+<td class="px-md py-4">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-full bg-surface-container overflow-hidden">
+<img class="w-full h-full object-cover" data-alt="A middle-aged female professor with a kind face and short bob haircut, wearing elegant tortoiseshell glasses and a beige turtleneck. She is positioned in front of a floor-to-ceiling bookshelf filled with books, illuminated by soft morning sunlight that creates a warm, intellectual, and inviting atmosphere for learning." src="https://lh3.googleusercontent.com/aida-public/AB6AXuC7obvnoeQYJfFJOobtWOZMbYgnfT9PVOZKJk_3VYN2eODPxYruaHg16PxMgHv9C4fMlflr5osawAeJ1_RlSmIkqud2HjjCOyr7I1ie3hklR2SqgasRcPwvbLHYGLnWtk8D2Oyx9I6Xhp9T18eHOdbvFg-evtXTniTTy94KXHoHzJJffVppJ_Ya_gF2Dr9gRex2rJjyRoitS_BQcKfye4YbLAHJJp33C7cF4dgEyhnZVY7y1Cr9_ZnD8mqrDX07xIcV3IhLTnUOePo"/>
+</div>
+<div>
+<p class="font-label-md text-on-surface">Sarah Jenkins</p>
+<p class="text-[11px] text-on-surface-variant">Linguistics Department</p>
+</div>
+</div>
+</td>
+<td class="px-md py-4 font-bold text-on-surface">$1,120.00</td>
+<td class="px-md py-4 text-on-surface-variant text-sm">Oct 22, 2024</td>
+<td class="px-md py-4">
+<div class="flex items-center gap-2 text-sm text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">credit_card</span>
+                                        Card Refund (****4412)
+                                    </div>
+</td>
+<td class="px-md py-4">
+<div class="flex justify-end gap-2">
+<button class="px-4 py-2 bg-primary/10 text-primary rounded-lg text-sm font-bold hover:bg-primary hover:text-white transition-all">Approve</button>
+<button class="px-4 py-2 text-error rounded-lg text-sm font-bold hover:bg-error/10 transition-all">Reject</button>
+</div>
+</td>
+</tr>
+</tbody>
+</table>
+<div class="px-md py-4 bg-surface-container-low/30 flex items-center justify-between">
+<p class="text-caption text-on-surface-variant">Showing 4 of 8 pending requests</p>
+<div class="flex gap-2">
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_left</span>
+</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant/30 bg-primary text-white font-bold text-xs">1</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-colors text-xs font-bold">2</button>
+<button class="w-8 h-8 flex items-center justify-center rounded-lg border border-outline-variant/30 text-on-surface-variant hover:bg-white transition-colors">
+<span class="material-symbols-outlined text-[18px]">chevron_right</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</section>
+</main>
+<!-- Success Modal (Hidden) -->
+<div class="fixed inset-0 bg-inverse-surface/40 backdrop-blur-sm z-[100] flex items-center justify-center opacity-0 pointer-events-none transition-all duration-300" id="approval-modal">
+<div class="bg-white p-lg rounded-[24px] shadow-[0px_20px_50px_rgba(15,23,42,0.12)] max-w-sm w-full text-center scale-90 transition-transform duration-300" id="modal-content">
+<div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center text-green-600 mx-auto mb-md">
+<span class="material-symbols-outlined text-[32px]">check_circle</span>
+</div>
+<h3 class="font-headline-md text-on-surface mb-2">Request Approved</h3>
+<p class="text-on-surface-variant text-body-md mb-lg">The withdrawal request has been successfully processed and the instructor will be notified.</p>
+<button class="w-full py-3 bg-primary text-white rounded-xl font-bold hover:scale-[1.02] transition-transform shadow-lg shadow-primary/20" onclick="closeModal()">Continue</button>
+</div>
+</div>
+<script>
+        function switchTab(tab) {
+            const purchasesBtn = document.getElementById('tab-purchases');
+            const withdrawalsBtn = document.getElementById('tab-withdrawals');
+            const purchasesContent = document.getElementById('content-purchases');
+            const withdrawalsContent = document.getElementById('content-withdrawals');
+
+            if (tab === 'purchases') {
+                purchasesBtn.classList.add('text-primary', 'border-primary');
+                purchasesBtn.classList.remove('text-on-surface-variant');
+                withdrawalsBtn.classList.remove('text-primary', 'border-primary');
+                withdrawalsBtn.classList.add('text-on-surface-variant');
+                purchasesContent.classList.remove('hidden');
+                withdrawalsContent.classList.add('hidden');
+            } else {
+                withdrawalsBtn.classList.add('text-primary', 'border-primary');
+                withdrawalsBtn.classList.remove('text-on-surface-variant');
+                purchasesBtn.classList.remove('text-primary', 'border-primary');
+                purchasesBtn.classList.add('text-on-surface-variant');
+                withdrawalsContent.classList.remove('hidden');
+                purchasesContent.classList.add('hidden');
+            }
+        }
+
+        // Action Handlers
+        const approveButtons = document.querySelectorAll('button:contains("Approve")'); // simplified conceptual selector
+        // Let's use direct onclick for the demo
+        document.querySelectorAll('button').forEach(btn => {
+            if (btn.innerText === 'Approve') {
+                btn.addEventListener('click', () => {
+                    const modal = document.getElementById('approval-modal');
+                    const content = document.getElementById('modal-content');
+                    modal.classList.remove('opacity-0', 'pointer-events-none');
+                    content.classList.remove('scale-90');
+                });
+            }
+        });
+
+        function closeModal() {
+            const modal = document.getElementById('approval-modal');
+            const content = document.getElementById('modal-content');
+            modal.classList.add('opacity-0', 'pointer-events-none');
+            content.classList.add('scale-90');
+        }
+    </script>
+</body></html>

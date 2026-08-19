@@ -1,0 +1,498 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Manage Categories | Lumina Learning</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+      tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-lowest": "#ffffff",
+                    "on-secondary": "#ffffff",
+                    "inverse-surface": "#283044",
+                    "on-surface": "#131b2e",
+                    "on-secondary-fixed": "#23005c",
+                    "secondary": "#6b38d4",
+                    "background": "#faf8ff",
+                    "on-primary-fixed-variant": "#2f2ebe",
+                    "on-error": "#ffffff",
+                    "surface-variant": "#dae2fd",
+                    "surface-container-highest": "#dae2fd",
+                    "surface-bright": "#faf8ff",
+                    "outline": "#767586",
+                    "on-background": "#131b2e",
+                    "tertiary-fixed-dim": "#4fdbc8",
+                    "surface-dim": "#d2d9f4",
+                    "outline-variant": "#c7c4d7",
+                    "tertiary-container": "#008376",
+                    "on-primary-fixed": "#07006c",
+                    "inverse-on-surface": "#eef0ff",
+                    "secondary-container": "#8455ef",
+                    "on-primary": "#ffffff",
+                    "error": "#ba1a1a",
+                    "primary-fixed-dim": "#c0c1ff",
+                    "primary-fixed": "#e1e0ff",
+                    "surface-tint": "#494bd6",
+                    "tertiary": "#00685d",
+                    "tertiary-fixed": "#71f8e4",
+                    "on-secondary-container": "#fffbff",
+                    "inverse-primary": "#c0c1ff",
+                    "primary": "#4648d4",
+                    "on-surface-variant": "#464554",
+                    "on-secondary-fixed-variant": "#5516be",
+                    "on-tertiary-fixed-variant": "#005048",
+                    "on-error-container": "#93000a",
+                    "primary-container": "#6063ee",
+                    "surface-container": "#eaedff",
+                    "on-tertiary-container": "#f4fffb",
+                    "surface-container-high": "#e2e7ff",
+                    "secondary-fixed": "#e9ddff",
+                    "on-primary-container": "#fffbff",
+                    "error-container": "#ffdad6",
+                    "surface": "#faf8ff",
+                    "on-tertiary-fixed": "#00201c",
+                    "surface-container-low": "#f2f3ff",
+                    "secondary-fixed-dim": "#d0bcff",
+                    "on-tertiary": "#ffffff"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "md": "24px",
+                    "xs": "4px",
+                    "container-max": "1280px",
+                    "sm": "12px",
+                    "lg": "40px",
+                    "xl": "64px",
+                    "gutter": "24px",
+                    "base": "8px"
+            },
+            "fontFamily": {
+                    "body-lg": ["Plus Jakarta Sans"],
+                    "display-lg": ["Plus Jakarta Sans"],
+                    "headline-lg": ["Plus Jakarta Sans"],
+                    "body-md": ["Plus Jakarta Sans"],
+                    "label-md": ["Plus Jakarta Sans"],
+                    "headline-md": ["Plus Jakarta Sans"],
+                    "caption": ["Plus Jakarta Sans"]
+            },
+            "fontSize": {
+                    "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                    "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                    "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                    "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                    "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                    "caption": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+            }
+          },
+        },
+      }
+    </script>
+<style>
+      body {
+        font-family: 'Plus Jakarta Sans', sans-serif;
+        background-color: #faf8ff;
+      }
+      .material-symbols-outlined {
+        font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+      }
+      .category-card:hover {
+        transform: translateY(-4px);
+        box-shadow: 0px 10px 30px rgba(15, 23, 42, 0.08);
+      }
+      .gradient-primary {
+        background: linear-gradient(135deg, #4648d4 0%, #6b38d4 100%);
+      }
+      .glass-nav {
+        backdrop-filter: blur(12px);
+      }
+    </style>
+</head>
+<body class="bg-background text-on-background min-h-screen">
+<!-- Side Navigation Shell -->
+<aside class="fixed left-0 top-0 h-full w-[280px] bg-surface dark:bg-surface-dim shadow-md flex flex-col py-md px-sm z-40">
+<div class="px-md mb-xl flex flex-col gap-xs">
+<h1 class="font-headline-md text-headline-md font-bold text-primary">Lumina Learning</h1>
+<p class="font-label-md text-label-md text-on-surface-variant opacity-70">Student Portal</p>
+</div>
+<nav class="flex-1 space-y-2">
+<!-- Navigation Items Mapping from JSON Logic -->
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">dashboard</span>
+<span class="font-label-md text-label-md">Dashboard</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">school</span>
+<span class="font-label-md text-label-md">My Courses</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">assignment</span>
+<span class="font-label-md text-label-md">Assignments</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant dark:text-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">mail</span>
+<span class="font-label-md text-label-md">Messages</span>
+</a>
+<!-- Active State for Settings/Management context -->
+<a class="flex items-center gap-md py-sm px-md bg-primary-fixed dark:bg-secondary-container text-on-primary-fixed-variant dark:text-on-secondary-container rounded-xl mx-2 translate-x-1" href="#">
+<span class="material-symbols-outlined">settings</span>
+<span class="font-label-md text-label-md">Settings</span>
+</a>
+</nav>
+<div class="mt-auto space-y-2 border-t border-outline-variant/30 pt-md">
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">help</span>
+<span class="font-label-md text-label-md">Help Center</span>
+</a>
+<a class="flex items-center gap-md py-sm px-md text-on-surface-variant hover:bg-surface-container-high mx-2 rounded-xl transition-all duration-300" href="#">
+<span class="material-symbols-outlined">logout</span>
+<span class="font-label-md text-label-md">Logout</span>
+</a>
+<div class="mt-md p-md gradient-primary rounded-xl text-white shadow-lg">
+<p class="font-label-md text-label-md mb-sm">Ready for more?</p>
+<button class="w-full py-sm bg-white/20 hover:bg-white/30 backdrop-blur-md rounded-lg font-label-md text-label-md transition-colors">Upgrade Pro</button>
+</div>
+</div>
+</aside>
+<!-- Main Content Canvas -->
+<main class="ml-[280px] min-h-screen p-xl relative overflow-hidden">
+<!-- Atmospheric Background Element -->
+
+<div class="max-w-container-max mx-auto">
+<!-- Header Section -->
+<header class="mb-xl flex justify-between items-end">
+<div class="space-y-sm">
+<h2 class="font-headline-lg text-headline-lg text-on-surface">Category Management</h2>
+<p class="font-body-md text-body-md text-on-surface-variant max-w-2xl">
+                        Organize your learning ecosystem. Create, edit, and manage educational categories to help students discover relevant content faster.
+                    </p>
+</div>
+<div class="flex gap-md">
+<div class="relative">
+<span class="material-symbols-outlined absolute left-md top-1/2 -translate-y-1/2 text-outline">search</span>
+<input class="pl-xl pr-md py-sm rounded-xl border border-outline-variant bg-surface-container-low focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all w-64 font-body-md" placeholder="Search categories..." type="text"/>
+</div>
+</div>
+</header>
+<!-- Bento-style Categories Grid -->
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-md">
+<!-- Create New Category Card -->
+<button class="group category-card h-full min-h-[220px] bg-white border-2 border-dashed border-outline-variant rounded-[20px] flex flex-col items-center justify-center gap-md transition-all duration-300 hover:border-primary/50 hover:bg-primary-container/5">
+<div class="w-16 h-16 rounded-full bg-surface-container-high flex items-center justify-center group-hover:scale-110 group-hover:bg-primary-container transition-all duration-300">
+<span class="material-symbols-outlined text-primary text-[32px] group-hover:text-on-primary-container">add</span>
+</div>
+<div class="text-center">
+<span class="font-headline-md text-headline-md block text-on-surface">Create New</span>
+<span class="font-caption text-caption text-on-surface-variant">Add a subject area</span>
+</div>
+</button>
+<!-- Design Category -->
+<div class="category-card bg-white p-md rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] transition-all duration-300 group">
+<div class="flex justify-between items-start mb-lg">
+<div class="w-14 h-14 rounded-2xl bg-indigo-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-primary text-[28px]">palette</span>
+</div>
+<button class="p-xs hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">UI/UX Design</h3>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">school</span>
+<span class="font-label-md text-label-md">42 Active Courses</span>
+</div>
+</div>
+<div class="flex gap-sm pt-md border-t border-outline-variant/20">
+<button class="flex-1 py-sm px-md rounded-xl font-label-md text-label-md border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300">
+                            Edit
+                        </button>
+<button class="px-md py-sm rounded-xl font-label-md text-label-md bg-surface-container-high text-on-surface-variant hover:bg-surface-variant transition-all">
+                            Stats
+                        </button>
+</div>
+</div>
+<!-- Technology Category -->
+<div class="category-card bg-white p-md rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] transition-all duration-300 group">
+<div class="flex justify-between items-start mb-lg">
+<div class="w-14 h-14 rounded-2xl bg-violet-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-secondary text-[28px]">terminal</span>
+</div>
+<button class="p-xs hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Technology</h3>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">school</span>
+<span class="font-label-md text-label-md">128 Active Courses</span>
+</div>
+</div>
+<div class="flex gap-sm pt-md border-t border-outline-variant/20">
+<button class="flex-1 py-sm px-md rounded-xl font-label-md text-label-md border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300">
+                            Edit
+                        </button>
+<button class="px-md py-sm rounded-xl font-label-md text-label-md bg-surface-container-high text-on-surface-variant hover:bg-surface-variant transition-all">
+                            Stats
+                        </button>
+</div>
+</div>
+<!-- Business Category -->
+<div class="category-card bg-white p-md rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] transition-all duration-300 group">
+<div class="flex justify-between items-start mb-lg">
+<div class="w-14 h-14 rounded-2xl bg-emerald-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-tertiary text-[28px]">trending_up</span>
+</div>
+<button class="p-xs hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Business</h3>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">school</span>
+<span class="font-label-md text-label-md">86 Active Courses</span>
+</div>
+</div>
+<div class="flex gap-sm pt-md border-t border-outline-variant/20">
+<button class="flex-1 py-sm px-md rounded-xl font-label-md text-label-md border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300">
+                            Edit
+                        </button>
+<button class="px-md py-sm rounded-xl font-label-md text-label-md bg-surface-container-high text-on-surface-variant hover:bg-surface-variant transition-all">
+                            Stats
+                        </button>
+</div>
+</div>
+<!-- Marketing Category -->
+<div class="category-card bg-white p-md rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] transition-all duration-300 group">
+<div class="flex justify-between items-start mb-lg">
+<div class="w-14 h-14 rounded-2xl bg-orange-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-orange-600 text-[28px]">ads_click</span>
+</div>
+<button class="p-xs hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Marketing</h3>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">school</span>
+<span class="font-label-md text-label-md">54 Active Courses</span>
+</div>
+</div>
+<div class="flex gap-sm pt-md border-t border-outline-variant/20">
+<button class="flex-1 py-sm px-md rounded-xl font-label-md text-label-md border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300">
+                            Edit
+                        </button>
+<button class="px-md py-sm rounded-xl font-label-md text-label-md bg-surface-container-high text-on-surface-variant hover:bg-surface-variant transition-all">
+                            Stats
+                        </button>
+</div>
+</div>
+<!-- Lifestyle Category -->
+<div class="category-card bg-white p-md rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] transition-all duration-300 group">
+<div class="flex justify-between items-start mb-lg">
+<div class="w-14 h-14 rounded-2xl bg-pink-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-pink-500 text-[28px]">spa</span>
+</div>
+<button class="p-xs hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Lifestyle</h3>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">school</span>
+<span class="font-label-md text-label-md">31 Active Courses</span>
+</div>
+</div>
+<div class="flex gap-sm pt-md border-t border-outline-variant/20">
+<button class="flex-1 py-sm px-md rounded-xl font-label-md text-label-md border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300">
+                            Edit
+                        </button>
+<button class="px-md py-sm rounded-xl font-label-md text-label-md bg-surface-container-high text-on-surface-variant hover:bg-surface-variant transition-all">
+                            Stats
+                        </button>
+</div>
+</div>
+<!-- Languages Category -->
+<div class="category-card bg-white p-md rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] transition-all duration-300 group">
+<div class="flex justify-between items-start mb-lg">
+<div class="w-14 h-14 rounded-2xl bg-blue-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-blue-600 text-[28px]">translate</span>
+</div>
+<button class="p-xs hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Languages</h3>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">school</span>
+<span class="font-label-md text-label-md">22 Active Courses</span>
+</div>
+</div>
+<div class="flex gap-sm pt-md border-t border-outline-variant/20">
+<button class="flex-1 py-sm px-md rounded-xl font-label-md text-label-md border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300">
+                            Edit
+                        </button>
+<button class="px-md py-sm rounded-xl font-label-md text-label-md bg-surface-container-high text-on-surface-variant hover:bg-surface-variant transition-all">
+                            Stats
+                        </button>
+</div>
+</div>
+<!-- Music Category -->
+<div class="category-card bg-white p-md rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)] transition-all duration-300 group">
+<div class="flex justify-between items-start mb-lg">
+<div class="w-14 h-14 rounded-2xl bg-rose-50 flex items-center justify-center">
+<span class="material-symbols-outlined text-rose-500 text-[28px]">music_note</span>
+</div>
+<button class="p-xs hover:bg-surface-container-high rounded-full transition-colors">
+<span class="material-symbols-outlined text-on-surface-variant">more_vert</span>
+</button>
+</div>
+<div class="mb-lg">
+<h3 class="font-headline-md text-headline-md text-on-surface mb-xs">Music</h3>
+<div class="flex items-center gap-xs text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px]">school</span>
+<span class="font-label-md text-label-md">15 Active Courses</span>
+</div>
+</div>
+<div class="flex gap-sm pt-md border-t border-outline-variant/20">
+<button class="flex-1 py-sm px-md rounded-xl font-label-md text-label-md border-2 border-primary text-primary hover:bg-primary hover:text-white transition-all duration-300">
+                            Edit
+                        </button>
+<button class="px-md py-sm rounded-xl font-label-md text-label-md bg-surface-container-high text-on-surface-variant hover:bg-surface-variant transition-all">
+                            Stats
+                        </button>
+</div>
+</div>
+</div>
+<!-- Management Insight Section -->
+<section class="mt-xl grid grid-cols-1 md:grid-cols-3 gap-md">
+<div class="md:col-span-2 bg-white p-lg rounded-[20px] shadow-[0px_4px_20px_rgba(15,23,42,0.05)]">
+<div class="flex justify-between items-center mb-lg">
+<h4 class="font-headline-md text-headline-md text-on-surface">Category Distribution</h4>
+<button class="font-label-md text-label-md text-primary flex items-center gap-xs">
+                            View Report <span class="material-symbols-outlined text-[18px]">arrow_forward</span>
+</button>
+</div>
+<div class="h-48 flex items-end justify-between gap-md px-md">
+<div class="w-full flex flex-col items-center gap-sm">
+<div class="w-12 bg-primary/20 rounded-t-lg transition-all hover:bg-primary h-32"></div>
+<span class="font-caption text-caption text-on-surface-variant">Tech</span>
+</div>
+<div class="w-full flex flex-col items-center gap-sm">
+<div class="w-12 bg-primary/20 rounded-t-lg transition-all hover:bg-primary h-24"></div>
+<span class="font-caption text-caption text-on-surface-variant">Biz</span>
+</div>
+<div class="w-full flex flex-col items-center gap-sm">
+<div class="w-12 bg-primary/20 rounded-t-lg transition-all hover:bg-primary h-20"></div>
+<span class="font-caption text-caption text-on-surface-variant">Design</span>
+</div>
+<div class="w-full flex flex-col items-center gap-sm">
+<div class="w-12 bg-primary/20 rounded-t-lg transition-all hover:bg-primary h-16"></div>
+<span class="font-caption text-caption text-on-surface-variant">Mark</span>
+</div>
+<div class="w-full flex flex-col items-center gap-sm">
+<div class="w-12 bg-primary/20 rounded-t-lg transition-all hover:bg-primary h-10"></div>
+<span class="font-caption text-caption text-on-surface-variant">Lang</span>
+</div>
+</div>
+</div>
+<div class="bg-inverse-surface text-surface-bright p-lg rounded-[20px] flex flex-col justify-between">
+<div>
+<h4 class="font-headline-md text-headline-md mb-md">System Health</h4>
+<div class="space-y-md">
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md opacity-80">Total Categories</span>
+<span class="font-headline-md text-headline-md">12</span>
+</div>
+<div class="flex justify-between items-center">
+<span class="font-body-md text-body-md opacity-80">Orphaned Courses</span>
+<span class="font-headline-md text-headline-md text-error-container">0</span>
+</div>
+</div>
+</div>
+<button class="w-full py-md gradient-primary rounded-xl font-label-md text-label-md mt-lg shadow-lg hover:shadow-primary/30 transition-shadow">
+                        Run Categorization Audit
+                    </button>
+</div>
+</section>
+</div>
+<!-- Footer Shell Integration -->
+<footer class="w-full mt-xl py-lg px-gutter max-w-container-max mx-auto border-t border-outline-variant/20 grid grid-cols-1 md:grid-cols-4 gap-lg opacity-80">
+<div class="col-span-1 md:col-span-1">
+<h5 class="font-headline-md text-headline-md text-primary font-bold mb-md">Lumina</h5>
+<p class="font-caption text-caption text-on-surface-variant">Empowering global learning through curated educational ecosystems.</p>
+</div>
+<div class="space-y-sm">
+<h6 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Management</h6>
+<ul class="space-y-xs">
+<li><a class="font-caption text-caption text-on-surface-variant hover:text-primary" href="#">Curriculum</a></li>
+<li><a class="font-caption text-caption text-on-surface-variant hover:text-primary" href="#">Instructors</a></li>
+<li><a class="font-caption text-caption text-on-surface-variant hover:text-primary" href="#">Enrollments</a></li>
+</ul>
+</div>
+<div class="space-y-sm">
+<h6 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Legal</h6>
+<ul class="space-y-xs">
+<li><a class="font-caption text-caption text-on-surface-variant hover:text-primary" href="#">Privacy Policy</a></li>
+<li><a class="font-caption text-caption text-on-surface-variant hover:text-primary" href="#">Terms of Service</a></li>
+</ul>
+</div>
+<div class="space-y-sm">
+<h6 class="font-label-md text-label-md text-on-surface uppercase tracking-wider">Contact</h6>
+<p class="font-caption text-caption text-on-surface-variant">admin-support@lumina.edu</p>
+<div class="flex gap-md mt-sm">
+<span class="material-symbols-outlined text-outline">hub</span>
+<span class="material-symbols-outlined text-outline">language</span>
+</div>
+</div>
+<div class="col-span-full border-t border-outline-variant/10 pt-md mt-md text-center">
+<p class="font-caption text-caption text-on-surface-variant opacity-60">© 2024 Lumina Learning. All rights reserved.</p>
+</div>
+</footer>
+</main>
+<!-- FAB for quick category add - only visible on small screens or as priority action -->
+<button class="md:hidden fixed bottom-md right-md w-14 h-14 gradient-primary rounded-full shadow-xl flex items-center justify-center text-white z-50 Active:scale-95 transition-transform">
+<span class="material-symbols-outlined">add</span>
+</button>
+<script>
+        // Simple Interaction logic
+        document.querySelectorAll('.category-card').forEach(card => {
+            card.addEventListener('mouseenter', () => {
+                // Potential for more complex animations or tooltips
+            });
+        });
+
+        // Add search filtering simulation
+        const searchInput = document.querySelector('input[type="text"]');
+        searchInput.addEventListener('input', (e) => {
+            const term = e.target.value.toLowerCase();
+            document.querySelectorAll('.category-card:not(button)').forEach(card => {
+                const title = card.querySelector('h3').textContent.toLowerCase();
+                if(title.includes(term)) {
+                    card.style.display = 'block';
+                    card.style.opacity = '1';
+                } else {
+                    card.style.display = 'none';
+                    card.style.opacity = '0';
+                }
+            });
+        });
+    </script>
+</body></html>

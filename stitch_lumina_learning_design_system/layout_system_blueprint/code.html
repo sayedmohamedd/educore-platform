@@ -1,0 +1,513 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumina Learning | Layout System Specification</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 1px solid rgba(226, 232, 240, 0.5);
+        }
+        .blueprint-grid {
+            background-size: 32px 32px;
+            background-image: radial-gradient(circle, #e2e8f0 1px, transparent 1px);
+        }
+        .indigo-gradient {
+            background: linear-gradient(135deg, #4648d4 0%, #6b38d4 100%);
+        }
+        .layout-card-hover {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .layout-card-hover:hover {
+            transform: translateY(-4px);
+            box-shadow: 0px 10px 30px rgba(15, 23, 42, 0.08);
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface-variant": "#dae2fd",
+                        "on-background": "#131b2e",
+                        "inverse-on-surface": "#eef0ff",
+                        "outline": "#767586",
+                        "primary-fixed": "#e1e0ff",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e2e7ff",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-secondary-fixed": "#23005c",
+                        "tertiary-container": "#008376",
+                        "surface-dim": "#d2d9f4",
+                        "primary": "#4648d4",
+                        "surface-container": "#eaedff",
+                        "primary-container": "#6063ee",
+                        "on-tertiary-fixed": "#00201c",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-error-container": "#93000a",
+                        "inverse-primary": "#c0c1ff",
+                        "secondary-fixed": "#e9ddff",
+                        "on-error": "#ffffff",
+                        "on-secondary-container": "#fffbff",
+                        "surface-container-lowest": "#ffffff",
+                        "secondary": "#6b38d4",
+                        "surface": "#faf8ff",
+                        "outline-variant": "#c7c4d7",
+                        "on-surface-variant": "#464554",
+                        "on-primary-container": "#fffbff",
+                        "error": "#ba1a1a",
+                        "secondary-container": "#8455ef",
+                        "background": "#faf8ff",
+                        "surface-container-low": "#f2f3ff",
+                        "on-surface": "#131b2e",
+                        "tertiary": "#00685d",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "inverse-surface": "#283044",
+                        "on-tertiary-container": "#f4fffb",
+                        "on-secondary": "#ffffff",
+                        "on-tertiary": "#ffffff",
+                        "surface-container-highest": "#dae2fd",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "surface-bright": "#faf8ff",
+                        "tertiary-fixed": "#71f8e4",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-primary-fixed": "#07006c",
+                        "surface-tint": "#494bd6",
+                        "on-primary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "2xl": "20px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xl": "64px",
+                        "container-max": "1280px",
+                        "lg": "40px",
+                        "base": "8px",
+                        "xs": "4px",
+                        "sm": "12px",
+                        "md": "24px",
+                        "gutter": "24px"
+                    },
+                    "fontFamily": {
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "label-md": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "caption": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "500"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}]
+                    }
+                }
+            }
+        }
+    </script>
+</head>
+<body class="bg-surface font-body-md text-on-surface">
+<!-- TopNavBar (Fixed Header) -->
+<header class="fixed top-0 w-full z-50 bg-surface/80 dark:bg-surface-container/80 backdrop-blur-xl border-b border-outline-variant/30 shadow-sm">
+<div class="flex justify-between items-center px-gutter py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-md">
+<span class="font-headline-md text-headline-md font-extrabold text-primary dark:text-primary-fixed">Lumina Learning</span>
+<nav class="hidden md:flex items-center gap-md ml-lg">
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 font-label-md text-label-md" href="#">Courses</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 font-label-md text-label-md" href="#">Mentors</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 font-label-md text-label-md" href="#">Pricing</a>
+<a class="text-on-surface-variant dark:text-surface-variant hover:text-primary dark:hover:text-primary-fixed transition-colors duration-200 font-label-md text-label-md" href="#">Resources</a>
+</nav>
+</div>
+<div class="flex items-center gap-md">
+<div class="hidden md:flex items-center gap-sm">
+<span class="material-symbols-outlined text-on-surface-variant">search</span>
+<span class="material-symbols-outlined text-on-surface-variant">notifications</span>
+</div>
+<button class="font-label-md text-label-md text-primary dark:text-primary-fixed transition-colors duration-200">Log In</button>
+<button class="bg-primary-container text-on-primary-container px-md py-2 rounded-xl font-label-md text-label-md shadow-sm active:scale-95 transition-transform">Get Started</button>
+</div>
+</div>
+</header>
+<main class="pt-xl pb-xl">
+<!-- Introduction Header -->
+<section class="max-w-container-max mx-auto px-gutter mt-lg text-center">
+<span class="text-primary font-bold tracking-widest font-caption text-caption uppercase block mb-sm">Design Language</span>
+<h1 class="font-display-lg text-display-lg mb-md">Layout System Specification</h1>
+<p class="text-on-surface-variant max-w-2xl mx-auto font-body-md text-body-md">
+                A definitive guide to the structural blueprints that define Lumina Learning. These systems ensure consistency, visual hierarchy, and optimal user flow across all platform touchpoints.
+            </p>
+</section>
+<!-- Bento Grid: Main Layout Schematics -->
+<section class="max-w-container-max mx-auto px-gutter mt-xl grid grid-cols-1 md:grid-cols-12 gap-md">
+<!-- 1. Public Layout Schematic -->
+<div class="md:col-span-7 bg-white rounded-2xl p-md border border-outline-variant/30 layout-card-hover blueprint-grid relative overflow-hidden group">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-md text-headline-md">Public Layout</h3>
+<span class="bg-surface-container text-primary font-caption text-caption px-sm py-xs rounded-full">Landing / Marketing</span>
+</div>
+<div class="space-y-4 relative z-10">
+<!-- Nav Dummy -->
+<div class="w-full h-8 bg-surface-container-high rounded-lg border border-primary/20 flex items-center px-4 justify-between">
+<div class="flex gap-2">
+<div class="w-4 h-4 rounded-full bg-primary/20"></div>
+<div class="w-16 h-2 bg-primary/10 rounded"></div>
+</div>
+<div class="flex gap-2">
+<div class="w-8 h-2 bg-primary/10 rounded"></div>
+<div class="w-8 h-2 bg-primary/10 rounded"></div>
+</div>
+</div>
+<!-- Hero Dummy -->
+<div class="w-full aspect-[21/9] bg-primary/5 rounded-2xl border-2 border-dashed border-primary/30 flex flex-col items-center justify-center p-md">
+<div class="w-3/4 h-6 bg-primary/20 rounded mb-2"></div>
+<div class="w-1/2 h-3 bg-primary/10 rounded mb-4"></div>
+<div class="w-24 h-8 indigo-gradient rounded-xl"></div>
+</div>
+<!-- Grid Content Dummy -->
+<div class="grid grid-cols-3 gap-4">
+<div class="h-32 bg-surface-container rounded-xl border border-outline-variant/50"></div>
+<div class="h-32 bg-surface-container rounded-xl border border-outline-variant/50"></div>
+<div class="h-32 bg-surface-container rounded-xl border border-outline-variant/50"></div>
+</div>
+<!-- Footer Dummy -->
+<div class="w-full h-24 bg-inverse-surface/10 rounded-xl border border-inverse-surface/20"></div>
+</div>
+<div class="mt-md flex flex-wrap gap-sm">
+<span class="text-caption font-caption text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">aspect_ratio</span> Full Width
+                    </span>
+<span class="text-caption font-caption text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">view_column</span> 12-Col Grid
+                    </span>
+<span class="text-caption font-caption text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">layers</span> Glassmorphism Header
+                    </span>
+</div>
+</div>
+<!-- 2. Auth Layout Schematic -->
+<div class="md:col-span-5 bg-white rounded-2xl p-md border border-outline-variant/30 layout-card-hover blueprint-grid overflow-hidden">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-md text-headline-md">Auth Layout</h3>
+<span class="bg-surface-container text-primary font-caption text-caption px-sm py-xs rounded-full">Centered Focus</span>
+</div>
+<div class="flex flex-col items-center justify-center h-full min-h-[300px] relative">
+<!-- Background Blur Circles -->
+<div class="absolute -top-10 -left-10 w-32 h-32 bg-primary/10 rounded-full blur-2xl"></div>
+<div class="absolute -bottom-10 -right-10 w-32 h-32 bg-secondary/10 rounded-full blur-2xl"></div>
+<div class="w-full max-w-[280px] bg-white rounded-2xl p-md shadow-lg border border-outline-variant/20 relative z-10 flex flex-col items-center">
+<div class="w-10 h-10 indigo-gradient rounded-full mb-md"></div>
+<div class="w-3/4 h-4 bg-on-surface/10 rounded mb-2"></div>
+<div class="w-1/2 h-2 bg-on-surface/5 rounded mb-lg"></div>
+<div class="w-full space-y-3">
+<div class="w-full h-10 bg-surface-container-low rounded-xl border border-outline-variant/30"></div>
+<div class="w-full h-10 bg-surface-container-low rounded-xl border border-outline-variant/30"></div>
+<div class="w-full h-10 indigo-gradient rounded-xl mt-md shadow-md"></div>
+</div>
+</div>
+</div>
+<div class="mt-md flex flex-wrap gap-sm">
+<span class="text-caption font-caption text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">center_focus_strong</span> Centered Content
+                    </span>
+<span class="text-caption font-caption text-on-surface-variant flex items-center gap-1">
+<span class="material-symbols-outlined text-[16px]">wallpaper</span> Soft Gradients
+                    </span>
+</div>
+</div>
+<!-- 3. Dashboard Layout Schematic -->
+<div class="md:col-span-12 bg-white rounded-2xl p-md border border-outline-variant/30 layout-card-hover blueprint-grid overflow-hidden">
+<div class="flex items-center justify-between mb-lg">
+<h3 class="font-headline-md text-headline-md">Dashboard Layout</h3>
+<span class="bg-surface-container text-primary font-caption text-caption px-sm py-xs rounded-full">Application Core</span>
+</div>
+<div class="flex gap-4 h-[400px]">
+<!-- Sidebar Blueprint -->
+<div class="w-[200px] bg-surface-container-low rounded-xl border border-outline-variant/50 p-4 flex flex-col gap-6">
+<div class="flex items-center gap-2">
+<div class="w-6 h-6 rounded bg-primary/20"></div>
+<div class="w-24 h-3 bg-primary/20 rounded"></div>
+</div>
+<div class="space-y-4">
+<div class="flex items-center gap-2 bg-primary-fixed px-2 py-2 rounded-lg">
+<div class="w-4 h-4 bg-on-primary-fixed-variant rounded"></div>
+<div class="w-20 h-2 bg-on-primary-fixed-variant/50 rounded"></div>
+</div>
+<div class="flex items-center gap-2 px-2">
+<div class="w-4 h-4 bg-on-surface-variant/20 rounded"></div>
+<div class="w-20 h-2 bg-on-surface-variant/20 rounded"></div>
+</div>
+<div class="flex items-center gap-2 px-2">
+<div class="w-4 h-4 bg-on-surface-variant/20 rounded"></div>
+<div class="w-20 h-2 bg-on-surface-variant/20 rounded"></div>
+</div>
+</div>
+<div class="mt-auto pt-4 border-t border-outline-variant/30 space-y-4">
+<div class="w-full h-8 bg-primary/10 rounded-lg"></div>
+</div>
+</div>
+<!-- Content Area Blueprint -->
+<div class="flex-1 flex flex-col gap-4">
+<!-- Top Header -->
+<div class="h-16 bg-white rounded-xl border border-outline-variant/50 px-4 flex items-center justify-between">
+<div class="w-48 h-10 bg-surface-container-low rounded-full border border-outline-variant/20 flex items-center px-4">
+<div class="w-4 h-4 bg-on-surface-variant/20 rounded-full mr-2"></div>
+<div class="w-24 h-2 bg-on-surface-variant/10 rounded"></div>
+</div>
+<div class="flex items-center gap-4">
+<div class="w-8 h-8 rounded-full bg-surface-container"></div>
+<div class="w-8 h-8 rounded-full bg-surface-container"></div>
+<div class="w-8 h-8 rounded-full bg-primary/20 border-2 border-primary/40"></div>
+</div>
+</div>
+<!-- Breadcrumbs -->
+<div class="flex items-center gap-2">
+<div class="w-16 h-2 bg-on-surface-variant/20 rounded"></div>
+<div class="w-2 h-2 bg-on-surface-variant/10 rounded-full"></div>
+<div class="w-24 h-2 bg-primary/20 rounded"></div>
+</div>
+<!-- Page Content Grid -->
+<div class="flex-1 grid grid-cols-12 grid-rows-2 gap-4">
+<div class="col-span-8 row-span-1 bg-surface-container rounded-xl border border-outline-variant/30"></div>
+<div class="col-span-4 row-span-2 bg-surface-container rounded-xl border border-outline-variant/30"></div>
+<div class="col-span-4 row-span-1 bg-surface-container rounded-xl border border-outline-variant/30"></div>
+<div class="col-span-4 row-span-1 bg-surface-container rounded-xl border border-outline-variant/30"></div>
+</div>
+</div>
+</div>
+<div class="mt-md flex flex-wrap gap-md border-t border-outline-variant/20 pt-md">
+<div class="flex items-center gap-2">
+<div class="w-4 h-4 bg-primary-fixed rounded"></div>
+<span class="text-caption font-caption text-on-surface-variant">Sidebar Navigation (280px)</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-4 h-4 bg-surface-container-high rounded"></div>
+<span class="text-caption font-caption text-on-surface-variant">Top Header Action Bar</span>
+</div>
+<div class="flex items-center gap-2">
+<div class="w-4 h-4 border border-dashed border-primary rounded"></div>
+<span class="text-caption font-caption text-on-surface-variant">Main Scrollable Canvas</span>
+</div>
+</div>
+</div>
+</section>
+<!-- 4. Layout Specifications Section -->
+<section class="max-w-container-max mx-auto px-gutter mt-xl">
+<div class="mb-lg">
+<h2 class="font-headline-lg text-headline-lg">Layout Specifications</h2>
+<div class="w-24 h-1 indigo-gradient rounded-full mt-2"></div>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-xl">
+<!-- Containers & Grids -->
+<div class="space-y-lg">
+<div class="bg-white p-md rounded-2xl border border-outline-variant/30 shadow-sm">
+<h4 class="font-label-md text-label-md text-primary uppercase mb-md">Containers &amp; Content Width</h4>
+<div class="space-y-4">
+<div class="flex justify-between items-end">
+<div>
+<p class="font-headline-md text-headline-md">1280px</p>
+<p class="text-caption font-caption text-on-surface-variant">Max Container Width</p>
+</div>
+<div class="w-full max-w-[200px] h-2 bg-surface-container rounded-full relative">
+<div class="absolute left-0 top-0 h-full w-full bg-primary/20 rounded-full"></div>
+<div class="absolute -top-4 left-0 text-[10px] text-primary">0px</div>
+<div class="absolute -top-4 right-0 text-[10px] text-primary">1280px</div>
+</div>
+</div>
+<div class="pt-md border-t border-outline-variant/20 grid grid-cols-2 gap-4">
+<div>
+<p class="font-bold text-on-surface">32px</p>
+<p class="text-caption font-caption text-on-surface-variant">Page Horizontal Padding</p>
+</div>
+<div>
+<p class="font-bold text-on-surface">64px - 80px</p>
+<p class="text-caption font-caption text-on-surface-variant">Section Vertical Spacing</p>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white p-md rounded-2xl border border-outline-variant/30 shadow-sm">
+<h4 class="font-label-md text-label-md text-primary uppercase mb-md">12-Column Grid System</h4>
+<p class="text-body-md text-on-surface-variant mb-md">Our fluid grid system adapts to various screen sizes while maintaining consistent gutter spacing.</p>
+<div class="grid grid-cols-12 gap-base h-24 mb-md">
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">1</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">2</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">3</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">4</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">5</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">6</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">7</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">8</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">9</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">10</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">11</div>
+<div class="bg-primary/5 border border-primary/20 rounded flex items-center justify-center text-[10px] text-primary/40 font-bold">12</div>
+</div>
+<div class="flex items-center justify-between text-caption font-caption text-on-surface-variant">
+<span>Gutter: 32px</span>
+<span>Margin: Auto</span>
+<span>Type: Fluid</span>
+</div>
+</div>
+</div>
+<!-- Breakpoints & Spacing -->
+<div class="space-y-lg">
+<div class="bg-white p-md rounded-2xl border border-outline-variant/30 shadow-sm">
+<h4 class="font-label-md text-label-md text-primary uppercase mb-md">Responsive Breakpoints</h4>
+<div class="space-y-6">
+<div class="flex items-center gap-md">
+<div class="w-16 text-caption font-bold text-primary">Desktop</div>
+<div class="flex-1 h-6 bg-surface-container rounded flex items-center justify-center border-l-4 border-primary">
+<span class="text-[10px] font-bold">1280px +</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-16 text-caption font-bold text-primary">Tablet</div>
+<div class="w-3/4 h-6 bg-surface-container rounded flex items-center justify-center border-l-4 border-secondary">
+<span class="text-[10px] font-bold">768px - 1279px</span>
+</div>
+</div>
+<div class="flex items-center gap-md">
+<div class="w-16 text-caption font-bold text-primary">Mobile</div>
+<div class="w-1/2 h-6 bg-surface-container rounded flex items-center justify-center border-l-4 border-outline">
+<span class="text-[10px] font-bold">390px - 767px</span>
+</div>
+</div>
+</div>
+</div>
+<div class="bg-white p-md rounded-2xl border border-outline-variant/30 shadow-sm">
+<h4 class="font-label-md text-label-md text-primary uppercase mb-md">8px Spacing Scale</h4>
+<p class="text-body-md text-on-surface-variant mb-lg">Lumina uses a strict 8px linear scale for all spacing requirements.</p>
+<div class="grid grid-cols-4 gap-4">
+<div class="text-center">
+<div class="w-4 h-4 bg-primary mx-auto mb-2 rounded-sm"></div>
+<span class="text-caption font-bold">4px</span>
+<span class="block text-[8px] text-on-surface-variant">xs</span>
+</div>
+<div class="text-center">
+<div class="w-6 h-6 bg-primary mx-auto mb-2 rounded-sm"></div>
+<span class="text-caption font-bold">8px</span>
+<span class="block text-[8px] text-on-surface-variant">base</span>
+</div>
+<div class="text-center">
+<div class="w-8 h-8 bg-primary mx-auto mb-2 rounded-sm"></div>
+<span class="text-caption font-bold">16px</span>
+<span class="block text-[8px] text-on-surface-variant">md-narrow</span>
+</div>
+<div class="text-center">
+<div class="w-12 h-12 bg-primary mx-auto mb-2 rounded-sm"></div>
+<span class="text-caption font-bold">24px</span>
+<span class="block text-[8px] text-on-surface-variant">md</span>
+</div>
+</div>
+<div class="mt-lg grid grid-cols-2 gap-4">
+<div class="bg-surface-container-low p-2 rounded-lg border border-outline-variant/30 text-center">
+<span class="text-caption font-bold">40px (lg)</span>
+</div>
+<div class="bg-surface-container-low p-2 rounded-lg border border-outline-variant/30 text-center">
+<span class="text-caption font-bold">64px (xl)</span>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Final Vision Section -->
+<section class="max-w-container-max mx-auto px-gutter mt-xl pb-xl">
+<div class="bg-inverse-surface dark:bg-surface-container-lowest rounded-3xl p-xl flex flex-col md:flex-row items-center justify-between gap-lg relative overflow-hidden">
+<!-- Abstract visual element -->
+<div class="absolute right-0 top-0 w-1/3 h-full opacity-10">
+<svg height="400" viewbox="0 0 400 400" width="400">
+<circle cx="200" cy="200" fill="none" r="180" stroke="white" stroke-dasharray="10 10" stroke-width="2"></circle>
+<rect fill="none" height="300" stroke="white" stroke-width="1" width="300" x="50" y="50"></rect>
+<line stroke="white" stroke-width="1" x1="0" x2="400" y1="0" y2="400"></line>
+</svg>
+</div>
+<div class="relative z-10 text-center md:text-left max-w-xl">
+<h2 class="font-headline-lg text-headline-lg text-white mb-md">Design System Integrity</h2>
+<p class="text-white/70 font-body-md text-body-md">
+                        Maintaining these layout specifications ensures that the Lumina Learning ecosystem remains cohesive, accessible, and intuitive for every learner, regardless of the device they use.
+                    </p>
+</div>
+<div class="relative z-10 flex gap-md">
+<button class="bg-white text-primary px-xl py-md rounded-2xl font-bold layout-card-hover">Download Kit</button>
+<button class="border-2 border-white/30 text-white px-xl py-md rounded-2xl font-bold hover:bg-white/10 transition-colors">Documentation</button>
+</div>
+</div>
+</section>
+</main>
+<!-- Footer -->
+<footer class="bg-inverse-surface dark:bg-surface-container-lowest w-full mt-xl">
+<div class="w-full py-lg px-gutter max-w-container-max mx-auto grid grid-cols-1 md:grid-cols-4 gap-lg">
+<div class="md:col-span-1">
+<span class="font-headline-md text-headline-md text-surface-bright mb-md block">Lumina Learning</span>
+<p class="text-surface-variant opacity-80 text-caption font-caption max-w-xs">The visual blueprint for modern educational experiences. Built for clarity, speed, and focus.</p>
+</div>
+<div class="space-y-sm">
+<h5 class="text-white font-bold mb-4">Resources</h5>
+<a class="block text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Brand Guidelines</a>
+<a class="block text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Component Library</a>
+<a class="block text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Icons &amp; Symbols</a>
+</div>
+<div class="space-y-sm">
+<h5 class="text-white font-bold mb-4">System</h5>
+<a class="block text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Design Tokens</a>
+<a class="block text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Layout Grids</a>
+<a class="block text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Accessibility</a>
+</div>
+<div class="space-y-sm">
+<h5 class="text-white font-bold mb-4">Support</h5>
+<a class="block text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Contact Us</a>
+<a class="block text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Help Center</a>
+<a class="block text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Developer Docs</a>
+</div>
+</div>
+<div class="max-w-container-max mx-auto px-gutter py-md border-t border-white/10 flex flex-col md:flex-row justify-between items-center gap-md">
+<p class="text-surface-variant opacity-80 text-caption font-caption">© 2024 Lumina Learning. All rights reserved.</p>
+<div class="flex gap-md">
+<a class="text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Privacy Policy</a>
+<a class="text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Terms of Service</a>
+<a class="text-surface-variant opacity-80 hover:opacity-100 transition-opacity text-caption font-caption" href="#">Cookie Policy</a>
+</div>
+</div>
+</footer>
+<script>
+        // Simple observer for entrance animations
+        const observerOptions = {
+            threshold: 0.1
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('opacity-100', 'translate-y-0');
+                    entry.target.classList.remove('opacity-0', 'translate-y-10');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.layout-card-hover').forEach(card => {
+            card.classList.add('opacity-0', 'translate-y-10', 'transition-all', 'duration-700');
+            observer.observe(card);
+        });
+    </script>
+</body></html>

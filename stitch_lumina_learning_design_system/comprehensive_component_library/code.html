@@ -1,0 +1,649 @@
+<!DOCTYPE html>
+
+<html class="scroll-smooth" lang="en"><head>
+<meta charset="utf-8"/>
+<meta content="width=device-width, initial-scale=1.0" name="viewport"/>
+<title>Lumina Learning | UI Kit &amp; Component Library</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet"/>
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "tertiary-fixed": "#71f8e4",
+                        "primary": "#4648d4",
+                        "on-primary": "#ffffff",
+                        "secondary-fixed-dim": "#d0bcff",
+                        "on-tertiary-container": "#f4fffb",
+                        "secondary-container": "#8455ef",
+                        "inverse-on-surface": "#eef0ff",
+                        "surface-container-lowest": "#ffffff",
+                        "surface-variant": "#dae2fd",
+                        "inverse-surface": "#283044",
+                        "primary-container": "#6063ee",
+                        "surface-container": "#eaedff",
+                        "tertiary-container": "#008376",
+                        "on-secondary-fixed": "#23005c",
+                        "error-container": "#ffdad6",
+                        "surface-container-high": "#e2e7ff",
+                        "outline": "#767586",
+                        "surface-container-low": "#f2f3ff",
+                        "tertiary": "#00685d",
+                        "surface-tint": "#494bd6",
+                        "on-secondary-fixed-variant": "#5516be",
+                        "on-primary-fixed-variant": "#2f2ebe",
+                        "on-surface": "#131b2e",
+                        "inverse-primary": "#c0c1ff",
+                        "outline-variant": "#c7c4d7",
+                        "tertiary-fixed-dim": "#4fdbc8",
+                        "secondary": "#6b38d4",
+                        "on-tertiary-fixed": "#00201c",
+                        "on-surface-variant": "#464554",
+                        "on-error": "#ffffff",
+                        "on-secondary": "#ffffff",
+                        "surface-bright": "#faf8ff",
+                        "primary-fixed-dim": "#c0c1ff",
+                        "primary-fixed": "#e1e0ff",
+                        "on-error-container": "#93000a",
+                        "background": "#faf8ff",
+                        "surface-dim": "#d2d9f4",
+                        "on-primary-container": "#fffbff",
+                        "on-background": "#131b2e",
+                        "on-tertiary": "#ffffff",
+                        "on-secondary-container": "#fffbff",
+                        "surface": "#faf8ff",
+                        "on-tertiary-fixed-variant": "#005048",
+                        "on-primary-fixed": "#07006c",
+                        "secondary-fixed": "#e9ddff",
+                        "surface-container-highest": "#dae2fd",
+                        "error": "#ba1a1a"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.25rem",
+                        "lg": "0.5rem",
+                        "xl": "0.75rem",
+                        "button": "14px",
+                        "card": "20px",
+                        "full": "9999px"
+                    },
+                    "spacing": {
+                        "xs": "4px",
+                        "base": "8px",
+                        "xl": "64px",
+                        "container-max": "1280px",
+                        "sm": "12px",
+                        "md": "24px",
+                        "gutter": "24px",
+                        "lg": "40px"
+                    },
+                    "fontFamily": {
+                        "label-md": ["Plus Jakarta Sans"],
+                        "headline-lg": ["Plus Jakarta Sans"],
+                        "display-lg": ["Plus Jakarta Sans"],
+                        "body-md": ["Plus Jakarta Sans"],
+                        "headline-md": ["Plus Jakarta Sans"],
+                        "body-lg": ["Plus Jakarta Sans"],
+                        "caption": ["Plus Jakarta Sans"]
+                    },
+                    "fontSize": {
+                        "label-md": ["14px", {"lineHeight": "20px", "fontWeight": "600"}],
+                        "headline-lg": ["32px", {"lineHeight": "40px", "letterSpacing": "-0.01em", "fontWeight": "700"}],
+                        "display-lg": ["48px", {"lineHeight": "60px", "letterSpacing": "-0.02em", "fontWeight": "800"}],
+                        "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                        "headline-md": ["24px", {"lineHeight": "32px", "fontWeight": "700"}],
+                        "body-lg": ["18px", {"lineHeight": "28px", "fontWeight": "400"}],
+                        "caption": ["12px", {"lineHeight": "16px", "fontWeight": "500"}]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        body {
+            background-color: #F8FAFC;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            color: #131b2e;
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+            line-height: 1;
+        }
+        .bg-primary-gradient {
+            background: linear-gradient(135deg, #4648d4 0%, #6b38d4 100%);
+        }
+        .bg-primary-gradient:hover {
+            filter: brightness(1.1);
+        }
+        .card-shadow {
+            box-shadow: 0px 4px 20px rgba(15, 23, 42, 0.05);
+            transition: all 0.3s ease;
+        }
+        .card-shadow:hover {
+            box-shadow: 0px 10px 30px rgba(15, 23, 42, 0.08);
+            transform: translateY(-4px);
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background-color: #cbd5e1;
+            border-radius: 10px;
+        }
+    </style>
+</head>
+<body class="p-lg md:p-xl selection:bg-primary-fixed selection:text-primary">
+<div class="max-w-container-max mx-auto space-y-xl">
+<!-- Header -->
+<header class="space-y-sm">
+<h1 class="font-display-lg text-display-lg text-primary">Lumina UI Kit</h1>
+<p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl">
+                A modern, tactical, and human-centric design system for educational excellence. Built with precision and a focus on cognitive ease.
+            </p>
+</header>
+<!-- Buttons Section -->
+<section class="space-y-md" id="buttons">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">smart_button</span>
+<h2 class="font-headline-md text-headline-md">Buttons</h2>
+</div>
+<div class="bg-surface p-md rounded-card border border-outline-variant/30 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-md items-start">
+<!-- Primary Gradient -->
+<div class="space-y-sm">
+<p class="font-caption text-caption text-outline mb-xs">Primary (Gradient)</p>
+<button class="bg-primary-gradient text-white px-md py-sm rounded-button font-label-md text-label-md shadow-sm active:scale-95 transition-all w-full">Default Action</button>
+<button class="bg-primary-gradient text-white px-md py-sm rounded-button font-label-md text-label-md shadow-md brightness-110 w-full">Hover State</button>
+<button class="bg-primary-gradient text-white px-md py-sm rounded-button font-label-md text-label-md shadow-sm scale-95 opacity-90 w-full">Active State</button>
+<button class="bg-surface-container-highest text-on-surface-variant px-md py-sm rounded-button font-label-md text-label-md cursor-not-allowed w-full" disabled="">Disabled</button>
+</div>
+<!-- Secondary -->
+<div class="space-y-sm">
+<p class="font-caption text-caption text-outline mb-xs">Secondary</p>
+<button class="bg-primary-fixed text-on-primary-fixed-variant px-md py-sm rounded-button font-label-md text-label-md hover:bg-primary-fixed-dim transition-colors w-full">Secondary</button>
+<button class="bg-primary-fixed-dim text-on-primary-fixed-variant px-md py-sm rounded-button font-label-md text-label-md w-full">Hover State</button>
+<button class="bg-primary-fixed text-on-primary-fixed-variant px-md py-sm rounded-button font-label-md text-label-md opacity-80 scale-95 w-full">Active State</button>
+</div>
+<!-- Outline -->
+<div class="space-y-sm">
+<p class="font-caption text-caption text-outline mb-xs">Outline</p>
+<button class="border-2 border-primary text-primary px-md py-sm rounded-button font-label-md text-label-md hover:bg-primary/5 transition-all w-full">Outline Button</button>
+<button class="border-2 border-primary bg-primary/5 text-primary px-md py-sm rounded-button font-label-md text-label-md w-full">Hover State</button>
+</div>
+<!-- Ghost -->
+<div class="space-y-sm">
+<p class="font-caption text-caption text-outline mb-xs">Ghost</p>
+<button class="text-on-surface-variant px-md py-sm rounded-button font-label-md text-label-md hover:bg-surface-container-high transition-all w-full">Ghost Button</button>
+<button class="bg-surface-container-high text-on-surface-variant px-md py-sm rounded-button font-label-md text-label-md w-full">Hover State</button>
+</div>
+<!-- Icon Buttons -->
+<div class="space-y-sm">
+<p class="font-caption text-caption text-outline mb-xs">Icon / Fab</p>
+<div class="flex flex-wrap gap-sm">
+<button class="bg-primary-gradient text-white w-12 h-12 rounded-full flex items-center justify-center shadow-md"><span class="material-symbols-outlined">add</span></button>
+<button class="bg-surface-container-high text-primary w-12 h-12 rounded-button flex items-center justify-center hover:bg-primary-fixed transition-all"><span class="material-symbols-outlined">notifications</span></button>
+<button class="border border-outline-variant text-on-surface-variant w-12 h-12 rounded-button flex items-center justify-center"><span class="material-symbols-outlined">more_vert</span></button>
+</div>
+</div>
+</div>
+</section>
+<!-- Forms Section -->
+<section class="space-y-md" id="forms">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">edit_note</span>
+<h2 class="font-headline-md text-headline-md">Forms &amp; Inputs</h2>
+</div>
+<div class="bg-surface p-md rounded-card border border-outline-variant/30 grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<div class="space-y-md">
+<div>
+<label class="block font-label-md text-label-md mb-xs text-on-surface">Email Address</label>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-button px-md py-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-md" placeholder="name@lumina.edu" type="email"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md mb-xs text-error">Error State</label>
+<input class="w-full bg-surface-container-low border border-error rounded-button px-md py-sm outline-none font-body-md" type="text" value="Invalid input"/>
+<p class="text-error font-caption text-caption mt-1">Please enter a valid academic code.</p>
+</div>
+<div>
+<label class="block font-label-md text-label-md mb-xs text-on-tertiary-fixed-variant">Success State</label>
+<input class="w-full bg-surface-container-low border border-tertiary rounded-button px-md py-sm outline-none font-body-md" type="text" value="Course confirmed"/>
+</div>
+</div>
+<div class="space-y-md">
+<div class="relative">
+<label class="block font-label-md text-label-md mb-xs text-on-surface">Search Courses</label>
+<span class="material-symbols-outlined absolute left-4 top-[42px] text-outline">search</span>
+<input class="w-full bg-surface-container-low border border-outline-variant rounded-button pl-11 pr-md py-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-md" placeholder="Search..." type="text"/>
+</div>
+<div>
+<label class="block font-label-md text-label-md mb-xs text-on-surface">Select Category</label>
+<select class="w-full bg-surface-container-low border border-outline-variant rounded-button px-md py-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-md appearance-none">
+<option>Design &amp; Creative</option>
+<option>Computer Science</option>
+<option>Business Strategy</option>
+</select>
+</div>
+<div>
+<label class="block font-label-md text-label-md mb-xs text-on-surface">Biography</label>
+<textarea class="w-full bg-surface-container-low border border-outline-variant rounded-button px-md py-sm focus:ring-2 focus:ring-primary/20 focus:border-primary outline-none transition-all font-body-md" placeholder="Tell us about yourself..." rows="3"></textarea>
+</div>
+</div>
+<div class="space-y-lg">
+<div class="space-y-md">
+<label class="flex items-center gap-sm cursor-pointer group">
+<input checked="" class="w-5 h-5 rounded-lg border-outline-variant text-primary focus:ring-primary" type="checkbox"/>
+<span class="font-body-md text-body-md text-on-surface-variant group-hover:text-primary transition-colors">I agree to the Terms of Service</span>
+</label>
+<div class="flex items-center gap-lg">
+<label class="flex items-center gap-sm cursor-pointer">
+<input checked="" class="w-5 h-5 border-outline-variant text-primary focus:ring-primary" name="plan" type="radio"/>
+<span class="font-body-md text-body-md text-on-surface-variant">Monthly</span>
+</label>
+<label class="flex items-center gap-sm cursor-pointer">
+<input class="w-5 h-5 border-outline-variant text-primary focus:ring-primary" name="plan" type="radio"/>
+<span class="font-body-md text-body-md text-on-surface-variant">Yearly</span>
+</label>
+</div>
+</div>
+<div class="flex items-center justify-between p-sm bg-surface-container-low rounded-button border border-outline-variant/30">
+<span class="font-label-md text-label-md">Desktop Notifications</span>
+<label class="relative inline-flex items-center cursor-pointer">
+<input checked="" class="sr-only peer" type="checkbox" value=""/>
+<div class="w-11 h-6 bg-outline-variant peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-primary"></div>
+</label>
+</div>
+</div>
+</div>
+</section>
+<!-- Feedback Section -->
+<section class="space-y-md" id="feedback">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">campaign</span>
+<h2 class="font-headline-md text-headline-md">Feedback &amp; State</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg">
+<!-- Badges and Progress -->
+<div class="bg-surface p-md rounded-card border border-outline-variant/30 space-y-lg">
+<div class="space-y-md">
+<p class="font-label-md text-label-md">Status Badges</p>
+<div class="flex flex-wrap gap-sm">
+<span class="px-sm py-xs bg-tertiary-fixed text-on-tertiary-fixed-variant rounded-full text-caption font-caption">Completed</span>
+<span class="px-sm py-xs bg-primary-fixed text-on-primary-fixed-variant rounded-full text-caption font-caption">In Progress</span>
+<span class="px-sm py-xs bg-error-container text-on-error-container rounded-full text-caption font-caption">Attention Needed</span>
+<span class="px-sm py-xs bg-surface-container-highest text-on-surface-variant rounded-full text-caption font-caption">Draft</span>
+</div>
+</div>
+<div class="space-y-md">
+<div class="flex justify-between items-center">
+<p class="font-label-md text-label-md">Learning Progress</p>
+<span class="font-caption text-caption text-primary">68%</span>
+</div>
+<div class="w-full bg-surface-container-high rounded-full h-3">
+<div class="bg-primary-gradient h-3 rounded-full" style="width: 68%"></div>
+</div>
+</div>
+<div class="space-y-md">
+<p class="font-label-md text-label-md">Skeleton Loading</p>
+<div class="flex gap-md animate-pulse">
+<div class="w-12 h-12 bg-surface-container-highest rounded-full"></div>
+<div class="flex-1 space-y-sm">
+<div class="h-4 bg-surface-container-highest rounded w-3/4"></div>
+<div class="h-3 bg-surface-container-highest rounded w-1/2"></div>
+</div>
+</div>
+</div>
+</div>
+<!-- Toasts & Overlays -->
+<div class="space-y-md">
+<!-- Toast Example -->
+<div class="bg-inverse-surface text-inverse-on-surface p-md rounded-card flex items-center justify-between shadow-lg">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-tertiary-fixed-dim">check_circle</span>
+<span class="font-body-md text-body-md">Course added to your wishlist!</span>
+</div>
+<button class="text-tertiary-fixed font-label-md text-label-md">Undo</button>
+</div>
+<!-- Dropdown Example -->
+<div class="relative inline-block w-full">
+<div class="bg-surface p-base rounded-card border border-outline-variant/30 shadow-md w-full max-w-xs ml-auto">
+<div class="flex flex-col">
+<button class="flex items-center gap-sm p-sm hover:bg-surface-container-low rounded-xl text-left transition-colors font-body-md">
+<span class="material-symbols-outlined text-on-surface-variant">person</span>
+<span>Profile Settings</span>
+</button>
+<button class="flex items-center gap-sm p-sm hover:bg-surface-container-low rounded-xl text-left transition-colors font-body-md">
+<span class="material-symbols-outlined text-on-surface-variant">payments</span>
+<span>Billing History</span>
+</button>
+<hr class="my-xs border-outline-variant/30"/>
+<button class="flex items-center gap-sm p-sm hover:bg-error-container/20 rounded-xl text-left transition-colors font-body-md text-error">
+<span class="material-symbols-outlined">logout</span>
+<span>Sign Out</span>
+</button>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Navigation Section -->
+<section class="space-y-md" id="navigation">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">explore</span>
+<h2 class="font-headline-md text-headline-md">Navigation</h2>
+</div>
+<div class="bg-surface p-md rounded-card border border-outline-variant/30 space-y-lg">
+<!-- Breadcrumbs -->
+<nav class="flex items-center gap-xs font-caption text-caption text-on-surface-variant">
+<a class="hover:text-primary transition-colors" href="#">Dashboard</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<a class="hover:text-primary transition-colors" href="#">Courses</a>
+<span class="material-symbols-outlined text-[16px]">chevron_right</span>
+<span class="text-primary font-bold">Advanced UI Design</span>
+</nav>
+<!-- Tabs (Underlined) -->
+<div class="border-b border-outline-variant/30">
+<div class="flex gap-lg">
+<button class="pb-sm px-xs font-label-md text-label-md text-primary border-b-2 border-primary">Overview</button>
+<button class="pb-sm px-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">Curriculum</button>
+<button class="pb-sm px-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">Reviews</button>
+<button class="pb-sm px-xs font-label-md text-label-md text-on-surface-variant hover:text-on-surface transition-colors">Mentors</button>
+</div>
+</div>
+<!-- Tabs (Pills) -->
+<div class="flex bg-surface-container-low p-1 rounded-full w-fit">
+<button class="px-md py-sm bg-white rounded-full font-label-md text-label-md text-primary shadow-sm">Active Tab</button>
+<button class="px-md py-sm rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-all">Inactive</button>
+<button class="px-md py-sm rounded-full font-label-md text-label-md text-on-surface-variant hover:bg-surface-container-high transition-all">Inactive</button>
+</div>
+<!-- Pagination -->
+<div class="flex items-center justify-center gap-sm">
+<button class="w-10 h-10 flex items-center justify-center rounded-button border border-outline-variant text-on-surface-variant hover:bg-surface-container-high">
+<span class="material-symbols-outlined">chevron_left</span>
+</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-button bg-primary text-white font-label-md text-label-md">1</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-button border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md">2</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-button border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md">3</button>
+<span class="px-xs text-outline">...</span>
+<button class="w-10 h-10 flex items-center justify-center rounded-button border border-outline-variant text-on-surface-variant hover:bg-surface-container-high font-label-md text-label-md">12</button>
+<button class="w-10 h-10 flex items-center justify-center rounded-button border border-outline-variant text-on-surface-variant hover:bg-surface-container-high">
+<span class="material-symbols-outlined">chevron_right</span>
+</button>
+</div>
+</div>
+</section>
+<!-- Cards Section -->
+<section class="space-y-md" id="cards">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">grid_view</span>
+<h2 class="font-headline-md text-headline-md">Cards Gallery</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-md">
+<!-- Course Card -->
+<div class="bg-white rounded-card overflow-hidden card-shadow">
+<div class="h-40 bg-surface-container relative">
+<img class="w-full h-full object-cover" data-alt="A professional top-down workspace shot featuring a clean laptop, a sketchbook with UI wireframes, and a cup of coffee. The lighting is soft and natural, with a focus on deep indigo and clean white surfaces to match the Lumina Learning aesthetic." src="https://lh3.googleusercontent.com/aida-public/AB6AXuCoV15o-RMFv1tzHYhlfM0pbqJ3QwI4Ziirc96YpEMah-WxJtCbw20TUjZiZddKeuW5L5F5QpirkzB5149FuAefSy2lfcO5nRFvn5WGg5YfTI7rb23vOmh1YYQ9HtAJVfmhaTzMr-u2FRt-4MSx7KGLP0CnrM5AdWK5CVNYVYOa9LX2eLTqpYZxoa7bVJl911MANeCu4zYjyWB6Y9yy_YXbQ2IBIq-VyC_1La1X7bFlgAil5DQmBeX8Rla4JBfzSW9ITTheFGK8QaU"/>
+<span class="absolute top-sm right-sm bg-primary-gradient text-white text-caption font-caption px-sm py-xs rounded-full shadow-md">Best Seller</span>
+</div>
+<div class="p-md space-y-sm">
+<div class="flex items-center gap-xs text-primary font-caption text-caption">
+<span class="material-symbols-outlined text-[16px]">school</span>
+                            Design System Mastery
+                        </div>
+<h3 class="font-label-md text-label-md text-on-surface line-clamp-2">Building Scalable Digital Architectures</h3>
+<div class="flex items-center justify-between mt-md">
+<span class="font-headline-md text-headline-md text-primary">$49.99</span>
+<div class="flex items-center gap-1 text-on-surface-variant">
+<span class="material-symbols-outlined text-[18px] text-tertiary" style="font-variation-settings: 'FILL' 1;">star</span>
+<span class="font-caption text-caption">4.8 (2.4k)</span>
+</div>
+</div>
+</div>
+</div>
+<!-- Teacher Card -->
+<div class="bg-white rounded-card p-md card-shadow text-center space-y-md">
+<div class="relative w-20 h-20 mx-auto">
+<img class="w-full h-full rounded-full object-cover border-4 border-primary-fixed" data-alt="A portrait of a smiling female creative professional in her early 30s with a modern, approachable look. She has a high-quality studio lighting setup that casts soft shadows. The background is a clean, minimal gradient of soft lavender and indigo, consistent with a high-end educational platform." src="https://lh3.googleusercontent.com/aida-public/AB6AXuB7ObRRVEvNtscXQG_1J7l8-brQc57Br4-zqPW8D4C-qVwx6IIN08nT6Uh6vBjE_78dChdKwNTm-n3XiBpf_RVpe9aYloHwk4nK8xjTkJNZEuAasPHz4Wy_rbupzcdjq7LkhEee-72jcFct8DngMCQtu6Xs_5plvDS8E6tNJDi7aGpFrriKMWShNcPdxmHMKw5upq3oB-aWdK6VpqCXWPkdG6VNyQP0Gbxukim_EQkY_lpex1HNYBEml-PqVxUJUybYR7g3KobKRAw"/>
+<span class="absolute bottom-0 right-0 bg-tertiary w-6 h-6 rounded-full border-2 border-white flex items-center justify-center">
+<span class="material-symbols-outlined text-white text-[12px]">verified</span>
+</span>
+</div>
+<div>
+<h3 class="font-label-md text-label-md text-on-surface">Elena Rodriguez</h3>
+<p class="font-caption text-caption text-on-surface-variant">Lead UX Architect</p>
+</div>
+<div class="flex items-center justify-center gap-md py-sm border-y border-outline-variant/30">
+<div class="text-center">
+<p class="font-label-md text-label-md">15k</p>
+<p class="font-caption text-caption text-outline">Students</p>
+</div>
+<div class="text-center">
+<p class="font-label-md text-label-md">24</p>
+<p class="font-caption text-caption text-outline">Courses</p>
+</div>
+</div>
+<button class="w-full py-sm border-2 border-primary text-primary rounded-button font-label-md text-label-md hover:bg-primary/5 transition-all">View Profile</button>
+</div>
+<!-- Statistics Card -->
+<div class="bg-primary-gradient rounded-card p-md shadow-xl text-white flex flex-col justify-between">
+<div class="flex justify-between items-start">
+<div class="p-base bg-white/20 rounded-xl backdrop-blur-md">
+<span class="material-symbols-outlined">trending_up</span>
+</div>
+<span class="bg-white/30 text-caption font-caption px-sm py-xs rounded-full backdrop-blur-md">+12.5%</span>
+</div>
+<div class="mt-xl">
+<p class="opacity-80 font-body-md text-body-md">Hours Learned</p>
+<h2 class="text-[32px] font-extrabold leading-tight">1,284 h</h2>
+<div class="flex gap-1 mt-sm">
+<div class="h-1 flex-1 bg-white/30 rounded-full"></div>
+<div class="h-1 flex-1 bg-white/30 rounded-full"></div>
+<div class="h-1 flex-1 bg-white rounded-full"></div>
+<div class="h-1 flex-1 bg-white/30 rounded-full"></div>
+</div>
+</div>
+</div>
+<!-- Wallet Card -->
+<div class="bg-inverse-surface rounded-card p-md shadow-lg text-white flex flex-col justify-between border border-white/10">
+<div class="flex justify-between items-center">
+<div class="font-label-md text-label-md">Lumina Wallet</div>
+<span class="material-symbols-outlined opacity-50">contactless</span>
+</div>
+<div class="my-md">
+<p class="text-caption opacity-60">Total Balance</p>
+<p class="text-headline-md font-bold">$2,450.00</p>
+</div>
+<div class="flex justify-between items-end">
+<p class="text-caption opacity-40 font-mono tracking-widest">**** 4482</p>
+<div class="flex -space-x-2">
+<div class="w-8 h-8 rounded-full bg-primary/80 border border-white/20"></div>
+<div class="w-8 h-8 rounded-full bg-secondary/80 border border-white/20"></div>
+</div>
+</div>
+</div>
+</div>
+</section>
+<!-- Data Section -->
+<section class="space-y-md" id="data">
+<div class="flex items-center gap-sm">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">analytics</span>
+<h2 class="font-headline-md text-headline-md">Data &amp; Visualization</h2>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-3 gap-lg">
+<!-- Sample Table -->
+<div class="lg:col-span-2 bg-white rounded-card border border-outline-variant/30 card-shadow overflow-hidden">
+<div class="p-md border-b border-outline-variant/30 flex justify-between items-center">
+<h3 class="font-label-md text-label-md">Enrolled Students</h3>
+<button class="text-primary font-label-md text-label-md">Export PDF</button>
+</div>
+<div class="overflow-x-auto">
+<table class="w-full text-left">
+<thead class="bg-surface-container-low font-label-md text-label-md text-on-surface-variant">
+<tr>
+<th class="px-md py-sm">Student</th>
+<th class="px-md py-sm">Course</th>
+<th class="px-md py-sm">Progress</th>
+<th class="px-md py-sm">Date</th>
+<th class="px-md py-sm text-right">Actions</th>
+</tr>
+</thead>
+<tbody class="divide-y divide-outline-variant/30">
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-primary-fixed flex items-center justify-center text-primary font-bold">JD</div>
+<div class="font-label-md text-label-md">Jane Doe</div>
+</div>
+</td>
+<td class="px-md py-md font-body-md text-body-md">Python for Data</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="flex-1 bg-surface-container-high h-1.5 rounded-full w-20">
+<div class="bg-tertiary h-1.5 rounded-full" style="width: 85%"></div>
+</div>
+<span class="text-caption font-caption text-tertiary">85%</span>
+</div>
+</td>
+<td class="px-md py-md font-caption text-caption text-on-surface-variant">Oct 12, 2024</td>
+<td class="px-md py-md text-right">
+<button class="material-symbols-outlined text-outline">more_horiz</button>
+</td>
+</tr>
+<tr class="hover:bg-surface-container-low/50 transition-colors">
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="w-10 h-10 rounded-full bg-secondary-fixed flex items-center justify-center text-secondary font-bold">MS</div>
+<div class="font-label-md text-label-md">Mark Smith</div>
+</div>
+</td>
+<td class="px-md py-md font-body-md text-body-md">React Advanced</td>
+<td class="px-md py-md">
+<div class="flex items-center gap-sm">
+<div class="flex-1 bg-surface-container-high h-1.5 rounded-full w-20">
+<div class="bg-primary h-1.5 rounded-full" style="width: 42%"></div>
+</div>
+<span class="text-caption font-caption text-primary">42%</span>
+</div>
+</td>
+<td class="px-md py-md font-caption text-caption text-on-surface-variant">Oct 14, 2024</td>
+<td class="px-md py-md text-right">
+<button class="material-symbols-outlined text-outline">more_horiz</button>
+</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<!-- Line Chart Card -->
+<div class="bg-white rounded-card border border-outline-variant/30 card-shadow p-md flex flex-col justify-between">
+<div>
+<h3 class="font-label-md text-label-md mb-xs">Engagement Trends</h3>
+<p class="text-caption text-on-surface-variant mb-md">Daily active learners over last week</p>
+</div>
+<div class="h-48 flex items-end justify-between gap-base px-sm">
+<div class="w-full bg-primary/10 rounded-t-lg relative group h-[40%] hover:bg-primary/20 transition-all">
+<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-caption text-primary opacity-0 group-hover:opacity-100 transition-opacity">4k</span>
+</div>
+<div class="w-full bg-primary/10 rounded-t-lg relative group h-[65%] hover:bg-primary/20 transition-all">
+<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-caption text-primary opacity-0 group-hover:opacity-100 transition-opacity">6.5k</span>
+</div>
+<div class="w-full bg-primary-gradient rounded-t-lg relative group h-[90%] hover:brightness-110 transition-all shadow-md">
+<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-caption text-primary font-bold">9k</span>
+</div>
+<div class="w-full bg-primary/10 rounded-t-lg relative group h-[55%] hover:bg-primary/20 transition-all">
+<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-caption text-primary opacity-0 group-hover:opacity-100 transition-opacity">5.5k</span>
+</div>
+<div class="w-full bg-primary/10 rounded-t-lg relative group h-[75%] hover:bg-primary/20 transition-all">
+<span class="absolute -top-6 left-1/2 -translate-x-1/2 text-caption text-primary opacity-0 group-hover:opacity-100 transition-opacity">7.5k</span>
+</div>
+</div>
+<div class="flex justify-between px-xs mt-sm text-caption text-outline">
+<span>Mon</span>
+<span>Tue</span>
+<span>Wed</span>
+<span>Thu</span>
+<span>Fri</span>
+</div>
+</div>
+</div>
+</section>
+<!-- Overlays Section -->
+<section class="pb-xl" id="overlays">
+<div class="flex items-center gap-sm mb-md">
+<span class="material-symbols-outlined text-primary" style="font-variation-settings: 'FILL' 1;">layers</span>
+<h2 class="font-headline-md text-headline-md">Overlays</h2>
+</div>
+<div class="grid grid-cols-1 md:grid-cols-2 gap-lg items-center">
+<!-- Modal Example -->
+<div class="bg-black/5 p-lg rounded-card backdrop-blur-sm border border-outline-variant/30 flex items-center justify-center min-h-[400px]">
+<div class="bg-white rounded-card shadow-2xl max-w-sm w-full p-md space-y-md border border-outline-variant/20 transform scale-100">
+<div class="flex justify-between items-center">
+<h3 class="font-headline-md text-headline-md text-on-surface">Enroll Now?</h3>
+<button class="material-symbols-outlined text-outline hover:text-on-surface">close</button>
+</div>
+<p class="font-body-md text-body-md text-on-surface-variant">
+                            You're about to enroll in <span class="font-bold text-primary">Advanced Figma Workflows</span>. This will grant you lifetime access to all future updates.
+                        </p>
+<div class="flex flex-col gap-sm pt-md">
+<button class="bg-primary-gradient text-white py-sm rounded-button font-label-md text-label-md shadow-md active:scale-95 transition-all">Confirm Enrollment</button>
+<button class="py-sm text-on-surface-variant hover:bg-surface-container-high rounded-button font-label-md text-label-md transition-all">Maybe later</button>
+</div>
+</div>
+</div>
+<!-- Descriptive Section -->
+<div class="space-y-md">
+<div class="bg-white p-md rounded-card border border-outline-variant/30 card-shadow">
+<div class="flex items-start gap-md">
+<div class="w-12 h-12 bg-primary-fixed text-primary rounded-xl flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">info</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-surface">Style Protocol</h4>
+<p class="font-body-md text-body-md text-on-surface-variant mt-xs">
+                                    All components use an 8px linear scale for spatial harmony. The 20px card radius and 14px button radius create a balanced "soft tactile" geometry that defines Lumina's brand identity.
+                                </p>
+</div>
+</div>
+</div>
+<div class="bg-tertiary-container/10 p-md rounded-card border border-tertiary/20">
+<div class="flex items-start gap-md">
+<div class="w-12 h-12 bg-tertiary-fixed text-on-tertiary-fixed-variant rounded-xl flex items-center justify-center shrink-0">
+<span class="material-symbols-outlined">palette</span>
+</div>
+<div>
+<h4 class="font-label-md text-label-md text-on-tertiary-fixed-variant">Dynamic Gradients</h4>
+<p class="font-body-md text-body-md text-on-tertiary-fixed-variant opacity-80 mt-xs">
+                                    Achievement and progress are highlighted with vibrant Indigo-to-Violet transitions, injecting energy into the minimalist environment.
+                                </p>
+</div>
+</div>
+</div>
+</div>
+</div>
+</section>
+</div>
+<!-- Micro-interaction Scripts -->
+<script>
+        // Simple scale effect for buttons
+        document.querySelectorAll('button').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.96)';
+            });
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = '';
+            });
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = '';
+            });
+        });
+
+        // Skeleton loading animation simulation
+        window.addEventListener('load', () => {
+            console.log('Lumina UI Kit Initialized');
+        });
+    </script>
+</body></html>
