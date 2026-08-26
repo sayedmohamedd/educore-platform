@@ -1,18 +1,15 @@
 $kind: http-request
 name: Update Lesson
-url: '{{url}}/lessons/{{lessonId}}'
+url: "{{url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons/{{lessonId}}"
 method: PATCH
 auth:
   type: bearer
   credentials:
-    - key: token
-      value: '{{access_token}}'
+    token: "{{access_token}}"
 body:
   type: json
   content: |-
     {
-      "title": "Updated Lesson Title",
-      "content": "Updated content",
-      "order": 2
+      "title": "First Lesson of OOP"
     }
 order: 1000000000019

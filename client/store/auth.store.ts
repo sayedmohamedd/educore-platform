@@ -1,6 +1,6 @@
 import { create } from "zustand";
 
-enum Role {
+export enum Role {
   ADMIN = "ADMIN",
   TEACHER = "INSTRUCTOR",
   STUDENT = "STUDENT",
@@ -15,34 +15,20 @@ interface User {
 }
 
 interface AuthStore {
-  accessToken: string | null;
-  // refreshToken: string | null;
+  loading: boolean;
   user: User | null;
-
-  setAccessToken: (token: string) => void;
-  // setRefreshToken: (token: string) => void;
-  setUser: (user: User) => void;
+  setUser: (user: User | null) => void;
+  setLoading: (loading: boolean) => void;
   logout: () => void;
 }
 
 export const useAuthStore = create<AuthStore>((set) => ({
-  accessToken: null,
-  // refreshToken: null,
   user: null,
-
-  setAccessToken: (accessToken) =>
-    set({
-      accessToken,
-    }),
-
-  setUser: (user) =>
-    set({
-      user,
-    }),
-
+  loading: false,
+  setUser: (user) => set({ user }),
+  setLoading: (loading) => set({ loading }),
   logout: () =>
     set({
-      accessToken: null,
       user: null,
     }),
 }));

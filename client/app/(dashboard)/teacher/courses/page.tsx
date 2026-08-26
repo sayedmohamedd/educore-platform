@@ -1,11 +1,21 @@
-import IconButton from "@/components/shared/IconButton";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Plus } from "lucide-react";
-import { courses, coursesTabs } from "@/lib/data";
-import CourseCard from "@/components/shared/cards/CourseCard";
-import Link from "next/link";
+import { coursesTabs } from "@/lib/data";
 import Tabs from "./[slug]/_components/Tabs";
+import IconButton from "@/components/ui/IconButton";
+import { Suspense } from "react";
+import CoursesList from "@/app/(public)/_components/CoursesList";
+import { teachersService } from "@/services/teachers.service";
 
-const TeacherCourses = () => {
+const TeacherCourses = async () => {
+  let errorMessage = "";
+  let courses: any = [];
+  try {
+    const data = await teachersService.getTeacherCourses();
+    courses = data.courses;
+  } catch (error: any) {
+    errorMessage = error?.message;
+  }
   return (
     <main className="container mx-auto px-8 py-4">
       <Tabs tabs={coursesTabs} />
@@ -25,26 +35,10 @@ const TeacherCourses = () => {
           href="/teacher/courses/create"
         />
       </header>
-      <section className="grid gap-6 grid-cols-1 md:grid-cols-2 lg:grid-cols-3 mb-6">
-        {courses.map((course) => (
-          <CourseCard
-            key={course.id}
-            image={course.image}
-            title={course.title}
-            description={course.description}
-            students={course.students}
-            status={course.status}
-            actions={
-              <Link
-                href="/teacher/courses/1"
-                className="block w-full rounded-xl bg-primary py-2.5 text-center font-medium text-primary-foreground transition-opacity hover:opacity-90"
-              >
-                Edit Course
-              </Link>
-            }
-          />
-        ))}
-      </section>
+      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      <Suspense fallback={<h3>Loading...</h3>}>
+        <CoursesList courses={courses} />
+      </Suspense>
     </main>
   );
 };

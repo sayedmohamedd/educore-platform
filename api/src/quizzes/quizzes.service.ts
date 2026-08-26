@@ -44,12 +44,6 @@ export class QuizzesService {
       throw new ForbiddenException('You are not the owner of this course');
     }
 
-    console.log(
-      dto.questions.map((question) => ({
-        text: question.text,
-        options: question.options,
-      })),
-    );
 
     const quiz = await this.prisma.quiz.create({
       data: {

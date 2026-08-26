@@ -16,6 +16,7 @@ import type { AuthenticatedRequest } from '../common/types/authenticated-request
 import { CreateQuizDto } from './dtos/create-quiz.dto.js';
 import { UpdateQuizDto } from './dtos/update-quiz.dto.js';
 import { RolesGuard } from '../auth/guards/jwt-auth.guard/roles.guard.js';
+import { Role } from '../generated/prisma/client.js';
 
 @Controller('quizzes')
 @UseGuards(JwtAuthGuard)
@@ -23,7 +24,7 @@ export class QuizzesController {
   constructor(private readonly quizzesService: QuizzesService) {}
 
   @Post()
-  @Roles('INSTRUCTOR')
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(RolesGuard)
   create(@Req() req: AuthenticatedRequest, @Body() dto: CreateQuizDto) {
     return this.quizzesService.create(req.user.userId, dto);
@@ -35,7 +36,7 @@ export class QuizzesController {
   }
 
   @Patch(':id')
-  @Roles('INSTRUCTOR')
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(RolesGuard)
   update(
     @Req() req: AuthenticatedRequest,
@@ -46,14 +47,14 @@ export class QuizzesController {
   }
 
   @Delete(':id')
-  @Roles('INSTRUCTOR')
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(RolesGuard)
   remove(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.quizzesService.remove(req.user.userId, id);
   }
 
   @Post(':id/submit')
-  @Roles('STUDENT')
+  @Roles(Role.STUDENT)
   @UseGuards(RolesGuard)
   submit(
     @Req() req: AuthenticatedRequest,

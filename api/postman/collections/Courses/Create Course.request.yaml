@@ -1,20 +1,21 @@
 $kind: http-request
 name: Create Course
-url: '{{url}}/courses'
+url: "{{url}}/courses"
 method: POST
 auth:
   type: bearer
   credentials:
-    - key: token
-      value: '{{access_token}}'
+    token: "{{access_token}}"
 body:
   type: json
   content: |-
     {
-      "title": "NestJS Backend Course",
-      "description": "Learn NestJS backend development",
-      "price": 500,
-      "thumbnailId": "{{mediaId}}"
+        //   "thumbnailId": "{{mediaId}}"
+        "title": "OOP Basics Course",
+        "description": "Learn Object Oriented Programming",
+        "price": 500,
+        "thumbnailId": "cmt31rwgj00014kf3o1u1ussj",
+        "categories": ["cmsli2bqd0002p0f37oj81wwd"]
     }
 scripts:
   - type: afterResponse

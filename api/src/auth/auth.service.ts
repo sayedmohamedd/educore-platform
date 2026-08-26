@@ -13,6 +13,7 @@ import { RegisterDto } from './dtos/register.dto.js';
 import { ApiResponse } from '../helper/APIResponse.js';
 import { LoginDto } from './dtos/login.dto.js';
 import type { Request } from 'express';
+import { JWTPayload } from './types/JwtUser.type.js';
 
 @Injectable()
 export class AuthService {
@@ -64,13 +65,15 @@ export class AuthService {
     // set cookie with refresh token
     this.setRefreshTokenCookie(res, refreshToken);
 
+    // set cookie with access token
+    this.setAccessTokenCookie(res, accessToken);
+
     return new ApiResponse(true, 'User registered successfully', {
       user: {
         id: user.id,
         fullName: user.fullName,
         email: user.email,
       },
-      accessToken,
     });
   }
 
@@ -83,9 +86,7 @@ export class AuthService {
       include: { avatar: true },
     });
 
-    if (!user) {
-      throw new UnauthorizedException('Invalid credentials');
-    }
+    if (!user) throw new UnauthorizedException('Invalid credentials');
 
     // Check if the password is correct
     const isPasswordValid = await bcrypt.compare(dto.password, user.password);
@@ -106,6 +107,8 @@ export class AuthService {
 
     // Set cookie with refresh token
     this.setRefreshTokenCookie(res, refreshToken);
+    // Set cookie with access token
+    this.setAccessTokenCookie(res, accessToken);
 
     return new ApiResponse(true, 'Login successful', {
       user: {
@@ -115,11 +118,10 @@ export class AuthService {
         role: user.role,
         avatar: user.avatar?.url,
       },
-      accessToken,
     });
   }
 
-  async refresh(req: Request) {
+  async refresh(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
 
     // Check if the refresh token exists
@@ -128,7 +130,7 @@ export class AuthService {
     }
 
     // Verify the refresh token
-    let payload: { sub: string };
+    let payload: JWTPayload;
 
     try {
       payload = await this.jwtService.verifyAsync(refreshToken);
@@ -158,26 +160,41 @@ export class AuthService {
       throw new UnauthorizedException('Invalid refresh token');
     }
 
-    const accessToken = this.jwtService.sign(
-      { sub: payload.sub },
-      { expiresIn: '15m' },
-    );
-
-    return new ApiResponse(true, 'Token refreshed successfully', {
-      accessToken,
+    // Get the user from the database
+    const user = await this.prisma.user.findUnique({
+      where: {
+        id: payload.sub,
+      },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        avatar: true,
+        role: true,
+      },
     });
+
+    if (!user) throw new UnauthorizedException('User not found');
+
+    const accessToken = this.generateAccessToken(user.id, user.role);
+
+    // Set cookie with access token
+    this.setAccessTokenCookie(res, accessToken);
+
+    return new ApiResponse(true, 'Token refreshed successfully', { user });
   }
 
   async logout(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
 
     if (refreshToken) {
-      let payload: { sub: string };
+      let payload: JWTPayload;
 
       try {
         payload = await this.jwtService.verifyAsync(refreshToken);
       } catch {
         res.clearCookie('refreshToken');
+        res.clearCookie('accessToken');
         return new ApiResponse(true, 'Logged out successfully');
       }
 
@@ -203,6 +220,7 @@ export class AuthService {
     }
 
     res.clearCookie('refreshToken');
+    res.clearCookie('accessToken');
 
     return new ApiResponse(true, 'Logged out successfully');
   }
@@ -212,9 +230,18 @@ export class AuthService {
   setRefreshTokenCookie(res: Response, hashedRefreshToken: string) {
     res.cookie('refreshToken', hashedRefreshToken, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === 'production',
-      sameSite: 'none',
+      secure: false,
+      sameSite: 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
+    });
+  }
+
+  setAccessTokenCookie(res: Response, accessToken: string) {
+    res.cookie('accessToken', accessToken, {
+      httpOnly: false,
+      secure: false,
+      sameSite: 'lax',
+      maxAge: 15 * 60 * 1000, // 15 minutes
     });
   }
 
@@ -237,11 +264,19 @@ export class AuthService {
     );
     const hashedRefreshToken = bcrypt.hashSync(refreshToken, 10) as string;
 
-    const decoded = this.jwtService.decode(accessToken);
-    console.log('TYPE:', typeof decoded);
-    console.log('JSON:', JSON.stringify(decoded));
-    console.log('RAW:', decoded);
+    // const decoded = this.jwtService.decode(accessToken);
+    // console.log('TYPE:', typeof decoded);
+    // console.log('JSON:', JSON.stringify(decoded));
+    // console.log('RAW:', decoded);
 
     return { accessToken, hashedRefreshToken, refreshToken };
+  }
+
+  generateAccessToken(userId: string, role: string): string {
+    const accessToken = this.jwtService.sign(
+      { sub: userId, role },
+      { expiresIn: '15m' },
+    );
+    return accessToken;
   }
 }

@@ -20,6 +20,11 @@ export class NotificationsController {
     return this.notificationsService.getAll(req.user.userId);
   }
 
+  @Get('/:id')
+  getOneById(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.notificationsService.findOne(req.user.userId, id);
+  }
+
   @Patch('/:id/read')
   readOne(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.notificationsService.readOne(req.user.userId, id);

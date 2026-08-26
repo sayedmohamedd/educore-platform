@@ -1,4 +1,4 @@
-import { SignupSchema } from './../schemas/signup.schema';
+import { SignupSchema } from "./../schemas/signup.schema";
 import { useRouter } from "next/navigation";
 import { authService } from "../services/auth.service";
 import { useAuthStore } from "@/store/auth.store";
@@ -7,16 +7,14 @@ import axios from "axios";
 export const useSignup = () => {
   const router = useRouter();
 
-  const { setAccessToken, setUser } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   const signup = async (data: SignupSchema) => {
     try {
-      const tokens = await authService.signup(data);
-
-      setAccessToken(tokens.access_token);
-      // setRefreshToken(tokens.refresh_token);
-
-      const user = await authService.profile(tokens.access_token);
+      const { user } = await authService.signup({
+        method: "POST",
+        body: JSON.stringify(data),
+      });
 
       setUser(user);
 

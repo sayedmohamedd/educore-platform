@@ -1,0 +1,9 @@
+$kind: http-request
+name: Get Course Student Progress
+url: "{{url}}/teachers/teacherId/courses/{{courseId}}/students/studentId/progress"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 2323712806758793

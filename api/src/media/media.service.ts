@@ -65,6 +65,24 @@ export class MediaService {
     return new ApiResponse(true, 'File uploaded successfully', media);
   }
 
+  async findOne(userId: string, mediaId: string) {
+    if (!mediaId) throw new BadRequestException('Media id is required');
+
+    const media = await this.prisma.media.findUnique({
+      where: { id: mediaId },
+    });
+
+    if (!media) {
+      throw new NotFoundException('Media not found');
+    }
+
+    if (media.uploaderId !== userId) {
+      throw new ForbiddenException('You cannot access this file');
+    }
+
+    return new ApiResponse(true, 'Media fetched successfully', media);
+  }
+
   async remove(userId: string, id: string) {
     const media = await this.prisma.media.findUnique({
       where: { id },
@@ -87,5 +105,10 @@ export class MediaService {
     });
 
     return new ApiResponse(true, 'File deleted successfully');
+  }
+
+  async findAll() {
+    const media = await this.prisma.media.findMany();
+    return new ApiResponse(true, 'Media fetched successfully', media);
   }
 }

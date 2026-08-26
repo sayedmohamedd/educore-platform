@@ -1,35 +1,50 @@
-import { api } from "@/lib/axios";
-import { LoginDto, SignupDto } from "../types";
+/* eslint-disable @typescript-eslint/no-explicit-any */
 
-class AuthService {
-  async login(data: LoginDto) {
-    const response = await api.post("/auth/login", data);
-    return response.data.data; // {user, access_token}
-  }
+import { apiClient } from "@/lib/apiClient";
 
-  async signup(data: SignupDto) {
-    const response = await api.post("/auth/signup", data);
+export const authService = {
+  login: (options?: RequestInit) =>
+    apiClient<{ user: any }>(`/auth/login`, options),
 
-    return response.data.data;
-  }
+  signup: (options?: RequestInit) =>
+    apiClient<{ user: any }>(`/auth/signup`, options),
 
-  async refresh(refreshToken: string) {
-    const response = await api.post("/auth/refresh", {
-      refreshToken,
-    });
+  refresh: (options?: RequestInit) =>
+    apiClient<{ user: any }>(`/auth/refresh`, options),
 
-    return response.data.data;
-  }
+  logout: (options?: RequestInit) => apiClient<any>(`/auth/logout`, options),
+};
 
-  async profile(token: string) {
-    const response = await api.get("/auth/profile", {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+// class AuthService {
+//   async login(data: LoginDto) {
+//     const response = await api.post("/auth/login", data);
+//     return response.data.data; // {user}
+//   }
 
-    return response.data.data;
-  }
-}
+//   async signup(data: SignupDto) {
+//     const response = await api.post("/auth/signup", data);
+//     return response.data.data;
+//   }
 
-export const authService = new AuthService();
+//   async refresh() {
+//     let response;
+//     try {
+//       response = await api.post("/auth/refresh");
+//       return response.data.data;
+//     } catch (error: any) {
+//       throw new Error(error?.message || "Failed to refresh token");
+//     }
+//   }
+
+//   async profile() {
+//     const response = await api.get("/auth/profile");
+//     return response.data.data;
+//   }
+
+//   async logout() {
+//     const response = await api.post("/auth/logout");
+//     return response.data.data;
+//   }
+// }
+
+// export const authService = new AuthService();

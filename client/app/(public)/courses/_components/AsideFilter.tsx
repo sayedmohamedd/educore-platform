@@ -1,19 +1,88 @@
-const AsideFilter = () => {
+"use client";
+
+import { CoursesMeta } from "@/services/courses.service";
+import PriceFilter from "./filters/PriceFilter";
+import { useRouter, useSearchParams } from "next/navigation";
+import { useCallback } from "react";
+
+const AsideFilter = ({ meta }: { meta: CoursesMeta }) => {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+
+  // دالة مساعدة لتحديث الـ Query Params في الـ URL
+  const createQueryString = useCallback(
+    (name: string, value: string, isChecked: boolean) => {
+      const params = new URLSearchParams(searchParams.toString());
+
+      // هنا بنجيب القيم القديمة لو موجودة (عشان الـ checkboxes المتعددة)
+      const currentValues = params.get(name)
+        ? params.get(name)!.split(",")
+        : [];
+
+      let updatedValues: string[];
+      if (isChecked) {
+        updatedValues = [...currentValues, value];
+      } else {
+        updatedValues = currentValues.filter((v) => v !== value);
+      }
+
+      if (updatedValues.length > 0) {
+        params.set(name, updatedValues.join(","));
+      } else {
+        params.delete(name);
+      }
+
+      // بنرجع للـ page 1 أول ما الفلتر يتغير عشان النتائج تبدأ من الأول
+      params.set("page", "1");
+
+      return params.toString();
+    },
+    [searchParams],
+  );
+
+  const handleCheckboxChange = (
+    name: string,
+    value: string,
+    checked: boolean,
+  ) => {
+    const queryString = createQueryString(name, value, checked);
+    router.push(`?${queryString}`, { scroll: false });
+  };
+
+  const handleReset = () => {
+    router.push("?", { scroll: false });
+  };
+
+  // دالة مساعدة تشوف هل الـ Checkbox متحدد ولا لا من الـ URL الحالي
+  const isChecked = (name: string, value: string) => {
+    const current = searchParams.get(name);
+    if (!current) return false;
+    return current.split(",").includes(value);
+  };
+
   return (
-    <aside className="h-fit w-full md:w-fit  rounded-2xl border border-border bg-white p-6 shadow-sm">
+    <aside className="h-fit w-full md:w-fit rounded-2xl border border-border bg-white p-6 shadow-sm">
       {/* Level */}
       <div className="border-b border-border pb-6">
         <h3 className="mb-4 text-lg font-semibold">المستوى</h3>
 
         <ul className="space-y-3">
-          {["سهل", "متوسط", "صعب"].map((level) => (
-            <li key={level}>
+          {[
+            { label: "سهل", value: "beginner" },
+            { label: "متوسط", value: "intermediate" },
+            { label: "صعب", value: "advanced" },
+          ].map((item) => (
+            <li key={item.value}>
               <label className="flex cursor-pointer items-center gap-3">
                 <input
                   type="checkbox"
+                  checked={isChecked("level", item.value)}
+                  onChange={(e) =>
+                    handleCheckboxChange("level", item.value, e.target.checked)
+                  }
                   className="size-4 rounded border-gray-300 text-primary focus:ring-primary"
                 />
-                <span className="text-sm text-muted">{level}</span>
+                <span className="text-sm text-muted">{item.label}</span>
               </label>
             </li>
           ))}
@@ -21,21 +90,7 @@ const AsideFilter = () => {
       </div>
 
       {/* Price */}
-      <div className="border-b border-border py-6">
-        <h3 className="mb-4 text-lg font-semibold">السعر</h3>
-
-        <input
-          type="range"
-          min={0}
-          max={500}
-          className="w-full accent-primary"
-        />
-
-        <div className="mt-3 flex justify-between text-sm text-muted">
-          <span>مجاني</span>
-          <span>500 ج.م</span>
-        </div>
-      </div>
+      <PriceFilter />
 
       {/* Duration */}
       <div className="py-6">
@@ -47,6 +102,10 @@ const AsideFilter = () => {
               <label className="flex cursor-pointer items-center gap-3">
                 <input
                   type="checkbox"
+                  checked={isChecked("duration", duration)}
+                  onChange={(e) =>
+                    handleCheckboxChange("duration", duration, e.target.checked)
+                  }
                   className="size-4 rounded border-gray-300 text-primary focus:ring-primary"
                 />
                 <span className="text-sm text-muted">{duration}</span>
@@ -56,7 +115,10 @@ const AsideFilter = () => {
         </ul>
       </div>
 
-      <button className="mt-2 w-full rounded-xl border border-border py-3 text-sm font-medium transition hover:bg-surface">
+      <button
+        onClick={handleReset}
+        className="mt-2 w-full rounded-xl border border-border py-3 text-sm font-medium transition hover:bg-surface"
+      >
         إعادة تعيين
       </button>
     </aside>

@@ -1,0 +1,16 @@
+$kind: http-request
+name: Update User
+url: "{{url}}/admin/users/9251c4b0-e1ed-4da6-8e2d-df4fcfc57661"
+method: PATCH
+body:
+  type: json
+  content: "{\r
+
+    \    \"role\": \"INSTRUCTOR\"\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 1787571542765

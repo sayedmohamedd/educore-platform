@@ -7,19 +7,15 @@ import axios from "axios";
 export const useLogin = () => {
   const router = useRouter();
 
-  // const { setAccessToken, setRefreshToken, setUser } = useAuthStore();
-  const { setAccessToken, setUser } = useAuthStore();
+  const { setUser } = useAuthStore();
 
   const login = async (data: LoginSchema) => {
     try {
-      const { access_token, user } = await authService.login(data);
+      const { user } = await authService.login({
+        method: "POST",
+        body: JSON.stringify(data),
+      });
 
-      setAccessToken(access_token);
-      // setRefreshToken(tokens.refresh_token);
-
-      // const user = await authService.profile(tokens.access_token);
-
-      console.log(user);
       setUser(user);
 
       switch (user.role) {
@@ -31,9 +27,9 @@ export const useLogin = () => {
           router.push("/teacher");
           break;
 
-        case "student":
-          router.push("/student");
-          break;
+        // case "student":
+        //   router.push("/student");
+        //   break;
 
         default:
           router.push("/");

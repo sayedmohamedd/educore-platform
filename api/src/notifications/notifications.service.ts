@@ -18,6 +18,25 @@ export class NotificationsService {
     );
   }
 
+  async findOne(userId: string, notificationId: string) {
+    const notification = await this.prisma.notification.findFirst({
+      where: {
+        id: notificationId,
+        userId,
+      },
+    });
+
+    if (!notification) {
+      throw new NotFoundException('Notification not found');
+    }
+
+    return new ApiResponse(
+      true,
+      'Notification retrieved successfully',
+      notification,
+    );
+  }
+
   async readOne(userId: string, notificationId: string) {
     const notification = await this.prisma.notification.findFirst({
       where: {

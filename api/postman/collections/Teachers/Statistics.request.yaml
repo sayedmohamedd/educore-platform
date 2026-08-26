@@ -1,0 +1,9 @@
+$kind: http-request
+name: Statistics
+url: "{{url}}/teachers/cmsli2bq20001p0f3x6q0t42i/statistics"
+method: GET
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 3796506935085860

@@ -8,3 +8,11 @@ values:
     value: ''
   - key: mediaId
     value: ''
+  - key: courseId
+    value: ''
+  - key: sectionId
+    value: ''
+  - key: categoryId
+    value: ''
+  - key: lessonId
+    value: ''

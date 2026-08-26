@@ -1,53 +1,62 @@
-import { tableData } from "@/lib/data";
-import { Check, X } from "lucide-react";
+import { Column } from "./types";
 
-const TBody = () => {
+interface TBodyProps<T> {
+  data: T[];
+  columns: Column<T>[];
+  isLoading?: boolean;
+}
+
+const TBody = <T extends { id: string | number }>({
+  data,
+  columns,
+  isLoading,
+}: TBodyProps<T>) => {
+  if (isLoading) {
+    return (
+      <tbody>
+        <tr>
+          <td
+            colSpan={columns.length}
+            className="px-6 py-10 text-center text-slate-400"
+          >
+            جاري التحميل...
+          </td>
+        </tr>
+      </tbody>
+    );
+  }
+
+  if (data.length === 0) {
+    return (
+      <tbody>
+        <tr>
+          <td
+            colSpan={columns.length}
+            className="px-6 py-10 text-center text-slate-400"
+          >
+            لا توجد بيانات متاحة
+          </td>
+        </tr>
+      </tbody>
+    );
+  }
+
   return (
     <tbody>
-      {tableData.map((transaction) => (
+      {data.map((item) => (
         <tr
-          key={transaction.id}
+          key={item.id}
           className="border-b border-slate-100 transition hover:bg-slate-50"
         >
-          <td className="px-6 py-5 font-medium text-slate-800">
-            {transaction.id}
-          </td>
-
-          <td className="px-6 py-5">{transaction.user}</td>
-
-          <td className="px-6 py-5">{transaction.role}</td>
-
-          <td className="px-6 py-5 font-semibold">{transaction.amount}</td>
-
-          <td className="px-6 py-5">{transaction.payment}</td>
-
-          <td className="px-6 py-5 text-slate-500">{transaction.date}</td>
-
-          <td className="px-6 py-5">
-            <span
-              className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${
-                transaction.status === "Completed"
-                  ? "bg-green-100 text-green-700"
-                  : transaction.status === "Pending"
-                    ? "bg-amber-100 text-amber-700"
-                    : "bg-red-100 text-red-700"
-              }`}
-            >
-              {transaction.status}
-            </span>
-          </td>
-
-          <td className="px-6 py-5">
-            <div className="flex justify-end gap-2">
-              <button className="flex size-9 items-center justify-center rounded-lg bg-green-50 text-green-600 transition hover:bg-green-100">
-                <Check className="size-4" />
-              </button>
-
-              <button className="flex size-9 items-center justify-center rounded-lg bg-red-50 text-red-600 transition hover:bg-red-100">
-                <X className="size-4" />
-              </button>
-            </div>
-          </td>
+          {columns.map((col, colIndex) => (
+            <td key={colIndex} className={`px-6 py-5 ${col.className || ""}`}>
+              {col.cell
+                ? col.cell(item)
+                : col.accessorKey
+                  ? (item[col.accessorKey] as React.ReactNode)
+                  : null}
+            </td>
+          ))}
         </tr>
       ))}
     </tbody>

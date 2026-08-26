@@ -4,15 +4,16 @@ import Link from "next/link";
 import { TextAlignJustify, X } from "lucide-react";
 import { useState } from "react";
 
-import { useAuthStore } from "@/store/auth.store";
+import { useAuthStore, Role } from "@/store/auth.store";
 
 import NavbarLinks from "./NavbarLinks";
 import SearchInput from "./SearchInput";
 import NotificationButton from "./NotificationButton";
 import TopButton from "@/components/shared/TopButton";
+import LogoutButton from "@/components/features/auth/LogoutButton";
 
 const Navbar = () => {
-  const { user } = useAuthStore();
+  const { user, loading } = useAuthStore();
   const [isOpen, setIsOpen] = useState(false);
 
   const closeMenu = () => setIsOpen(false);
@@ -33,33 +34,30 @@ const Navbar = () => {
         <SearchInput className="hidden md:flex" />
 
         <div className="hidden items-center gap-4 md:flex">
-          {user ? (
+          {loading ? (
+            <div className="h-10 w-24 animate-pulse rounded-md bg-slate-200" />
+          ) : user ? (
             <>
               <NotificationButton />
 
-              <Link
-                href="/admin"
-                className="rounded-md bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-dark"
-              >
-                لوحة التحكم
-              </Link>
+              {(user.role === Role.ADMIN || user.role === Role.TEACHER) && (
+                <Link
+                  href={user.role === Role.ADMIN ? "/admin" : "/teacher"}
+                  className="rounded-md bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-dark"
+                >
+                  لوحة التحكم
+                </Link>
+              )}
+
+              <LogoutButton />
             </>
           ) : (
-            <>
-              <Link
-                href="/login"
-                className="font-medium text-primary transition-colors hover:text-primary-dark"
-              >
-                تسجيل الدخول
-              </Link>
-
-              <Link
-                href="/signup"
-                className="rounded-md bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-dark"
-              >
-                ابدأ الآن
-              </Link>
-            </>
+            <Link
+              href="/signup"
+              className="rounded-md bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-dark"
+            >
+              ابدأ الآن
+            </Link>
           )}
         </div>
 
@@ -86,36 +84,32 @@ const Navbar = () => {
             />
 
             <div className="mt-5 flex flex-col gap-3 border-t pt-5">
-              {user ? (
+              {loading ? (
+                <div className="h-10 w-full animate-pulse rounded-md bg-slate-200" />
+              ) : user ? (
                 <>
                   <NotificationButton />
 
-                  <Link
-                    href="/admin"
-                    onClick={closeMenu}
-                    className="rounded-md bg-primary px-4 py-2.5 text-center text-white"
-                  >
-                    لوحة التحكم
-                  </Link>
+                  {(user.role === Role.ADMIN || user.role === Role.TEACHER) && (
+                    <Link
+                      href={user.role === Role.ADMIN ? "/admin" : "/teacher"}
+                      onClick={closeMenu}
+                      className="rounded-md bg-primary px-4 py-2.5 text-center text-white"
+                    >
+                      لوحة التحكم
+                    </Link>
+                  )}
+
+                  <LogoutButton />
                 </>
               ) : (
-                <>
-                  <Link
-                    href="/login"
-                    onClick={closeMenu}
-                    className="rounded-md border border-primary px-4 py-2.5 text-center font-medium text-primary"
-                  >
-                    تسجيل الدخول
-                  </Link>
-
-                  <Link
-                    href="/signup"
-                    onClick={closeMenu}
-                    className="rounded-md bg-primary px-4 py-2.5 text-center text-white"
-                  >
-                    ابدأ الآن
-                  </Link>
-                </>
+                <Link
+                  href="/signup"
+                  onClick={closeMenu}
+                  className="rounded-md bg-primary px-4 py-2.5 text-center text-white"
+                >
+                  ابدأ الآن
+                </Link>
               )}
             </div>
           </div>

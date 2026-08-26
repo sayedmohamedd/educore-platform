@@ -1,16 +1,27 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 // Components
 import AsideFilter from "@/app/(public)/courses/_components/AsideFilter";
-import CourseCard from "@/components/shared/cards/CourseCard";
 import CoursesTopics from "@/app/(public)/courses/_components/CoursesTopics";
 import TablePagination from "@/components/features/dashboard/table/TablePagination";
 import Select from "@/components/ui/Select";
 // Data
-import { courses } from "@/lib/data";
+import { Suspense } from "react";
+import CoursesList from "./_components/CoursesList";
 import { courseService } from "@/services/courses.service";
 
-const Courses = async () => {
-  const data = await courseService.getCourses();
-  console.log(data);
+const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
+  const params = await searchParams;
+  let courses: any = [];
+  let meta: any = {};
+  let errorMessage = "";
+  try {
+    const data = await courseService.getCourses(params);
+    courses = data.courses;
+    meta = data.meta;
+  } catch (error: any) {
+    errorMessage = error?.message;
+  }
+
   return (
     <section className="py-12">
       <div className="container">
@@ -22,25 +33,24 @@ const Courses = async () => {
           <CoursesTopics />
 
           {/* Sort */}
-          <Select>
-            <option>الأحدث</option>
-            <option>الأقدم</option>
-            <option>الأعلى تقييماً</option>
+          <Select sortBy="createdAt" defaultOrder="desc">
+            <option value="createdAt_desc">الأحدث</option>
+            <option value="createdAt_asc">الأقدم</option>
+            <option value="rating_desc">الأعلى تقييماً</option>
           </Select>
 
           <div className="flex flex-col md:flex-row  gap-6 mt-6">
             {/* Filter */}
-            <AsideFilter />
+            <AsideFilter meta={meta} />
+            {/* Error */}
+            {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             {/* Courses */}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 justify-center ">
-              {courses.map((course) => (
-                <CourseCard key={course.id} {...course} />
-              ))}
-            </div>
+            <Suspense fallback={<div>Loading...</div>}>
+              <CoursesList courses={courses} />
+            </Suspense>
           </div>
           {/* Pagination */}
-          <TablePagination />
-          {/* <Pagination /> */}
+          <TablePagination meta={meta} />
         </div>
       </div>
     </section>

@@ -1,7 +1,7 @@
 import EnrollCourseAside from "@/app/(public)/courses/_components/EnrollCourseAside";
 import TeacherCard from "@/app/(public)/courses/_components/TeacherCard";
-import CourseCard from "@/components/shared/cards/CourseCard";
-import { courses } from "@/lib/data";
+// import CourseCard from "@/components/shared/cards/CourseCard";
+// import { courses } from "@/lib/data";
 import { CircleCheck, ChevronLeft, Star } from "lucide-react";
 import Link from "next/link";
 
@@ -139,7 +139,7 @@ const CoursePage = () => {
           </div>
 
           <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            <CourseCard {...courses[0]} />
+            {/* <CourseCard {...courses[0]} /> */}
           </section>
         </section>
       </main>

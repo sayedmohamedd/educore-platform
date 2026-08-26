@@ -21,6 +21,7 @@ import { SubmitAssignmentDto } from './dtos/submit-assignment.dto.js';
 import { GradeAssignmentDto } from './dtos/grade-assignment.dto.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import { RolesGuard } from '../auth/guards/jwt-auth.guard/roles.guard.js';
+import { Role } from '../generated/prisma/client.js';
 
 @Controller('assignments')
 @UseGuards(JwtAuthGuard)
@@ -29,7 +30,7 @@ export class AssignmentsController {
 
   // Get all assignments for a user
   @Get()
-  @Roles('STUDENT')
+  @Roles(Role.STUDENT)
   @UseGuards(RolesGuard)
   findAll(@Req() req: AuthenticatedRequest) {
     return this.assignmentsService.findAll(req.user.userId);
@@ -37,7 +38,7 @@ export class AssignmentsController {
 
   // Create assignment for a lesson by a teacher
   @Post()
-  @Roles('INSTRUCTOR')
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(RolesGuard)
   create(@Req() req: AuthenticatedRequest, @Body() dto: CreateAssignmentDto) {
     return this.assignmentsService.create(req.user.userId, dto);
@@ -45,7 +46,7 @@ export class AssignmentsController {
 
   // Update assignment by a teacher
   @Patch(':id')
-  @Roles('INSTRUCTOR')
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(RolesGuard)
   update(
     @Req() req: AuthenticatedRequest,
@@ -57,7 +58,7 @@ export class AssignmentsController {
 
   // Remove assignment by a teacher
   @Delete(':id')
-  @Roles('INSTRUCTOR')
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(RolesGuard)
   remove(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.assignmentsService.remove(req.user.userId, id);
@@ -71,7 +72,7 @@ export class AssignmentsController {
 
   // Submit assignment by a student
   @Post(':id/submit')
-  @Roles('STUDENT')
+  @Roles(Role.STUDENT)
   @UseGuards(RolesGuard)
   submit(
     @Req() req: AuthenticatedRequest,
@@ -83,7 +84,7 @@ export class AssignmentsController {
 
   // Grade submission by a teacher
   @Post(':id/grade')
-  @Roles('INSTRUCTOR')
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(RolesGuard)
   grade(
     @Req() req: AuthenticatedRequest,

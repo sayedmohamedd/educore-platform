@@ -1,29 +1,31 @@
 import { Clock, Star, User } from "lucide-react";
 import CardBanner from "./CardBanner";
 
-type CourseStatus = "published" | "draft" | "archived";
-
 type Props = {
-  image: string;
-  title: string;
-  description: string;
-  students: number;
-  status: CourseStatus;
+  id?: string;
+  title?: string;
+  status?: string;
+  thumbnailId?: string;
+  teacher?: string;
+  description?: string;
+  price?: string | number;
   actions?: React.ReactNode;
 };
 
 const CourseCard = ({
-  image,
+  id,
   title,
-  description,
-  students,
   status,
+  thumbnailId,
+  description,
+  teacher,
+  price,
   actions,
 }: Props) => {
   return (
-    <article className="p-2 group bg-white  overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <article className="p-2 group h-fit bg-white  overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Image */}
-      <CardBanner image={image} status={status} />
+      <CardBanner image={thumbnailId} status={status} />
       {/* Content */}
       <div className="space-y-3 p-4">
         {/* Rating */}
@@ -45,14 +47,14 @@ const CourseCard = ({
           </div>
 
           <span className="text-sm font-medium text-muted-foreground">
-            مستر سيد محمد
+            {teacher}
           </span>
         </div>
 
         {/* Bottom */}
         <div className="flex items-end justify-between">
           <div className="flex items-end gap-2">
-            <span className="text-xl font-bold text-primary">89 ج.م</span>
+            <span className="text-xl font-bold text-primary">{price} ج.م</span>
 
             <span className="text-sm text-muted-foreground line-through">
               129

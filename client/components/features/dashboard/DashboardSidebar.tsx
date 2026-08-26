@@ -1,10 +1,11 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
-import { Role } from "@/lib/utils";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LogoutButton from "../auth/LogoutButton";
 import { menuItems } from "@/lib/data";
 import { HelpCircle } from "lucide-react";
+import { Role } from "@/store/auth.store";
 
 const DashboardSidebar = ({ role }: { role: Role }) => {
   const pathname = usePathname();
@@ -24,7 +25,7 @@ const DashboardSidebar = ({ role }: { role: Role }) => {
       {/* Navigation */}
       <nav className="mt-8 flex-1">
         <ul className="space-y-2">
-          {menuItems[role].map((item) => {
+          {menuItems[role.toLowerCase()].map((item: any) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
 

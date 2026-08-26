@@ -17,6 +17,7 @@ export class ReviewsService {
   }
 
   async create(userId: string, dto: CreateReviewDto) {
+    // check if course is exsits
     const course = await this.prisma.course.findUnique({
       where: {
         id: dto.courseId,
@@ -27,6 +28,7 @@ export class ReviewsService {
       throw new NotFoundException('Course not found');
     }
 
+    // check if user is enrolled in the course
     const enrollment = await this.prisma.enrollment.findUnique({
       where: {
         userId_courseId: {
@@ -40,6 +42,7 @@ export class ReviewsService {
       throw new ForbiddenException('You are not enrolled in this course');
     }
 
+    // create review
     const review = await this.prisma.review.create({
       data: {
         userId,
@@ -51,50 +54,21 @@ export class ReviewsService {
   }
 
   async update(userId: string, reviewId: string, dto: UpdateReviewDto) {
-    const review = await this.prisma.review.findUnique({
-      where: {
-        id: reviewId,
-      },
-    });
+    // check if review exists and belongs to user
+    await this.getReview(userId, reviewId);
 
-    if (!review) {
-      throw new NotFoundException('Review not found');
-    }
-
-    if (review.userId !== userId) {
-      throw new ForbiddenException(
-        'You are not authorized to update this review',
-      );
-    }
-
+    // update review
     const updatedReview = await this.prisma.review.update({
-      where: {
-        id: reviewId,
-      },
-      data: {
-        ...dto,
-      },
+      where: { id: reviewId },
+      data: dto,
     });
 
     return new ApiResponse(true, 'Review updated successfully', updatedReview);
   }
 
   async delete(userId: string, reviewId: string) {
-    const review = await this.prisma.review.findUnique({
-      where: {
-        id: reviewId,
-      },
-    });
-
-    if (!review) {
-      throw new NotFoundException('Review not found');
-    }
-
-    if (review.userId !== userId) {
-      throw new ForbiddenException(
-        'You are not authorized to delete this review',
-      );
-    }
+    // check if review exists and belongs to user
+    await this.getReview(userId, reviewId);
 
     await this.prisma.review.delete({
       where: {
@@ -103,5 +77,23 @@ export class ReviewsService {
     });
 
     return new ApiResponse(true, 'Review deleted successfully');
+  }
+
+  private async getReview(userId: string, reviewId: string) {
+    const review = await this.prisma.review.findUnique({
+      where: {
+        id: reviewId,
+      },
+    });
+
+    if (!review) throw new NotFoundException('Review not found');
+
+    if (review.userId !== userId) {
+      throw new ForbiddenException(
+        'You are not authorized to delete this review',
+      );
+    }
+
+    return review;
   }
 }

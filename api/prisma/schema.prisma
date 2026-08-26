@@ -18,7 +18,7 @@ model User {
   email    String @unique
   password String
 
-  role Roles @default(STUDENT)
+  role Role @default(STUDENT)
 
   avatarId String? @unique
   avatar   Media?  @relation("UserAvatar", fields: [avatarId], references: [id])
@@ -77,7 +77,7 @@ enum TeacherStatus {
   REJECTED
 }
 
-enum Roles {
+enum Role {
   STUDENT
   ADMIN
   INSTRUCTOR
@@ -165,11 +165,12 @@ model Lesson {
   section Section @relation(fields: [sectionId], references: [id], onDelete: Cascade)
   video   Media?  @relation(fields: [videoId], references: [id])
 
-  createdAt      DateTime         @default(now())
-  updatedAt      DateTime         @updatedAt
-  lessonProgress LessonProgress[]
-  quiz           Quiz?
-  assignment     Assignment?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  lessonProgress  LessonProgress[]
+  quiz            Quiz?
+  assignment      Assignment?
+  lessonResources LessonResource[]
 
   @@unique([sectionId, order])
 }
@@ -200,10 +201,25 @@ model Media {
   courseThumbnail Course?
   lessonVideo     Lesson?
 
+  lessonResources LessonResource[]
+
   createdAt             DateTime               @default(now())
   updatedAt             DateTime               @updatedAt
   assignmentSubmissions AssignmentSubmission[]
   payments              Payment[]
+}
+
+model LessonResource {
+  id       String @id @default(cuid())
+  lessonId String
+  mediaId  String
+
+  lesson Lesson @relation(fields: [lessonId], references: [id], onDelete: Cascade)
+  media  Media  @relation(fields: [mediaId], references: [id], onDelete: Cascade)
+
+  createdAt DateTime @default(now())
+
+  @@unique([lessonId, mediaId])
 }
 
 // Enrollments

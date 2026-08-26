@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -16,81 +17,73 @@ import { UpdateCourseDto } from './dtos/update-course.dto.js';
 import { RolesGuard } from '../auth/guards/jwt-auth.guard/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import type { AuthenticatedRequest } from '../common/types/authenticated-request.js';
+import { Role } from '../generated/prisma/client.js';
 
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Get()
-  findAll() {
-    return this.coursesService.findAll();
+  findAll(@Query() query: any) {
+    return this.coursesService.findAll(query);
   }
 
   @Post()
-  @Roles('INSTRUCTOR')
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   create(@Req() req: AuthenticatedRequest, @Body() dto: CreateCourseDto) {
     return this.coursesService.create(req.user.userId, dto);
   }
 
-  @Get(':courseId')
-  findOne(@Param('courseId') courseId: string) {
-    return this.coursesService.findOne(courseId);
+  @Get(':id')
+  findOne(@Param('id') id: string) {
+    return this.coursesService.findOne(id);
   }
 
   @Patch(':courseId')
-  @Roles('INSTRUCTOR')
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   update(
     @Req() req: AuthenticatedRequest,
-    @Param('courseId') courseId: string,
+    @Param('id') id: string,
     @Body() dto: UpdateCourseDto,
   ) {
-    return this.coursesService.update(req.user.userId, courseId, dto);
+    return this.coursesService.update(req.user.userId, id, dto);
   }
 
-  @Delete(':courseId')
-  @Roles('INSTRUCTOR')
+  @Delete(':id')
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  remove(
+  remove(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.coursesService.remove(req.user.userId, id);
+  }
+
+  @Post(':id/submit')
+  @Roles(Role.INSTRUCTOR)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  submit(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.coursesService.submit(req.user.userId, id);
+  }
+
+  @Post(':id/publish')
+  @Roles(Role.INSTRUCTOR)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  publish(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.coursesService.publish(req.user.userId, id);
+  }
+
+  @Delete(':courseId/categories/:categoryId')
+  @Roles(Role.INSTRUCTOR)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  reemoveCategory(
     @Req() req: AuthenticatedRequest,
     @Param('courseId') courseId: string,
+    @Param('categoryId') categoryId: string,
   ) {
-    return this.coursesService.remove(req.user.userId, courseId);
-  }
-
-  @Post(':courseId/submit')
-  @Roles('INSTRUCTOR')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  submit(
-    @Req() req: AuthenticatedRequest,
-    @Param('courseId') courseId: string,
-  ) {
-    return this.coursesService.submit(req.user.userId, courseId);
-  }
-
-  @Post(':courseId/publish')
-  @Roles('INSTRUCTOR')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  publish(
-    @Req() req: AuthenticatedRequest,
-    @Param('courseId') courseId: string,
-  ) {
-    return this.coursesService.publish(req.user.userId, courseId);
-  }
-
-  // admin managament courses
-  @Patch(':courseId/approve')
-  @Roles('ADMIN')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  approve(@Param('courseId') courseId: string) {
-    return this.coursesService.approve(courseId);
-  }
-
-  @Patch(':courseId/reject')
-  @Roles('ADMIN')
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  reject(@Param('courseId') courseId: string) {
-    return this.coursesService.reject(courseId);
+    return this.coursesService.removeCategoryFromCourse(
+      req.user.userId,
+      courseId,
+      categoryId,
+    );
   }
 }

@@ -3,15 +3,20 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-
 import { PrismaService } from '../prisma/prisma.service.js';
 import { TeacherApplicationDto } from './dtos/teacher-application.dto.js';
 import { ApiResponse } from '../helper/APIResponse.js';
+import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
+import { AssignCategoryDto } from '../courses/dtos/assign-category.dto.js';
 
 @Injectable()
 export class TeachersService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    readonly instructorHelper: InstructorHelperService,
+  ) {}
 
+  // Find All Teachers - done
   async getAll() {
     const teachers = await this.prisma.teacherProfile.findMany({
       include: {
@@ -25,9 +30,12 @@ export class TeachersService {
       },
     });
 
-    return new ApiResponse(true, 'Teachers retrieved successfully', teachers);
+    return new ApiResponse(true, 'Teachers retrieved successfully', {
+      teachers,
+    });
   }
 
+  // Apply for Teacher - done
   async apply(userId: string, dto: TeacherApplicationDto) {
     const existing = await this.prisma.teacherProfile.findUnique({
       where: {
@@ -56,6 +64,7 @@ export class TeachersService {
     );
   }
 
+  // Find Teacher - done
   async getProfile(userId: string) {
     const profile = await this.prisma.teacherProfile.findUnique({
       where: {
@@ -83,6 +92,26 @@ export class TeachersService {
     );
   }
 
+  async update(userId: string, dto: TeacherApplicationDto) {
+    // check teacher
+    const teacher = await this.instructorHelper.getTeacher(userId);
+
+    // update
+    const profile = await this.prisma.teacherProfile.update({
+      where: {
+        id: teacher.id,
+      },
+      data: dto,
+    });
+
+    return new ApiResponse(
+      true,
+      'Teacher profile updated successfully',
+      profile,
+    );
+  }
+
+  // Find Teacher - done
   async getPublicProfile(teacherId: string) {
     const profile = await this.prisma.teacherProfile.findUnique({
       where: {
@@ -109,57 +138,340 @@ export class TeachersService {
     );
   }
 
-  async approve(teacherId: string) {
-    // check if teacher is exists and pending approval or not
-    const profile = await this.prisma.teacherProfile.findUnique({
-      where: { id: teacherId },
+  // Find Teacher Students
+  async getTeacherStudents(userId: string) {
+    const teacher = await this.instructorHelper.getTeacher(userId);
+    const students = await this.prisma.user.findMany({
+      where: {
+        role: 'STUDENT',
+        enrollments: {
+          some: {
+            course: {
+              teacherId: teacher.id,
+            },
+          },
+        },
+      },
     });
 
-    if (!profile || profile.status !== 'PENDING') {
-      throw new NotFoundException('Teacher not found');
+    return new ApiResponse(true, 'Students retrieved successfully', {
+      students,
+    });
+  }
+
+  // Find Teacher Courses - done
+  async getTeacherCourses(userId: string) {
+    // check if teacher is exists and approved or not
+    const teacher = await this.instructorHelper.getTeacher(userId);
+
+    // get teacher courses
+    const rawCourses = await this.prisma.course.findMany({
+      where: { teacherId: teacher.id },
+      include: {
+        categories: {
+          include: {
+            category: {
+              select: { id: true, name: true }, // هات الـ id والـ name من جدول الـ category
+            },
+          },
+        },
+      },
+    });
+
+    // format
+    const courses = rawCourses.map((course) => ({
+      ...course,
+      categories: course.categories.map((item) => ({
+        id: item.category.id,
+        name: item.category.name,
+      })),
+    }));
+
+    return new ApiResponse(true, 'Courses retrieved successfully', { courses });
+  }
+
+  // Find Course Students
+  async getCourseStudents(userId: string, courseId: string) {
+    // check course and teacher Authorization
+    await this.instructorHelper.getTeacherCourse(userId, courseId);
+
+    const students = await this.prisma.user.findMany({
+      where: {
+        role: 'STUDENT',
+        enrollments: {
+          some: {
+            course: {
+              id: courseId,
+            },
+          },
+        },
+      },
+    });
+
+    return new ApiResponse(true, 'Students retrieved successfully', {
+      students,
+    });
+  }
+
+  // teacher statistics - done
+  async getTeacherStatistics(userId: string, teacherId: string) {
+    const students = await this.getTeacherStudents(userId);
+
+    const courses = await this.prisma.course.findMany({
+      where: { teacherId },
+    });
+
+    const totalRevenue = await this.prisma.wallet.findUnique({
+      where: { teacherProfileId: teacherId },
+      select: { balance: true },
+    });
+
+    return new ApiResponse(true, 'Statistics retrieved successfully', {
+      courses: courses.length,
+      students: students.data?.students.length,
+      totalRevenue,
+    });
+  }
+
+  // course student progress
+  async getCourseStudentProgress(
+    teacherId: string,
+    courseId: string,
+    studentId: string,
+  ) {
+    // check course and teacher Authorization
+    await this.instructorHelper.getTeacherCourse(teacherId, courseId);
+
+    // check student
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: {
+        userId_courseId: {
+          userId: studentId,
+          courseId,
+        },
+      },
+    });
+
+    if (!enrollment) {
+      throw new NotFoundException('Enrollment not found');
     }
 
-    const transaction = await this.prisma.$transaction(async (tx) => {
-      const updatedProfile = await tx.teacherProfile.update({
-        where: {
-          id: teacherId,
-          status: 'PENDING',
+    const course = await this.prisma.course.findUnique({
+      where: {
+        id: courseId,
+      },
+      include: {
+        sections: {
+          include: {
+            lessons: {
+              include: {
+                lessonProgress: {
+                  where: {
+                    userId: studentId,
+                  },
+                },
+              },
+            },
+          },
         },
-        data: { status: 'APPROVED' },
-      });
+      },
+    });
 
-      // update user role
-      await tx.user.update({
-        where: { id: profile.userId },
-        data: { role: 'INSTRUCTOR' },
-      });
+    console.log('course', course);
 
-      // create wallet
-      await tx.wallet.create({
-        data: { teacherProfileId: profile.id },
-      });
+    return new ApiResponse(true, 'Students retrieved successfully', course);
+  }
 
-      return { updatedProfile };
+  // wallet - done
+  async getWallet(userId: string) {
+    // check teacher
+    const teacher = await this.instructorHelper.getTeacher(userId);
+
+    // get wallet
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { teacherProfileId: teacher.id },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException('Wallet not found');
+    }
+
+    return new ApiResponse(true, 'Wallet retrieved successfully', wallet);
+  }
+
+  // wallet transactions - done
+  async getTeacherWalletTransactions(userId: string) {
+    // check teacher
+    const teacher = await this.instructorHelper.getTeacher(userId);
+
+    // get wallet
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { teacherProfileId: teacher.id },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException('Wallet not found');
+    }
+
+    const transactions = await this.prisma.transaction.findMany({
+      where: { walletId: wallet.id },
     });
 
     return new ApiResponse(
       true,
-      'Teacher approved successfully',
-      transaction.updatedProfile,
+      'Wallet transactions retrieved successfully',
+      transactions,
     );
   }
 
-  async reject(teacherId: string) {
-    const profile = await this.prisma.teacherProfile.update({
+  async getTeacherWalletEarnings(userId: string) {
+    const teacher = await this.instructorHelper.getTeacher(userId);
+
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { teacherProfileId: teacher.id },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException('Wallet not found');
+    }
+
+    const transactions = await this.prisma.transaction.findMany({
       where: {
-        id: teacherId,
-        status: 'PENDING',
+        walletId: wallet.id,
+        type: 'COURSE_EARNING',
       },
-      data: {
-        status: 'REJECTED',
+      include: {
+        payment: {
+          include: {
+            course: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 
-    return new ApiResponse(true, 'Teacher rejected successfully', profile);
+    const totalEarnings = transactions.reduce(
+      (total, transaction) => total + Number(transaction.amount),
+      0,
+    );
+
+    const earningsByCourse = Object.values(
+      transactions.reduce(
+        (acc, transaction) => {
+          const course = transaction.payment?.course;
+
+          if (!course) return acc;
+
+          if (!acc[course.id]) {
+            acc[course.id] = {
+              courseId: course.id,
+              courseTitle: course.title,
+              earnings: 0,
+            };
+          }
+
+          acc[course.id].earnings += Number(transaction.amount);
+
+          return acc;
+        },
+        {} as Record<
+          string,
+          {
+            courseId: string;
+            courseTitle: string;
+            earnings: number;
+          }
+        >,
+      ),
+    );
+
+    return new ApiResponse(true, 'Teacher earnings retrieved successfully', {
+      totalEarnings,
+      earningsByCourse,
+    });
+  }
+
+  async getTeacherWalletWithdrawals(userId: string) {
+    // check teacher
+    const teacher = await this.instructorHelper.getTeacher(userId);
+
+    // get wallet
+    const wallet = await this.prisma.wallet.findUnique({
+      where: { teacherProfileId: teacher.id },
+    });
+
+    if (!wallet) {
+      throw new NotFoundException('Wallet not found');
+    }
+
+    const transactions = await this.prisma.transaction.findMany({
+      where: {
+        walletId: wallet.id,
+        type: 'WITHDRAWAL',
+      },
+      include: {
+        payment: {
+          include: {
+            course: {
+              select: {
+                id: true,
+                title: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return new ApiResponse(true, 'Teacher withdrawals retrieved successfully', {
+      transactions,
+    });
+  }
+
+  async assignCategoryToCourse(
+    userId: string,
+    courseId: string,
+    dto: AssignCategoryDto,
+  ) {
+    //
+    await this.instructorHelper.getTeacherCourse(userId, courseId);
+
+    const updatedCourse = await this.prisma.course.update({
+      where: { id: courseId },
+      data: {
+        categories: {
+          create: {
+            category: {
+              connect: {
+                id: dto.categoryId,
+              },
+            },
+          },
+        },
+      },
+      include: {
+        categories: {
+          include: {
+            category: true,
+          },
+        },
+      },
+    });
+
+    return new ApiResponse(
+      true,
+      'Category Assigned Successfully',
+      updatedCourse,
+    );
   }
 }

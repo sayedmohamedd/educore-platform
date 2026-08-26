@@ -1,60 +1,18 @@
-import {
-  ForbiddenException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateSectionDto } from './dtos/create-section.dto.js';
 import { UpdateSectionDto } from './dtos/update-section.dto.js';
 import { ApiResponse } from '../helper/APIResponse.js';
+import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
 
 @Injectable()
 export class SectionsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly instructorHelper: InstructorHelperService,
+  ) {}
 
-  private async getTeacher(userId: string) {
-    const teacher = await this.prisma.teacherProfile.findUnique({
-      where: { userId },
-    });
-
-    if (!teacher || teacher.status !== 'APPROVED') {
-      throw new ForbiddenException('Teacher is not approved');
-    }
-
-    return teacher;
-  }
-
-  private async getTeacherCourse(userId: string, courseId: string) {
-    const teacher = await this.getTeacher(userId);
-
-    const course = await this.prisma.course.findFirst({
-      where: {
-        id: courseId,
-        teacherId: teacher.id,
-      },
-    });
-
-    if (!course) {
-      throw new NotFoundException('Course not found');
-    }
-
-    return course;
-  }
-
-  async create(userId: string, courseId: string, dto: CreateSectionDto) {
-    await this.getTeacherCourse(userId, courseId);
-
-    const section = await this.prisma.section.create({
-      data: {
-        courseId,
-        title: dto.title,
-        order: dto.order,
-      },
-    });
-
-    return new ApiResponse(true, 'Section created successfully', section);
-  }
-
+  // By Admin
   async findAll(courseId: string) {
     const sections = await this.prisma.section.findMany({
       where: { courseId },
@@ -73,6 +31,41 @@ export class SectionsService {
     return new ApiResponse(true, 'Sections retrieved successfully', sections);
   }
 
+  async findOne(sectionId: string) {
+    const section = await this.prisma.section.findUnique({
+      where: { id: sectionId },
+      include: {
+        lessons: {
+          orderBy: {
+            order: 'asc',
+          },
+        },
+      },
+    });
+
+    if (!section) {
+      throw new NotFoundException('Section not found');
+    }
+
+    return new ApiResponse(true, 'Section retrieved successfully', section);
+  }
+
+  // By Teacher
+  async create(userId: string, courseId: string, dto: CreateSectionDto) {
+    // check course and teacher Authorization
+    await this.instructorHelper.getTeacherCourse(userId, courseId);
+
+    const section = await this.prisma.section.create({
+      data: {
+        courseId,
+        title: dto.title,
+        order: dto.order,
+      },
+    });
+
+    return new ApiResponse(true, 'Section created successfully', section);
+  }
+
   async update(userId: string, sectionId: string, dto: UpdateSectionDto) {
     const section = await this.prisma.section.findUnique({
       where: { id: sectionId },
@@ -82,7 +75,7 @@ export class SectionsService {
       throw new NotFoundException('Section not found');
     }
 
-    await this.getTeacherCourse(userId, section.courseId);
+    await this.instructorHelper.getTeacherCourse(userId, section.courseId);
 
     const updated = await this.prisma.section.update({
       where: { id: sectionId },
@@ -101,7 +94,7 @@ export class SectionsService {
       throw new NotFoundException('Section not found');
     }
 
-    await this.getTeacherCourse(userId, section.courseId);
+    await this.instructorHelper.getTeacherCourse(userId, section.courseId);
 
     await this.prisma.section.delete({
       where: { id: sectionId },

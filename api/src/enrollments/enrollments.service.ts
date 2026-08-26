@@ -1,52 +1,62 @@
-import {
-  ConflictException,
-  Injectable,
-  NotFoundException,
-} from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { ApiResponse } from '../helper/APIResponse.js';
 import { PrismaService } from '../prisma/prisma.service.js';
-
 @Injectable()
 export class EnrollmentsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async enroll(userId: string, courseId: string) {
-    const course = await this.prisma.course.findUnique({
-      where: {
-        id: courseId,
-      },
-    });
+  // async enroll(userId: string, courseId: string) {
+  //   // Check if course is published
+  //   const course = await this.prisma.course.findUnique({
+  //     where: {
+  //       id: courseId,
+  //     },
+  //   });
 
-    if (!course) {
-      throw new NotFoundException('Course not found');
-    }
+  //   if (!course) {
+  //     throw new NotFoundException('Course not found');
+  //   }
 
-    if (course.status !== 'PUBLISHED') {
-      throw new ConflictException('Course is not available for enrollment');
-    }
+  //   if (course.status !== 'PUBLISHED') {
+  //     throw new ConflictException('Course is not available for enrollment');
+  //   }
 
-    const existingEnrollment = await this.prisma.enrollment.findUnique({
-      where: {
-        userId_courseId: {
-          userId,
-          courseId,
-        },
-      },
-    });
+  //   // Check if user is already enrolled in the course
+  //   const existingEnrollment = await this.prisma.enrollment.findUnique({
+  //     where: {
+  //       userId_courseId: {
+  //         userId,
+  //         courseId,
+  //       },
+  //     },
+  //   });
 
-    if (existingEnrollment) {
-      throw new ConflictException('Already enrolled in this course');
-    }
+  //   if (existingEnrollment) {
+  //     throw new ConflictException('Already enrolled in this course');
+  //   }
 
-    const enrollment = await this.prisma.enrollment.create({
-      data: {
-        userId,
-        courseId,
-      },
-    });
+  //   const payment = await this.prisma.payment.findFirst({
+  //     where: {
+  //       userId: userId,
+  //       courseId: courseId,
+  //       status: PaymentStatus.APPROVED,
+  //     },
+  //   });
 
-    return new ApiResponse(true, 'Enrolled successfully', enrollment);
-  }
+  //   if (!payment) {
+  //     throw new ConflictException('You need to pay for this course first');
+  //   }
+
+  //   // Enroll user in the course
+  //   const enrollment = await this.prisma.enrollment.create({
+  //     data: {
+  //       userId,
+  //       courseId,
+  //     },
+  //   });
+
+  //   return new ApiResponse(true, 'Enrolled successfully', enrollment);
+  // }
 
   async findAll(userId: string) {
     const enrollments = await this.prisma.enrollment.findMany({

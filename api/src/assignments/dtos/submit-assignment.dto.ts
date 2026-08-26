@@ -1,11 +1,14 @@
-import { IsOptional, IsString } from 'class-validator';
+import { ApiProperty } from '@nestjs/swagger';
+import { IsNotEmpty, IsString } from 'class-validator';
 
 export class SubmitAssignmentDto {
-  @IsOptional()
+  @ApiProperty({ type: String, description: 'The content of the submission' })
+  @IsNotEmpty()
   @IsString()
-  content?: string;
+  content!: string;
 
-  @IsOptional()
+  @ApiProperty({ type: String, description: 'The file ID' })
+  @IsNotEmpty()
   @IsString()
-  fileId?: string;
+  fileId!: string;
 }

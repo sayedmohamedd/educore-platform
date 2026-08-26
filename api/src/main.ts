@@ -1,12 +1,17 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import 'dotenv/config';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module.js';
 import { ValidationPipe } from '@nestjs/common';
 import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import morgan from 'morgan';
+import cookieParser from 'cookie-parser';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+
+  app.use(cookieParser());
+
+  app.use(morgan('dev'));
 
   app.enableCors({
     origin: process.env.FRONTEND_URL,

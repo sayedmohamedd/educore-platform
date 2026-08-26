@@ -1,18 +1,24 @@
-import { LogOut } from "lucide-react";
+"use client";
+
+import { useAuthStore } from "@/store/auth.store";
 import { useLogout } from "./hooks/useLogout";
 
 const LogoutButton = () => {
-  const { signout } = useLogout();
+  const { signout, loading } = useLogout();
+  const { user } = useAuthStore();
+
+  if (!user) return null;
+
+  if (loading) {
+    return <div className="h-10 w-24 animate-pulse rounded-md bg-slate-200" />;
+  }
 
   return (
-    <button className="pt-5 flex-center gap-2">
-      <p
-        onClick={() => signout()}
-        className="w-full flex items-center gap-3 rounded-xl px-4 py-3 text-sm font-medium text-muted-foreground transition-colors hover:bg-red-50 hover:text-muted-foreground dark:text-red-400 dark:hover:bg-red-500/10 dark:hover:text-red-300"
-      >
-        Sign out
-      </p>
-      <LogOut size={20} className="text-muted-foreground" />
+    <button
+      onClick={signout}
+      className="cursor-pointer rounded-md bg-primary px-4 py-2 text-white transition-colors hover:bg-primary-dark"
+    >
+      Logout
     </button>
   );
 };

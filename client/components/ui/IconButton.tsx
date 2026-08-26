@@ -6,16 +6,17 @@ type Props = {
   text: string;
   className?: string;
   href?: string;
+  type?: "button" | "submit";
 };
 
-const IconButton = ({ Icon, text, className, href }: Props) => {
+const IconButton = ({ Icon, text, className, href, type }: Props) => {
   return href ? (
     <Link href={href} className={`btn gap-2 ${className}`}>
       <Icon />
       <span>{text}</span>
     </Link>
   ) : (
-    <button className={`btn gap-2 ${className}`} type="button">
+    <button type={type} className={`btn gap-2 ${className}`}>
       <Icon />
       <span>{text}</span>
     </button>

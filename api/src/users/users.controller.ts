@@ -16,11 +16,6 @@ import type { AuthenticatedRequest } from '../common/types/authenticated-request
 export class UsersController {
   constructor(readonly usersService: UsersService) {}
 
-  @Get()
-  getAll() {
-    return this.usersService.getAll();
-  }
-
   @Get('/me')
   @UseGuards(JwtAuthGuard)
   me(@Req() req: AuthenticatedRequest) {
@@ -33,9 +28,15 @@ export class UsersController {
     return this.usersService.updateProfile(dto, req.user.userId);
   }
 
-  @Delete()
+  @Delete('/me')
   @UseGuards(JwtAuthGuard)
-  delete(@Req() req: AuthenticatedRequest) {
+  deleteMe(@Req() req: AuthenticatedRequest) {
     return this.usersService.delete(req.user.userId);
+  }
+
+  @Get('me/courses')
+  @UseGuards(JwtAuthGuard)
+  getUserCourses(@Req() req: AuthenticatedRequest) {
+    return this.usersService.getUserCourses(req.user.userId);
   }
 }

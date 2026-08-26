@@ -1,22 +1,18 @@
 import Link from "next/link";
+// Icons
 import { Rocket } from "lucide-react";
 // Components
 import CommonQuestion from "@/app/(public)/_components/CommonQuestion";
-import MentorCard from "@/app/(public)/_components/MentorCard";
 import StudentOpinion from "@/app/(public)/_components/StudentOpinion";
 import Stat from "@/app/(public)/_components/Stat";
-import CourseCard from "@/components/shared/cards/CourseCard";
+import FeaturedCourses from "./_components/FeaturedCourses";
+import Categories from "./_components/Categories";
+import Mentors from "./_components/Mentors";
 // Data
-import {
-  mentors,
-  courses,
-  stats,
-  studentOpinions,
-  commonQuestions,
-} from "@/lib/data";
+import { stats, studentOpinions, commonQuestions } from "@/lib/data";
 
-export default function Home() {
-  // console.log(process.env.NEXT_PUBLIC_BASE_URL);
+
+export default async function Home() {
   return (
     <main>
       {/* <Hero /> */}
@@ -61,27 +57,10 @@ export default function Home() {
       </header>
 
       {/* Explore By Category */}
+      <Categories />
 
       {/* Featured Courses */}
-      <section className="py-16">
-        <div className="container">
-          <header>
-            <h3 className="page-title text-secondary">Featured Courses</h3>
-            <p className="text-lg text-muted mb-8">
-              Hand-picked premium content curated by our education experts to
-              accelerate your learning journey.
-            </p>
-          </header>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {courses.slice(0, 3).map((course) => (
-              <CourseCard key={course.id} {...course} />
-            ))}
-          </div>
-          <Link className="link text-lg flex-center mt-8" href="/courses">
-            View All
-          </Link>
-        </div>
-      </section>
+      <FeaturedCourses />
 
       {/* Stats */}
       <section className="bg-primary">
@@ -93,35 +72,7 @@ export default function Home() {
       </section>
 
       {/* Mentors */}
-      <section>
-        <div className="container py-16">
-          <header className="flex-between flex-col gap-6 md:flex-row">
-            <div className="text-start gap-2">
-              <h2 className="text-3xl font-bold text-primary">
-                تعلّم على يد أفضل المدربين
-              </h2>
-
-              <p className="max-w-2xl text-lg text-muted text-center md:text-right">
-                نخبة من المدربين والخبراء المتخصصين لمساعدتك على اكتساب المهارات
-                المطلوبة في سوق العمل وتحقيق أهدافك المهنية.
-              </p>
-            </div>
-
-            <Link
-              href="/signup"
-              className="rounded-full bg-tertiary px-6 py-3 font-semibold text-white transition duration-300 hover:bg-indigo-700"
-            >
-              انضم كمدرب
-            </Link>
-          </header>
-
-          <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {mentors.map((mentor) => (
-              <MentorCard key={mentor.id} />
-            ))}
-          </div>
-        </div>
-      </section>
+      <Mentors />
 
       {/* Student Opinions */}
       <section className="bg-[#ecedf9]" id="testimonials">
@@ -149,7 +100,7 @@ export default function Home() {
       </section>
 
       {/* Ready to Start */}
-      <section className="bg-homeBg pb-12">
+      <section className="bg-homeBg pb-12 px-4 md:px-0">
         <div className="container bg-primary rounded-2xl text-center py-20 my-12">
           <h3 className="text-white text-2xl md:text-5xl font-bold mb-4">
             هل أنت مستعد لبدء رحلتك التعليمية؟

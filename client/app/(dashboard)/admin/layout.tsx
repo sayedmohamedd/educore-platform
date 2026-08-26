@@ -1,6 +1,6 @@
 import DashboardHeader from "@/components/features/dashboard/DashboardHeader";
 import DashboardSidebar from "@/components/features/dashboard/DashboardSidebar";
-import { Role } from "@/lib/utils";
+import { Role } from "@/store/auth.store";
 
 const AdminDashboardLayout = ({ children }: { children: React.ReactNode }) => {
   return (

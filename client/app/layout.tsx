@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Plus_Jakarta_Sans } from "next/font/google";
 import { Cairo } from "next/font/google";
 import "./globals.css";
+import { AuthProvider } from "@/components/AuthProvider";
 
 // Font for English
 export const plusJakarta = Plus_Jakarta_Sans({
@@ -29,8 +30,15 @@ export default function RootLayout({
 }>) {
   return (
     // <html lang="en" className={`${plusJakarta.variable} h-full antialiased`}>
-    <html lang="ar" dir="rtl" className={`${cairo.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col">{children}</body>
+    <html
+      lang="ar"
+      dir="rtl"
+      className={`${cairo.variable} h-full antialiased`}
+      data-scroll-behavior="smooth"
+    >
+      <body className="min-h-full flex flex-col">
+        <AuthProvider>{children}</AuthProvider>
+      </body>
     </html>
   );
 }

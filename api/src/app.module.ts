@@ -21,6 +21,8 @@ import { ReviewsModule } from './reviews/reviews.module.js';
 import { PaymentsModule } from './payments/payments.module.js';
 import { TransactionsModule } from './transactions/transactions.module.js';
 import { WithdrawalsModule } from './withdrawals/withdrawals.module.js';
+import { CommonModule } from './common/common.module.js';
+import { AdminModule } from './admin/admin.module.js';
 
 @Module({
   imports: [
@@ -46,6 +48,8 @@ import { WithdrawalsModule } from './withdrawals/withdrawals.module.js';
     PaymentsModule,
     TransactionsModule,
     WithdrawalsModule,
+    CommonModule,
+    AdminModule,
   ],
   controllers: [AppController],
   providers: [AppService],

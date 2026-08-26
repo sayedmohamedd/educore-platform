@@ -1,17 +1,22 @@
-import { useRouter } from "next/navigation";
 import { useAuthStore } from "@/store/auth.store";
+import { useState } from "react";
+import { authService } from "../services/auth.service";
 
 export const useLogout = () => {
-  const router = useRouter();
-
-  const { logout } = useAuthStore();
+  const [loading, setLoading] = useState(false);
 
   const signout = async () => {
-    logout();
-    router.push("/");
+    try {
+      setLoading(true);
+      await authService.logout();
+      useAuthStore.getState().logout();
+    } finally {
+      setLoading(false);
+    }
   };
 
   return {
     signout,
+    loading,
   };
 };

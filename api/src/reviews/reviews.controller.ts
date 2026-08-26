@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
   Param,
   Patch,
   Post,
@@ -15,32 +16,38 @@ import { ReviewsService } from './reviews.service.js';
 import type { AuthenticatedRequest } from '../common/types/authenticated-request.js';
 import { CreateReviewDto } from './dtos/create-review.dto.js';
 import { UpdateReviewDto } from './dtos/update-review.dto.js';
+import { Role } from '../generated/prisma/client.js';
 
-@Controller('reviews')
+@Controller()
 @UseGuards(JwtAuthGuard)
 export class ReviewsController {
   constructor(readonly reviewsService: ReviewsService) {}
 
-  @Post()
-  @Roles('STUDENT')
+  @Get('courses/:courseId/reviews')
+  findAll() {
+    return this.reviewsService.findAll();
+  }
+
+  @Post('courses/:courseId/reviews')
+  @Roles(Role.STUDENT)
   @UseGuards(RolesGuard)
   create(@Req() req: AuthenticatedRequest, @Body() dto: CreateReviewDto) {
     return this.reviewsService.create(req.user.userId, dto);
   }
 
-  @Patch(':id')
-  @Roles('STUDENT')
+  @Patch('reviews/:id')
+  @Roles(Role.STUDENT)
   @UseGuards(RolesGuard)
   update(
     @Req() req: AuthenticatedRequest,
-    @Body() dto: UpdateReviewDto,
     @Param('id') id: string,
+    @Body() dto: UpdateReviewDto,
   ) {
     return this.reviewsService.update(req.user.userId, id, dto);
   }
 
-  @Delete(':id')
-  @Roles('STUDENT')
+  @Delete('reviews/:id')
+  @Roles(Role.STUDENT)
   @UseGuards(RolesGuard)
   delete(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.reviewsService.delete(req.user.userId, id);

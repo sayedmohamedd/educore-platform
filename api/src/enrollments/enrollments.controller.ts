@@ -1,25 +1,25 @@
-import { Controller, Get, Param, Post, Req, UseGuards } from '@nestjs/common';
+import { Controller, Get, Param, Req, UseGuards } from '@nestjs/common';
 import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard/jwt-auth.guard.js';
 import { EnrollmentsService } from './enrollments.service.js';
 import type { AuthenticatedRequest } from '../common/types/authenticated-request.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import { RolesGuard } from '../auth/guards/jwt-auth.guard/roles.guard.js';
-
+import { Role } from '../generated/prisma/client.js';
 @Controller()
 @UseGuards(JwtAuthGuard)
 export class EnrollmentsController {
   constructor(private readonly enrollmentsService: EnrollmentsService) {}
 
-  @Post('courses/:courseId/enroll')
-  enroll(
-    @Req() req: AuthenticatedRequest,
-    @Param('courseId') courseId: string,
-  ) {
-    return this.enrollmentsService.enroll(req.user.userId, courseId);
-  }
+  // @Post('courses/:courseId/enroll')
+  // enroll(
+  //   @Req() req: AuthenticatedRequest,
+  //   @Param('courseId') courseId: string,
+  // ) {
+  //   return this.enrollmentsService.enroll(req.user.userId, courseId);
+  // }
 
   @Get('enrollments')
-  @Roles('STUDENT')
+  @Roles(Role.STUDENT)
   @UseGuards(JwtAuthGuard, RolesGuard)
   findAll(@Req() req: AuthenticatedRequest) {
     return this.enrollmentsService.findAll(req.user.userId);

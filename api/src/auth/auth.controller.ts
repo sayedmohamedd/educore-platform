@@ -32,8 +32,9 @@ export class AuthController {
   }
 
   @Post('refresh')
-  refresh(@Req() req: Request) {
-    return this.authService.refresh(req);
+  refresh(@Req() req: Request, @Res({ passthrough: true }) res: Response) {
+    console.log(req.cookies);
+    return this.authService.refresh(req, res);
   }
 
   @Post('logout')

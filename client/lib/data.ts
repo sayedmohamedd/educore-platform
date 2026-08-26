@@ -263,7 +263,7 @@ export const menuItems = {
       icon: Settings,
     },
   ],
-  teacher: [
+  instructor: [
     {
       title: "Dashboard",
       href: "/teacher",

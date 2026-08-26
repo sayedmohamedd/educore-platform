@@ -16,6 +16,8 @@ const TeacherHero = () => {
             width={220}
             height={220}
             className="size-52 object-cover"
+            loading="eager"
+            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           />
         </div>
       </div>

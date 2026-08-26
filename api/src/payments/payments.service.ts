@@ -1,31 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreatePaymentDto } from './dtos/create-payment.dto.js';
 import { ApiResponse } from '../helper/APIResponse.js';
-import { RejectionDto } from './dtos/reject-payment.dto.js';
 
 @Injectable()
 export class PaymentsService {
   constructor(readonly prisma: PrismaService) {}
   async create(userId: string, dto: CreatePaymentDto) {
     // check if course is exsits and published
-    const course = await this.prisma.course.findUnique({
-      where: {
-        id: dto.courseId,
-      },
-    });
-
-    if (!course) {
-      throw new Error('Course not found');
-    }
-
-    if (course.status !== 'PUBLISHED') {
-      throw new Error('Course is not published');
-    }
+    const course = await this.getCourse(dto.courseId);
 
     // check if amount matches course price
     if (Number(course.price) !== dto.amount) {
-      throw new Error('Amount does not match course price');
+      throw new BadRequestException('Amount does not match course price');
     }
 
     // check if user is enrolled in the course
@@ -39,7 +32,7 @@ export class PaymentsService {
     });
 
     if (existingEnrollment) {
-      throw new Error('You are already enrolled in this course');
+      throw new ForbiddenException('You are already enrolled in this course');
     }
 
     // check if user already has a pending payment request
@@ -52,7 +45,7 @@ export class PaymentsService {
     });
 
     if (pendingPayment) {
-      throw new Error(
+      throw new ConflictException(
         'You already have a pending payment request for this course',
       );
     }
@@ -61,7 +54,7 @@ export class PaymentsService {
       data: {
         userId,
         courseId: dto.courseId,
-        amount: dto.amount,
+        amount: course.price,
         receiptFileId: dto.recipientId,
       },
     });
@@ -69,7 +62,20 @@ export class PaymentsService {
     return new ApiResponse(true, 'Payment created successfully', payment);
   }
 
-  async getPayments(userId: string) {
+  async getPayment(userId: string, paymentId: string) {
+    const payment = await this.prisma.payment.findUnique({
+      where: {
+        id: paymentId,
+        userId,
+      },
+    });
+
+    if (!payment) throw new Error('Payment not found');
+
+    return new ApiResponse(true, 'Payment fetched successfully', payment);
+  }
+
+  async getMyPayments(userId: string) {
     const payments = await this.prisma.payment.findMany({
       where: {
         userId,
@@ -78,78 +84,20 @@ export class PaymentsService {
     return new ApiResponse(true, 'Payments fetched successfully', payments);
   }
 
-  async approve(paymentId: string, adminId: string) {
-    return await this.prisma.$transaction(async (tx) => {
-      const payment = await tx.payment.findUnique({
-        where: { id: paymentId },
-        include: { course: true }, // لازم نكون عاملين relation بين Payment و Course
-      });
-
-      if (!payment) {
-        throw new Error('Payment not found');
-      }
-
-      if (payment.status !== 'PENDING') {
-        throw new Error('Payment is not pending');
-      }
-
-      await tx.payment.update({
-        where: { id: paymentId },
-        data: {
-          status: 'APPROVED',
-          adminId: adminId,
-        },
-      });
-
-      // create enrollment
-      await tx.enrollment.create({
-        data: {
-          userId: payment.userId,
-          courseId: payment.courseId,
-          paymentId: payment.id,
-        },
-      });
-
-      // calculate teacher amount
-      const teacherAmount = Number(payment.amount) * 0.7;
-
-      const teacherWallet = await tx.wallet.findUnique({
-        where: { teacherProfileId: payment.course.teacherId },
-      });
-
-      if (teacherWallet) {
-        await tx.wallet.update({
-          where: { id: teacherWallet.id },
-          data: { balance: { increment: teacherAmount } },
-        });
-
-        await tx.transaction.create({
-          data: {
-            walletId: teacherWallet.id,
-            paymentId: payment.id,
-            amount: teacherAmount,
-            type: 'COURSE_EARNING',
-          },
-        });
-      }
-
-      return new ApiResponse(
-        true,
-        'Payment approved and course unlocked successfully',
-      );
+  // Helper methods
+  private async getCourse(courseId: string) {
+    const course = await this.prisma.course.findUnique({
+      where: { id: courseId },
     });
-  }
 
-  async reject(paymentId: string, dto: RejectionDto) {
-    await this.prisma.payment.update({
-      where: {
-        id: paymentId,
-      },
-      data: {
-        status: 'REJECTED',
-        rejectionReason: dto.rejectionReason,
-      },
-    });
-    return new ApiResponse(false, 'Payment rejected');
+    if (!course) {
+      throw new NotFoundException('Course not found');
+    }
+
+    if (course.status !== 'PUBLISHED') {
+      throw new ForbiddenException('Course is not published');
+    }
+
+    return course;
   }
 }

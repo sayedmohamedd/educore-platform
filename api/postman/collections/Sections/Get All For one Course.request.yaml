@@ -1,0 +1,5 @@
+$kind: http-request
+name: Get All For one Course
+url: "{{url}}/courses/{{courseId}}/sections"
+method: GET
+order: 1680041310707511

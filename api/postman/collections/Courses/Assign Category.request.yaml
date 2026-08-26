@@ -1,0 +1,16 @@
+$kind: http-request
+name: Assign Category
+url: "{{url}}/courses/{{courseId}}/categories"
+method: PATCH
+body:
+  type: json
+  content: "{\r
+
+    \    \"categoryId\":\"cmt5jnusv0001ekf3b431avgg\" // cs category\r
+
+    }"
+auth:
+  type: bearer
+  credentials:
+    token: "{{access_token}}"
+order: 1028942855778182

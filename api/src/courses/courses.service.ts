@@ -1,58 +1,89 @@
+/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   ConflictException,
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { ApiResponse } from '../helper/APIResponse.js';
+import { ApiFeatures, ApiResponse } from '../helper/APIResponse.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { UpdateCourseDto } from './dtos/update-course.dto.js';
 import { CreateCourseDto } from './dtos/create-course.dto.js';
+import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
 
 @Injectable()
 export class CoursesService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly instructorHelper: InstructorHelperService,
+  ) {}
 
-  async findAll() {
-    const courses = await this.prisma.course.findMany({
-      where: {
-        status: 'PUBLISHED',
-        teacher: {
-          status: 'APPROVED',
-        },
-      },
-      include: {
-        teacher: {
-          select: {
-            id: true,
-            bio: true,
-            title: true,
-            expertise: true,
-            user: {
-              select: {
-                id: true,
-                fullName: true,
-                avatar: {
-                  select: {
-                    url: true,
-                  },
+  async findAll(query: any) {
+    const { page, limit, skip } = ApiFeatures.getPagination(query);
+    const orderBy = ApiFeatures.getSorting(query);
+
+    const where: any = {};
+
+    if (query.search) {
+      where.OR = [
+        { title: { contains: query.search, mode: 'insensitive' } },
+        { description: { contains: query.search, mode: 'insensitive' } },
+      ];
+    }
+
+    if (query.status) {
+      where.status = query.status;
+    }
+
+    if (query.maxPrice) {
+      where.price = {
+        gte: 0, // من أول 0 (مجاني)
+        lte: parseFloat(String(query.maxPrice)), // لحد أقصى السعر المختار
+      };
+    }
+    const [courses, total] = await Promise.all([
+      this.prisma.course.findMany({
+        where,
+        skip,
+        take: limit,
+        orderBy,
+        include: {
+          teacher: {
+            select: {
+              id: true,
+              bio: true,
+              title: true,
+              expertise: true,
+              user: {
+                select: {
+                  id: true,
+                  fullName: true,
+                  avatar: { select: { url: true } },
                 },
               },
             },
           },
-        },
-        categories: {
-          include: {
-            category: true,
+          categories: {
+            include: { category: true },
           },
         },
-      },
-    });
+      }),
+      this.prisma.course.count({ where }),
+    ]);
 
-    return new ApiResponse(true, 'Courses retrieved successfully', courses);
+    const meta = {
+      total,
+      page,
+      lastPage: Math.ceil(total / limit),
+    };
+
+    return new ApiResponse(true, 'Courses retrieved successfully', {
+      courses,
+      meta,
+    });
   }
 
   async findOne(courseId: string) {
-    const course = await this.prisma.course.findUnique({
+    const rawCourse = await this.prisma.course.findUnique({
       where: {
         id: courseId,
       },
@@ -83,27 +114,24 @@ export class CoursesService {
       },
     });
 
-    if (!course) {
+    if (!rawCourse) {
       throw new NotFoundException('Course not found');
     }
+
+    const course = {
+      ...rawCourse,
+      categories: rawCourse?.categories.map((item) => ({
+        id: item.category.id,
+        name: item.category.name,
+      })),
+    };
 
     return new ApiResponse(true, 'Course retrieved successfully', course);
   }
 
+  // create course by teacher
   async create(userId: string, dto: CreateCourseDto) {
-    const teacher = await this.prisma.teacherProfile.findUnique({
-      where: {
-        userId,
-      },
-    });
-
-    if (!teacher) {
-      throw new NotFoundException('Teacher profile not found');
-    }
-
-    if (teacher.status !== 'APPROVED') {
-      throw new ConflictException('Teacher is not approved');
-    }
+    const teacher = await this.instructorHelper.getTeacher(userId);
 
     const course = await this.prisma.course.create({
       data: {
@@ -137,28 +165,12 @@ export class CoursesService {
     return new ApiResponse(true, 'Course created successfully', course);
   }
 
+  // update course by teacher
   async update(userId: string, courseId: string, dto: UpdateCourseDto) {
-    const teacher = await this.prisma.teacherProfile.findUnique({
-      where: {
-        userId,
-      },
-    });
+    // check course and teacher Authorization
+    await this.instructorHelper.getTeacherCourse(userId, courseId);
 
-    if (!teacher) {
-      throw new NotFoundException('Teacher profile not found');
-    }
-
-    const course = await this.prisma.course.findFirst({
-      where: {
-        id: courseId,
-        teacherId: teacher.id,
-      },
-    });
-
-    if (!course) {
-      throw new NotFoundException('Course not found');
-    }
-
+    // Update Course
     const updatedCourse = await this.prisma.course.update({
       where: {
         id: courseId,
@@ -194,28 +206,12 @@ export class CoursesService {
     return new ApiResponse(true, 'Course updated successfully', updatedCourse);
   }
 
+  // delete course by teacher
   async remove(userId: string, courseId: string) {
-    const teacher = await this.prisma.teacherProfile.findUnique({
-      where: {
-        userId,
-      },
-    });
+    // check course and teacher Authorization
+    await this.instructorHelper.getTeacherCourse(userId, courseId);
 
-    if (!teacher) {
-      throw new NotFoundException('Teacher profile not found');
-    }
-
-    const course = await this.prisma.course.findFirst({
-      where: {
-        id: courseId,
-        teacherId: teacher.id,
-      },
-    });
-
-    if (!course) {
-      throw new NotFoundException('Course not found');
-    }
-
+    // Delete Course
     await this.prisma.course.delete({
       where: {
         id: courseId,
@@ -227,38 +223,19 @@ export class CoursesService {
 
   // submit course by teacher to admin
   async submit(userId: string, courseId: string) {
-    const teacher = await this.prisma.teacherProfile.findUnique({
-      where: {
-        userId,
-      },
-    });
-
-    if (!teacher) {
-      throw new NotFoundException('Teacher profile not found');
-    }
-
-    const course = await this.prisma.course.findFirst({
-      where: {
-        id: courseId,
-        teacherId: teacher.id,
-      },
-    });
-
-    if (!course) {
-      throw new NotFoundException('Course not found');
-    }
+    // check course and teacher Authorization
+    const course = await this.instructorHelper.getTeacherCourse(
+      userId,
+      courseId,
+    );
 
     if (course.status !== 'DRAFT') {
       throw new ConflictException('Only draft courses can be submitted');
     }
 
     const updatedCourse = await this.prisma.course.update({
-      where: {
-        id: courseId,
-      },
-      data: {
-        status: 'SUBMITTED',
-      },
+      where: { id: courseId },
+      data: { status: 'SUBMITTED' },
     });
 
     return new ApiResponse(
@@ -268,27 +245,13 @@ export class CoursesService {
     );
   }
 
+  // By Teacher
   async publish(userId: string, courseId: string) {
-    const teacher = await this.prisma.teacherProfile.findUnique({
-      where: {
-        userId,
-      },
-    });
-
-    if (!teacher) {
-      throw new NotFoundException('Teacher profile not found');
-    }
-
-    const course = await this.prisma.course.findFirst({
-      where: {
-        id: courseId,
-        teacherId: teacher.id,
-      },
-    });
-
-    if (!course) {
-      throw new NotFoundException('Course not found');
-    }
+    // check course and teacher Authorization
+    const course = await this.instructorHelper.getTeacherCourse(
+      userId,
+      courseId,
+    );
 
     if (course.status !== 'APPROVED') {
       throw new ConflictException('Course must be approved before publishing');
@@ -310,32 +273,35 @@ export class CoursesService {
     );
   }
 
-  // approve course by id from admin
-  async approve(id: string) {
-    if (!id) throw new NotFoundException('Course not found');
-    const course = await this.prisma.course.update({
+  async removeCategoryFromCourse(
+    userId: string,
+    courseId: string,
+    categoryId: string,
+  ) {
+    await this.instructorHelper.getTeacherCourse(userId, courseId);
+
+    const courseCategory = await this.prisma.courseCategory.findUnique({
       where: {
-        id,
-      },
-      data: {
-        status: 'APPROVED',
+        courseId_categoryId: {
+          courseId,
+          categoryId,
+        },
       },
     });
 
-    return new ApiResponse(true, 'Course approved successfully', course);
-  }
+    if (!courseCategory) {
+      throw new NotFoundException('Category is not assigned to this course');
+    }
 
-  // reject course by id from admin
-  async reject(id: string) {
-    if (!id) throw new NotFoundException('Course not found');
-    const course = await this.prisma.course.update({
+    await this.prisma.courseCategory.delete({
       where: {
-        id,
-      },
-      data: {
-        status: 'REJECTED',
+        courseId_categoryId: {
+          courseId,
+          categoryId,
+        },
       },
     });
-    return new ApiResponse(true, 'Course approved successfully', course);
+
+    return new ApiResponse(true, 'Category removed from course successfully');
   }
 }

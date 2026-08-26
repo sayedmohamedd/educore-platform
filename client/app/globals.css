@@ -255,9 +255,9 @@
   @apply text-sm font-medium text-primary transition-colors hover:underline cursor-pointer;
 }
 
-html {
+/* html {
   scroll-behavior: smooth;
-}
+} */
 
 Link,
 a {

@@ -1,0 +1,5 @@
+$kind: http-request
+name: refresh
+url: "{{url}}/auth/refresh"
+method: POST
+order: 4474546465207625
