@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { TextAlignJustify, X } from "lucide-react";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 import { useAuthStore, Role } from "@/store/auth.store";
 
@@ -31,7 +31,9 @@ const Navbar = () => {
         {/* Desktop */}
         <NavbarLinks className="hidden md:flex" />
 
-        <SearchInput className="hidden md:flex" />
+        <Suspense fallback={null}>
+          <SearchInput className="hidden md:flex" />
+        </Suspense>
 
         <div className="hidden items-center gap-4 md:flex">
           {loading ? (
@@ -76,7 +78,9 @@ const Navbar = () => {
       {isOpen && (
         <div className="border-t bg-white md:hidden">
           <div className="container py-5">
-            <SearchInput />
+            <Suspense fallback={null}>
+              <SearchInput />
+            </Suspense>
 
             <NavbarLinks
               className="mt-5 flex flex-col gap-5"

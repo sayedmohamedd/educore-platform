@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
+
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import LogoutButton from "../auth/LogoutButton";
@@ -10,6 +11,9 @@ import { Role } from "@/store/auth.store";
 const DashboardSidebar = ({ role }: { role: Role }) => {
   const pathname = usePathname();
 
+  type MenuRole = keyof typeof menuItems;
+  const menuRole = role.toLowerCase() as MenuRole;
+
   return (
     <aside className="sticky top-0 flex h-screen w-64 flex-col border-r border-border bg-background px-5 py-6">
       {/* Logo */}
@@ -17,6 +21,7 @@ const DashboardSidebar = ({ role }: { role: Role }) => {
         <h1 className="text-3xl font-bold text-primary">
           <Link href="/">EDUCore</Link>
         </h1>
+
         <p className="mt-1 text-sm font-medium text-muted-foreground">
           {role} Panel
         </p>
@@ -25,7 +30,7 @@ const DashboardSidebar = ({ role }: { role: Role }) => {
       {/* Navigation */}
       <nav className="mt-8 flex-1">
         <ul className="space-y-2">
-          {menuItems[role.toLowerCase()].map((item: any) => {
+          {menuItems[menuRole].map((item: any) => {
             const Icon = item.icon;
             const isActive = pathname === item.href;
 
@@ -49,23 +54,12 @@ const DashboardSidebar = ({ role }: { role: Role }) => {
       </nav>
 
       {/* Footer */}
-      {/* Logout */}
-      <br className="text-muted" />
       <button className="flex items-center gap-4 px-4 py-2">
         <HelpCircle size={20} className="text-muted-foreground" />
         <p className="text-muted">Help Center</p>
       </button>
+
       <LogoutButton />
-      {/* <div className="border-t border-border pt-5">
-        <div className="rounded-xl bg-muted/40 p-4">
-          <p className="text-sm font-semibold text-foreground">
-            Teacher Account
-          </p>
-          <p className="mt-1 text-xs text-muted-foreground">
-            Manage your courses and students.
-          </p>
-        </div>
-      </div> */}
     </aside>
   );
 };

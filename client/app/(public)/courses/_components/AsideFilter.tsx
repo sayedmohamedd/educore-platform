@@ -1,11 +1,11 @@
 "use client";
 
-import { CoursesMeta } from "@/services/courses.service";
+import { Meta } from "@/services/courses/types";
 import PriceFilter from "./filters/PriceFilter";
 import { useRouter, useSearchParams } from "next/navigation";
-import { useCallback } from "react";
+import { Suspense, useCallback } from "react";
 
-const AsideFilter = ({ meta }: { meta: CoursesMeta }) => {
+const AsideFilter = ({ meta }: { meta: Meta }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
@@ -90,7 +90,9 @@ const AsideFilter = ({ meta }: { meta: CoursesMeta }) => {
       </div>
 
       {/* Price */}
-      <PriceFilter />
+      <Suspense fallback={<div>Loading...</div>}>
+        <PriceFilter />
+      </Suspense>
 
       {/* Duration */}
       <div className="py-6">

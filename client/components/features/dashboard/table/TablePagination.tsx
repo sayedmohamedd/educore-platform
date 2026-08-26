@@ -1,6 +1,6 @@
 "use client";
 
-import { Meta } from "@/services/courses.service";
+import { Meta } from "@/services/courses/types";
 import { useRouter, useSearchParams } from "next/navigation";
 
 interface TablePaginationProps {

@@ -1,16 +1,14 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { Plus } from "lucide-react";
 import Link from "next/link";
 
 import IconButton from "@/components/ui/IconButton";
-import {
-  Category,
-  courseService,
-  CreateCourse,
-} from "@/services/courses.service";
 import UploadForm from "./UploadForm";
+import { Category, CreateCourse } from "@/services/courses/types";
+import { courseClientService } from "@/services/courses/courses.service";
 
 export default function CreateCourseForm({
   categories,
@@ -25,13 +23,13 @@ export default function CreateCourseForm({
     categoryIds: [],
   });
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
     if (!formData.thumbnail) {
       alert("من فضلك ارفع صورة الكورس أولاً");
       return;
     }
-    await courseService.createCourse(formData);
+    await courseClientService.createCourse(formData);
   };
 
   const handleFileUpload = (publicUrl: string) => {

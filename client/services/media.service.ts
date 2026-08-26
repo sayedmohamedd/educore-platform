@@ -6,6 +6,7 @@ export const mediaService = {
         Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         Accept: "application/json",
       },
+      credentials: "include",
       body: formData,
     });
 

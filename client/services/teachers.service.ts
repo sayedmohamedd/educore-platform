@@ -1,5 +1,5 @@
 import { apiServer } from "@/lib/apiServer";
-import { CoursesData } from "./courses.service";
+import { CoursesData, Meta } from "./courses/types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const teachersService = {
@@ -31,12 +31,6 @@ export type Teacher = {
     fullName: string;
     email: string;
   };
-};
-
-export type Meta = {
-  total: number;
-  page: number;
-  lastPage: number;
 };
 
 type teacherData = {

@@ -7,7 +7,7 @@ import Select from "@/components/ui/Select";
 // Data
 import { Suspense } from "react";
 import CoursesList from "./_components/CoursesList";
-import { courseService } from "@/services/courses.service";
+import { courseServerService } from "@/services/courses/course.server.service";
 
 const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
   const params = await searchParams;
@@ -15,7 +15,7 @@ const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
   let meta: any = {};
   let errorMessage = "";
   try {
-    const data = await courseService.getCourses(params);
+    const data = await courseServerService.getCourses(params);
     courses = data.courses;
     meta = data.meta;
   } catch (error: any) {
@@ -33,15 +33,19 @@ const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
           <CoursesTopics />
 
           {/* Sort */}
-          <Select sortBy="createdAt" defaultOrder="desc">
-            <option value="createdAt_desc">الأحدث</option>
-            <option value="createdAt_asc">الأقدم</option>
-            <option value="rating_desc">الأعلى تقييماً</option>
-          </Select>
+          <Suspense fallback={<div>Loading...</div>}>
+            <Select sortBy="createdAt" defaultOrder="desc">
+              <option value="createdAt_desc">الأحدث</option>
+              <option value="createdAt_asc">الأقدم</option>
+              <option value="rating_desc">الأعلى تقييماً</option>
+            </Select>
+          </Suspense>
 
           <div className="flex flex-col md:flex-row  gap-6 mt-6">
             {/* Filter */}
-            <AsideFilter meta={meta} />
+            <Suspense fallback={<div>Loading...</div>}>
+              <AsideFilter meta={meta} />
+            </Suspense>
             {/* Error */}
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
             {/* Courses */}

@@ -2,6 +2,7 @@ import Table from "@/components/features/dashboard/table/Table";
 import StatsCard from "@/components/shared/cards/StatsCard";
 import IconButton from "@/components/ui/IconButton";
 import { Download, Users2 } from "lucide-react";
+import { Suspense } from "react";
 
 const stats = [
   {
@@ -65,7 +66,8 @@ const Users = () => {
       </section>
 
       {/* Table */}
-      <Table />
+
+      <Table data={[]} columns={[]} showFilter={false} />
     </main>
   );
 };

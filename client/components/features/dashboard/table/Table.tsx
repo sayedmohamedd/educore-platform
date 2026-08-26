@@ -1,4 +1,5 @@
 "use client";
+import { Suspense } from "react";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import TableFilter from "./TableFilter";
 import TablePagination from "./TablePagination";
@@ -28,7 +29,9 @@ const Table = <T extends { id: string | number }>({
         <THeader columns={columns} />
         <TBody data={data} columns={columns} isLoading={isLoading} />
       </table>
-      <TablePagination meta={meta} />
+      <Suspense fallback={null}>
+        <TablePagination meta={meta} />
+      </Suspense>
     </div>
   );
 };

@@ -1,3 +1,4 @@
+import { apiClient } from "@/lib/apiClient";
 import { apiServer } from "@/lib/apiServer";
 
 type Category = {
@@ -18,7 +19,7 @@ export const categoryService = {
     apiServer<Category>(`/categories/${categoryId}`, options),
 
   createCategory: (body: CreateCategoryDto, options?: RequestInit) =>
-    apiServer<Category>("/categories", {
+    apiClient<Category>("/categories", {
       ...options,
       method: "POST",
       body: JSON.stringify(body),

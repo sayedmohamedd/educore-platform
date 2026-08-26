@@ -1,5 +1,5 @@
 import CourseCard from "@/components/shared/cards/CourseCard";
-import { Course } from "@/services/courses.service";
+import { Course } from "@/services/courses/types";
 
 const CoursesList = async ({ courses }: { courses: Course[] }) => {
   // check if there are no courses

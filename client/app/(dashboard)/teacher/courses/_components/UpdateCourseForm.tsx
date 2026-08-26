@@ -1,12 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { FormEvent, useState } from "react";
+import { useState } from "react";
 import { ImagePlus, Plus } from "lucide-react";
 import Link from "next/link";
 
 import IconButton from "@/components/ui/IconButton";
-import { courseService, CreateCourse } from "@/services/courses.service";
+import { courseClientService } from "@/services/courses/courses.service";
+import { CreateCourse } from "@/services/courses/types";
 
 // export type Category = {
 //   id: string;
@@ -46,10 +47,10 @@ const UpdateCourseForm = ({ course }: { course: any }) => {
     categoryIds: course?.categories?.map((category: any) => category?.id),
   });
 
-  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    await courseService.createCourse(formData);
+    await courseClientService.createCourse(formData);
   };
 
   return (

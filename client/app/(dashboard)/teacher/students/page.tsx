@@ -4,6 +4,7 @@ import StatsCard from "@/components/shared/cards/StatsCard";
 import Table from "@/components/features/dashboard/table/Table";
 import { CircleDollarSign, UserPen } from "lucide-react";
 import { Column } from "@/components/features/dashboard/table/types";
+import { Suspense } from "react";
 
 const stats = [
   {
@@ -74,7 +75,7 @@ const Students = () => {
           <StatsCard {...stats[1]} />
           <StatsCard {...stats[1]} />
         </div>
-        <Table data={students} columns={studentColumns} />
+        <Table data={students} columns={studentColumns} showFilter={false} />
       </div>
     </main>
   );

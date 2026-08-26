@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { courseService } from "@/services/courses.service";
 import Link from "next/link";
 import { Suspense } from "react";
 import CoursesList from "./CoursesList";
+import { courseServerService } from "@/services/courses/course.server.service";
 
 const FeaturedCourses = async () => {
   let courses: any = [];
   let errorMessage = "";
   try {
-    const data = await courseService.getCourses();
+    const data = await courseServerService.getCourses();
     courses = data.courses;
   } catch (error: any) {
     errorMessage = error?.message;

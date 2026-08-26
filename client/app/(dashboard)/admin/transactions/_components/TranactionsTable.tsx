@@ -1,5 +1,6 @@
 import TableHeader from "../../../../../components/features/dashboard/table/TableHeader";
 import Table from "../../../../../components/features/dashboard/table/Table";
+import { Suspense } from "react";
 
 const TransactionsTable = () => {
   return (
@@ -27,7 +28,7 @@ const TransactionsTable = () => {
       </div>
 
       {/* Table */}
-      <Table />
+      <Table data={[]} columns={[]} showFilter={false} />
     </section>
   );
 };

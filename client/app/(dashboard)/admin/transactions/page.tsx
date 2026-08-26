@@ -8,6 +8,7 @@ import {
 } from "lucide-react";
 import TransactionCard from "./_components/TransactionCard";
 import IconButton from "@/components/ui/IconButton";
+import { Suspense } from "react";
 
 const stats = [
   {
@@ -65,8 +66,9 @@ const Transactions = () => {
           <TransactionCard key={stat.title} {...stat} />
         ))}
       </section>
-
-      <TransactionsTable />
+      <Suspense fallback={<div>Loading transactions...</div>}>
+        <TransactionsTable />
+      </Suspense>
     </main>
   );
 };

@@ -1,16 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { courseService } from "@/services/courses.service";
 import { X } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
 import UpdateCourseForm from "../../_components/UpdateCourseForm";
+import { courseServerService } from "@/services/courses/course.server.service";
 
 const EditCoursePage = async ({ params }: { params: Promise<any> }) => {
   const { slug } = await params;
   let errorMessage = "";
   let course: any = {};
   try {
-    course = await courseService.getCourse(slug);
+    course = await courseServerService.getCourse(slug);
   } catch (error: any) {
     errorMessage = error?.message;
   }
