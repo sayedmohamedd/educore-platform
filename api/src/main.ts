@@ -13,8 +13,13 @@ async function bootstrap() {
 
   app.use(morgan('dev'));
 
+  const allowedOrigins = [
+    process.env.FRONTEND_URL,
+    'https://educore-platform-client.vercel.app',
+  ].filter(Boolean);
+
   app.enableCors({
-    origin: process.env.FRONTEND_URL,
+    origin: allowedOrigins,
     credentials: true,
   });
 
