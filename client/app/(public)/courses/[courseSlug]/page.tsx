@@ -1,16 +1,31 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import EnrollCourseAside from "@/app/(public)/courses/_components/EnrollCourseAside";
 import TeacherCard from "@/app/(public)/courses/_components/TeacherCard";
 // import CourseCard from "@/components/shared/cards/CourseCard";
 // import { courses } from "@/lib/data";
 import { CircleCheck, ChevronLeft, Star } from "lucide-react";
 import Link from "next/link";
+import CoursesList from "../_components/CoursesList";
+import { courseServerService } from "@/services/courses/course.server.service";
+import { Suspense } from "react";
+import CourseContent from "../_components/CourseContent";
 
-const CoursePage = () => {
+const CoursePage = async () => {
+  let courses: any = [];
+  let errorMessage = "";
+
+  try {
+    const data = await courseServerService.getCourses();
+    courses = data.courses.slice(0, 3);
+  } catch (error: any) {
+    errorMessage = error?.message;
+  }
+
   return (
-    <div className="container grid grid-cols-12 gap-8 py-12">
-      <main className="col-span-9">
+    <div className="container grid grid-cols-1 gap-8 py-8 sm:py-12 lg:grid-cols-12">
+      <main className="min-w-0 lg:col-span-9">
         {/* Breadcrumb */}
-        <ul className="my-2 flex items-center gap-2 text-sm text-muted">
+        <ul className="my-2 flex flex-wrap items-center gap-2 text-sm text-muted">
           <li>الرئيسية</li>
           <ChevronLeft size={16} />
           <li>البرمجة</li>
@@ -31,7 +46,7 @@ const CoursePage = () => {
             الأساسيات وحتى إنشاء مشاريع احترافية قابلة للنشر في سوق العمل.
           </p>
 
-          <ul className="flex flex-wrap items-center gap-6 text-sm">
+          <ul className="flex flex-wrap items-center gap-4 text-sm sm:gap-6">
             <li className="flex items-center gap-2">
               <Star className="fill-yellow-400 text-yellow-400" size={18} />
               <span className="font-medium">4.9</span>
@@ -39,7 +54,7 @@ const CoursePage = () => {
             </li>
 
             <li>
-              بواسطة <span className="text-primary font-medium">أحمد محمد</span>
+              بواسطة <span className="font-medium text-primary">أحمد محمد</span>
             </li>
 
             <li>👨‍🎓 +15,553 طالب</li>
@@ -49,14 +64,14 @@ const CoursePage = () => {
         </section>
 
         {/* Intro Video */}
-        <section className="mt-10">
+        <section className="mt-8 sm:mt-10">
           <div className="aspect-video overflow-hidden rounded-2xl bg-muted">
             {/* Video Here */}
           </div>
         </section>
 
         {/* About */}
-        <section className="mt-10 space-y-5">
+        <section className="mt-8 space-y-5 sm:mt-10">
           <h2 className="heading-3">نبذة عن الدورة</h2>
 
           <p className="paragraph">
@@ -68,47 +83,47 @@ const CoursePage = () => {
         </section>
 
         {/* Learning Outcomes */}
-        <section className="mt-10">
+        <section className="mt-8 sm:mt-10">
           <h2 className="heading-3 mb-5">ماذا ستتعلم؟</h2>
 
-          <ul className="grid grid-cols-2 gap-5">
+          <ul className="grid grid-cols-1 gap-5 sm:grid-cols-2">
             <li className="flex gap-3">
-              <CircleCheck className="mt-1 text-primary" />
+              <CircleCheck className="mt-1 shrink-0 text-primary" />
               <p className="text-muted">
                 إنشاء تطبيقات احترافية باستخدام React و Next.js.
               </p>
             </li>
 
             <li className="flex gap-3">
-              <CircleCheck className="mt-1 text-primary" />
+              <CircleCheck className="mt-1 shrink-0 text-primary" />
               <p className="text-muted">
                 تنظيم المشاريع بطريقة قابلة للتوسع والصيانة.
               </p>
             </li>
 
             <li className="flex gap-3">
-              <CircleCheck className="mt-1 text-primary" />
+              <CircleCheck className="mt-1 shrink-0 text-primary" />
               <p className="text-muted">
                 التعامل مع REST APIs وإدارة البيانات.
               </p>
             </li>
 
             <li className="flex gap-3">
-              <CircleCheck className="mt-1 text-primary" />
+              <CircleCheck className="mt-1 shrink-0 text-primary" />
               <p className="text-muted">
                 نشر التطبيقات على Vercel وتجهيزها للإنتاج.
               </p>
             </li>
 
             <li className="flex gap-3">
-              <CircleCheck className="mt-1 text-primary" />
+              <CircleCheck className="mt-1 shrink-0 text-primary" />
               <p className="text-muted">
                 استخدام Tailwind CSS لبناء واجهات حديثة.
               </p>
             </li>
 
             <li className="flex gap-3">
-              <CircleCheck className="mt-1 text-primary" />
+              <CircleCheck className="mt-1 shrink-0 text-primary" />
               <p className="text-muted">
                 تنفيذ مشروع كامل لإضافته إلى معرض أعمالك.
               </p>
@@ -117,20 +132,14 @@ const CoursePage = () => {
         </section>
 
         {/* Course Content */}
-        <section className="mt-10">
-          <h2 className="heading-3">محتوى الدورة</h2>
-
-          <div className="mt-4 rounded-xl border p-6">
-            سيتم عرض أقسام ومحاضرات الدورة هنا.
-          </div>
-        </section>
+        <CourseContent />
 
         {/* Instructor */}
         <TeacherCard />
 
         {/* Related Courses */}
-        <section className="mt-12">
-          <div className="mb-6 flex items-center justify-between">
+        <section className="mt-10 sm:mt-12">
+          <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="heading-3">دورات قد تعجبك</h2>
 
             <Link href="" className="text-primary hover:underline">
@@ -138,9 +147,11 @@ const CoursePage = () => {
             </Link>
           </div>
 
-          <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-2">
-            {/* <CourseCard {...courses[0]} /> */}
-          </section>
+          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+
+          <Suspense fallback={<h3>Loading Courses...</h3>}>
+            <CoursesList courses={courses} />
+          </Suspense>
         </section>
       </main>
 

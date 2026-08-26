@@ -7,8 +7,8 @@ export const courseServerService = {
   getCourses: (params: any = {}, options?: RequestInit) =>
     apiServer<CoursesData>(`/courses?${new URLSearchParams(params)}`, options),
 
-  getCourse: (courseId: string, options?: RequestInit) =>
-    apiServer<Course>(`/courses/${courseId}`, options),
+  getCourse: (courseSlug: string, options?: RequestInit) =>
+    apiServer<Course>(`/courses/${courseSlug}`, options),
 
   getTeacherCourses: (options?: RequestInit) =>
     apiServer<CoursesData>(`/courses`, options),

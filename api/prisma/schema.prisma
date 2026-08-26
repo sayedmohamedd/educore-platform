@@ -94,6 +94,7 @@ enum CourseStatus {
 
 model Course {
   id          String       @id @default(cuid())
+  slug        String       @unique
   title       String
   description String?
   price       Decimal      @db.Decimal(10, 2)
@@ -119,6 +120,7 @@ model Category {
   id          String  @id @default(cuid())
   name        String  @unique
   description String?
+  slug        String  @unique
 
   courses CourseCategory[]
 
@@ -140,6 +142,7 @@ model Section {
   id       String @id @default(cuid())
   courseId String
   title    String
+  slug     String @unique
   order    Int
 
   course  Course   @relation(fields: [courseId], references: [id], onDelete: Cascade)
@@ -157,6 +160,7 @@ model Lesson {
   videoId     String? @unique
   title       String
   description String?
+  slug        String  @unique
 
   duration Int?
   order    Int

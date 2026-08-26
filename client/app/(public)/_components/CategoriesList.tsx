@@ -8,7 +8,7 @@ const CategoriesList = ({ categories }: { categories: any[] }) => {
         <Link
           key={category.id}
           href={`/courses?category=${category.id}`}
-          className="group flex items-center gap-3 rounded-2xl bg-white px-6 py-4 border border-border shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-md"
+          className="group flex items-center gap-3 rounded-2xl min-w-70 bg-white px-6 py-4 border border-border shadow-sm transition-all duration-300 hover:-translate-y-1 hover:border-primary/30 hover:shadow-md"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10 text-primary transition-colors group-hover:bg-primary group-hover:text-white">
             {/* <category.icon className="h-5 w-5" /> */}

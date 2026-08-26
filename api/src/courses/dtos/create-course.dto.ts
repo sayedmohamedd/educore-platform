@@ -14,6 +14,11 @@ export class CreateCourseDto {
   @IsNotEmpty()
   title!: string;
 
+  @ApiProperty({ type: String, description: 'The slug of the course' })
+  @IsString()
+  @IsNotEmpty()
+  slug!: string;
+
   @ApiProperty({ type: String, description: 'The description of the course' })
   @IsOptional()
   @IsString()

@@ -1,11 +1,13 @@
 "use client";
 
 import Link from "next/link";
-import { TextAlignJustify, X } from "lucide-react";
 import { Suspense, useState } from "react";
+// Icons
+import { TextAlignJustify, X } from "lucide-react";
 
 import { useAuthStore, Role } from "@/store/auth.store";
 
+// Components
 import NavbarLinks from "./NavbarLinks";
 import SearchInput from "./SearchInput";
 import NotificationButton from "./NotificationButton";
@@ -70,7 +72,11 @@ const Navbar = () => {
           className="relative z-50 text-muted md:hidden"
           aria-label="Toggle menu"
         >
-          {isOpen ? <X size={28} /> : <TextAlignJustify size={28} />}
+          {isOpen ? (
+            <X className="fill-muted cursor-pointer" size={28} />
+          ) : (
+            <TextAlignJustify className="fill-muted cursor-pointer" size={28} />
+          )}
         </button>
       </div>
 

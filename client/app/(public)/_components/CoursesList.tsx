@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CourseCard from "@/components/shared/cards/CourseCard";
-
+import Link from "next/link";
 const CoursesList = ({ courses }: { courses: any[] }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -14,6 +14,14 @@ const CoursesList = ({ courses }: { courses: any[] }) => {
           thumbnailId={course?.thumbnailId}
           description={course?.description}
           price={course?.price}
+          actions={
+            <Link
+              href={`/courses/${course?.slug}`}
+              className="btn bg-primary text-white hover:bg-primary/80 transition duration-300"
+            >
+              View Details
+            </Link>
+          }
         />
       ))}
     </div>

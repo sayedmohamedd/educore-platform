@@ -35,9 +35,9 @@ export class CoursesController {
     return this.coursesService.create(req.user.userId, dto);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.coursesService.findOne(id);
+  @Get(':slug')
+  findOne(@Param('slug') slug: string) {
+    return this.coursesService.findOne(slug);
   }
 
   @Patch(':courseId')

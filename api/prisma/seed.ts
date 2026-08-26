@@ -145,6 +145,7 @@ async function main() {
     update: {},
     create: {
       name: 'Backend Development',
+      slug: 'backend-development',
       description: 'Backend development and server-side programming.',
     },
   });
@@ -156,6 +157,7 @@ async function main() {
     update: {},
     create: {
       name: 'Frontend Development',
+      slug: 'frontend-development',
       description: 'Modern frontend web development.',
     },
   });
@@ -167,6 +169,7 @@ async function main() {
     update: {},
     create: {
       name: 'Databases',
+      slug: 'databases',
       description: 'SQL and NoSQL database development.',
     },
   });
@@ -236,6 +239,7 @@ async function main() {
   const course1 = await prisma.course.create({
     data: {
       title: 'NestJS Backend Development',
+      slug: 'nestjs-backend-development',
       description:
         'Build production-ready REST APIs using NestJS, Prisma and PostgreSQL.',
       price: new Prisma.Decimal(500),
@@ -264,6 +268,7 @@ async function main() {
     data: {
       courseId: course1.id,
       title: 'Introduction to NestJS',
+      slug: 'introduction-to-nestjs',
       order: 1,
     },
   });
@@ -272,9 +277,14 @@ async function main() {
     data: {
       courseId: course1.id,
       title: 'Prisma and PostgreSQL',
+      slug: 'prisma-and-postgresql',
       order: 2,
     },
   });
+
+  // =========================
+  // Lesson Videos
+  // =========================
 
   const lesson1Video = await prisma.media.create({
     data: {
@@ -312,11 +322,16 @@ async function main() {
     },
   });
 
+  // =========================
+  // Lessons
+  // =========================
+
   const lesson1 = await prisma.lesson.create({
     data: {
       sectionId: course1Section1.id,
       videoId: lesson1Video.id,
       title: 'What is NestJS?',
+      slug: 'what-is-nestjs',
       description: 'Introduction to NestJS architecture.',
       duration: 20,
       order: 1,
@@ -329,6 +344,7 @@ async function main() {
       sectionId: course1Section1.id,
       videoId: lesson2Video.id,
       title: 'Controllers and Services',
+      slug: 'controllers-and-services',
       description: 'Understanding controllers and services.',
       duration: 35,
       order: 2,
@@ -341,6 +357,7 @@ async function main() {
       sectionId: course1Section2.id,
       videoId: lesson3Video.id,
       title: 'Prisma with PostgreSQL',
+      slug: 'prisma-with-postgresql',
       description: 'Connecting NestJS with Prisma and PostgreSQL.',
       duration: 45,
       order: 1,
@@ -367,6 +384,7 @@ async function main() {
   const course2 = await prisma.course.create({
     data: {
       title: 'Advanced Node.js',
+      slug: 'advanced-nodejs',
       description: 'Advanced backend concepts with Node.js.',
       price: new Prisma.Decimal(650),
       status: 'SUBMITTED',
@@ -402,6 +420,7 @@ async function main() {
   const course3 = await prisma.course.create({
     data: {
       title: 'Modern React Development',
+      slug: 'modern-react-development',
       description: 'Build modern React applications.',
       price: new Prisma.Decimal(400),
       status: 'DRAFT',
@@ -422,7 +441,7 @@ async function main() {
   // Enrollment
   // =========================
 
-  const enrollment = await prisma.enrollment.create({
+  await prisma.enrollment.create({
     data: {
       userId: student1.id,
       courseId: course1.id,
@@ -457,14 +476,18 @@ async function main() {
     },
   });
 
+  // =========================
+  // Done
+  // =========================
+
   console.log('✅ Seed completed successfully');
   console.log('');
   console.log('Accounts:');
-  console.log('Admin:      admin@educore.com / Admin123456');
-  console.log('Teacher 1:  teacher1@educore.com / Teacher123456');
-  console.log('Teacher 2:  teacher2@educore.com / Teacher123456');
-  console.log('Student 1:  student1@educore.com / Student123456');
-  console.log('Student 2:  student2@educore.com / Student123456');
+  console.log('Admin:      admin@educore.com / test1234');
+  console.log('Teacher 1:  teacher1@educore.com / test1234');
+  console.log('Teacher 2:  teacher2@educore.com / test1234');
+  console.log('Student 1:  student1@educore.com / test1234');
+  console.log('Student 2:  student2@educore.com / test1234');
 }
 
 main()

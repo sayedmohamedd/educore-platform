@@ -82,10 +82,10 @@ export class CoursesService {
     });
   }
 
-  async findOne(courseId: string) {
+  async findOne(courseSlug: string) {
     const rawCourse = await this.prisma.course.findUnique({
       where: {
-        id: courseId,
+        slug: courseSlug,
       },
       include: {
         teacher: {
@@ -135,6 +135,7 @@ export class CoursesService {
 
     const course = await this.prisma.course.create({
       data: {
+        slug: dto.slug,
         teacherId: teacher.id,
         title: dto.title,
         description: dto.description,

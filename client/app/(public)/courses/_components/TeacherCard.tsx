@@ -4,22 +4,22 @@ import Link from "next/link";
 
 const TeacherCard = () => {
   return (
-    <section className="py-12 my-6">
-      <h3 className="heading-2 mb-8">المدرب</h3>
+    <section className="my-6 py-8 sm:py-12">
+      <h3 className="heading-2 mb-6 sm:mb-8">المدرب</h3>
 
-      <div className="flex items-start gap-6">
+      <div className="flex flex-col items-start gap-6 sm:flex-row">
         {/* Avatar */}
         <img
           src="/mentors/sayed.jpeg"
           alt="Sayed Mohamed"
-          className="size-24 rounded-full object-cover shadow-lg"
+          className="size-20 shrink-0 rounded-full object-cover shadow-lg sm:size-24"
         />
 
         {/* Content */}
-        <div className="flex-1">
+        <div className="min-w-0 flex-1">
           <h4 className="text-2xl font-bold">سيد محمد</h4>
 
-          <p className="mt-1 text-primary font-medium">
+          <p className="mt-1 font-medium text-primary">
             مطور Full Stack | React • Next.js • NestJS
           </p>
 
@@ -40,7 +40,7 @@ const TeacherCard = () => {
           </p>
 
           {/* Links */}
-          <div className="mt-6 flex items-center gap-6">
+          <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3">
             <Link href="#" className="font-medium text-primary hover:underline">
               الموقع الشخصي
             </Link>

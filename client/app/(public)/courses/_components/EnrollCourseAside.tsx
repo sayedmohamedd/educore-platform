@@ -9,8 +9,8 @@ import {
 
 const EnrollCourseAside = () => {
   return (
-    <aside className="col-span-3">
-      <div className="sticky top-20 overflow-hidden rounded-2xl bg-card shadow-md">
+    <aside className="min-w-0 lg:col-span-3">
+      <div className="overflow-hidden rounded-2xl bg-card shadow-md lg:sticky lg:top-20">
         {/* Course Preview */}
         <div className="relative aspect-video bg-muted">
           <img
@@ -28,14 +28,14 @@ const EnrollCourseAside = () => {
           </button>
         </div>
 
-        <div className="space-y-6 p-6">
+        <div className="space-y-6 p-5 sm:p-6">
           {/* Price */}
           <div className="space-y-3">
             <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
               Bestseller
             </span>
 
-            <div className="flex items-end gap-3">
+            <div className="flex flex-wrap items-end gap-3">
               <span className="text-4xl font-bold">$89.99</span>
 
               <span className="text-lg text-muted-foreground line-through">
@@ -65,27 +65,27 @@ const EnrollCourseAside = () => {
 
             <ul className="space-y-4 text-sm text-muted-foreground">
               <li className="flex items-center gap-3">
-                <PlayCircle className="h-5 w-5 text-primary" />
+                <PlayCircle className="h-5 w-5 shrink-0 text-primary" />
                 <span>24 hours on-demand video</span>
               </li>
 
               <li className="flex items-center gap-3">
-                <Download className="h-5 w-5 text-primary" />
+                <Download className="h-5 w-5 shrink-0 text-primary" />
                 <span>15 downloadable resources</span>
               </li>
 
               <li className="flex items-center gap-3">
-                <BadgeCheck className="h-5 w-5 text-primary" />
+                <BadgeCheck className="h-5 w-5 shrink-0 text-primary" />
                 <span>Full lifetime access</span>
               </li>
 
               <li className="flex items-center gap-3">
-                <Smartphone className="h-5 w-5 text-primary" />
+                <Smartphone className="h-5 w-5 shrink-0 text-primary" />
                 <span>Access on mobile & TV</span>
               </li>
 
               <li className="flex items-center gap-3">
-                <MonitorPlay className="h-5 w-5 text-primary" />
+                <MonitorPlay className="h-5 w-5 shrink-0 text-primary" />
                 <span>Certificate of completion</span>
               </li>
             </ul>

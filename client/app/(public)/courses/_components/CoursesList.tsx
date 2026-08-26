@@ -1,5 +1,6 @@
 import CourseCard from "@/components/shared/cards/CourseCard";
 import { Course } from "@/services/courses/types";
+import Link from "next/link";
 
 const CoursesList = async ({ courses }: { courses: Course[] }) => {
   // check if there are no courses
@@ -19,6 +20,14 @@ const CoursesList = async ({ courses }: { courses: Course[] }) => {
           thumbnailId={course?.thumbnailId}
           description={course?.description}
           price={course?.price}
+          actions={
+            <Link
+              href={`/courses/${course?.slug}`}
+              className="btn bg-primary text-white hover:bg-primary/80 transition duration-300"
+            >
+              View Details
+            </Link>
+          }
         />
       ))}
     </div>

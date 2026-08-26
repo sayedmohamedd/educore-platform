@@ -57,6 +57,7 @@ export class SectionsService {
 
     const section = await this.prisma.section.create({
       data: {
+        slug: dto.slug,
         courseId,
         title: dto.title,
         order: dto.order,

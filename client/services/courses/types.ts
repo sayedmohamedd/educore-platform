@@ -9,6 +9,7 @@ export type CreateCourse = {
 export type Course = {
   id: string;
   title: string;
+  slug: string;
   description: string;
   price: string;
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
