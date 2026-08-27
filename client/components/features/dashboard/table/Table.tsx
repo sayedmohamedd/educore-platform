@@ -1,11 +1,13 @@
-"use client";
-import { Suspense } from "react";
 /* eslint-disable @typescript-eslint/no-explicit-any */
+"use client";
+
+import { Suspense } from "react";
+
 import TableFilter from "./TableFilter";
 import TablePagination from "./TablePagination";
 import TBody from "./TBody";
 import THeader from "./THeader";
-import { Column } from "./types"; // أو المكان اللي حطيت فيه الـ Types
+import { Column } from "./types";
 
 interface TableComponentProps<T> {
   data: T[];
@@ -23,12 +25,17 @@ const Table = <T extends { id: string | number }>({
   showFilter = true,
 }: TableComponentProps<T>) => {
   return (
-    <div className="overflow-x-auto rounded-xl border bg-white border-slate-200 my-4">
+    <div className="my-4 w-full overflow-hidden rounded-xl border border-slate-200 bg-white">
       {showFilter && <TableFilter />}
-      <table className="w-full min-w-237.5">
-        <THeader columns={columns} />
-        <TBody data={data} columns={columns} isLoading={isLoading} />
-      </table>
+
+      <div className="w-full overflow-x-auto">
+        <table className="w-full min-w-[650px] sm:min-w-[750px] lg:min-w-0">
+          <THeader columns={columns} />
+
+          <TBody data={data} columns={columns} isLoading={isLoading} />
+        </table>
+      </div>
+
       <Suspense fallback={null}>
         <TablePagination meta={meta} />
       </Suspense>
@@ -37,3 +44,43 @@ const Table = <T extends { id: string | number }>({
 };
 
 export default Table;
+
+// "use client";
+// import { Suspense } from "react";
+// /* eslint-disable @typescript-eslint/no-explicit-any */
+// import TableFilter from "./TableFilter";
+// import TablePagination from "./TablePagination";
+// import TBody from "./TBody";
+// import THeader from "./THeader";
+// import { Column } from "./types"; // أو المكان اللي حطيت فيه الـ Types
+
+// interface TableComponentProps<T> {
+//   data: T[];
+//   columns: Column<T>[];
+//   meta?: any;
+//   isLoading?: boolean;
+//   showFilter?: boolean;
+// }
+
+// const Table = <T extends { id: string | number }>({
+//   data,
+//   columns,
+//   meta,
+//   isLoading,
+//   showFilter = true,
+// }: TableComponentProps<T>) => {
+//   return (
+//     <div className="overflow-x-auto rounded-xl border bg-white border-slate-200 my-4">
+//       {showFilter && <TableFilter />}
+//       <table className="w-full min-w-237.5">
+//         <THeader columns={columns} />
+//         <TBody data={data} columns={columns} isLoading={isLoading} />
+//       </table>
+//       <Suspense fallback={null}>
+//         <TablePagination meta={meta} />
+//       </Suspense>
+//     </div>
+//   );
+// };
+
+// export default Table;

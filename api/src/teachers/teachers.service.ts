@@ -260,8 +260,13 @@ export class TeachersService {
 
     // get teacher courses
     const rawCourses = await this.prisma.course.findMany({
-      where: { teacherId: teacher.id, status: 'PUBLISHED' },
+      where: { teacherId: teacher.id },
       include: {
+        thumbnail: {
+          select: {
+            url: true,
+          },
+        },
         categories: {
           include: {
             category: {

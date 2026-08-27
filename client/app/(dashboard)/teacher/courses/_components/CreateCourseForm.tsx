@@ -9,33 +9,41 @@ import IconButton from "@/components/ui/IconButton";
 import UploadForm from "./UploadForm";
 import { Category, CreateCourse } from "@/services/courses/types";
 import { courseClientService } from "@/services/courses/courses.service";
+import { useRouter } from "next/router";
 
 export default function CreateCourseForm({
   categories,
 }: {
   categories: Category[];
 }) {
+  const router = useRouter();
   const [formData, setFormData] = useState<CreateCourse>({
     title: "",
     description: "",
     price: 0,
-    thumbnail: "",
+    thumbnailId: "",
     categoryIds: [],
   });
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-    if (!formData.thumbnail) {
+    if (!formData.thumbnailId) {
       alert("من فضلك ارفع صورة الكورس أولاً");
       return;
     }
-    await courseClientService.createCourse(formData);
+    try {
+      await courseClientService.createCourse(formData);
+      router.push("/teacher/courses");
+    } catch (error: any) {
+      console.error("File upload error:", error);
+      alert(error.message || "فشل رفع الكورس حاول مرة أخرى.");
+    }
   };
 
-  const handleFileUpload = (publicUrl: string) => {
+  const handleFileUpload = (id: string) => {
     setFormData((prev) => ({
       ...prev,
-      thumbnail: publicUrl,
+      thumbnailId: id,
     }));
   };
 

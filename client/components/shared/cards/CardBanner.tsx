@@ -12,7 +12,8 @@ export default function CardBanner({ image, status }: Props) {
     <div className="relative h-44 overflow-hidden rounded-2xl">
       {image && (
         <Image
-          src="/courses/online-course.jpg"
+          // src={image}
+          src={"/courses/online-course.jpg"}
           alt={"Course"}
           width={0}
           height={0}

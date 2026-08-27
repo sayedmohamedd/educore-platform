@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 import {
+  ArrayNotEmpty,
   IsArray,
   IsNotEmpty,
   IsNumber,
@@ -13,11 +14,6 @@ export class CreateCourseDto {
   @IsString()
   @IsNotEmpty()
   title!: string;
-
-  @ApiProperty({ type: String, description: 'The slug of the course' })
-  @IsString()
-  @IsNotEmpty()
-  slug!: string;
 
   @ApiProperty({ type: String, description: 'The description of the course' })
   @IsOptional()
@@ -33,11 +29,10 @@ export class CreateCourseDto {
   @ApiProperty({ type: String, description: 'The thumbnail of the course' })
   @IsOptional()
   @IsString()
-  thumbnail?: string;
+  thumbnailId?: string;
 
   @ApiProperty({ type: String, description: 'The category IDs of the course' })
-  @IsNotEmpty()
-  @IsOptional()
+  @ArrayNotEmpty()
   @IsArray()
   @IsString({ each: true })
   categoryIds?: string[];

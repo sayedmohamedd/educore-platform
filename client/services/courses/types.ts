@@ -2,7 +2,7 @@ export type CreateCourse = {
   title: string;
   description?: string;
   price: number;
-  thumbnail?: string;
+  thumbnailId?: string;
   categoryIds?: string[];
 };
 

@@ -9,6 +9,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { UpdateCourseDto } from './dtos/update-course.dto.js';
 import { CreateCourseDto } from './dtos/create-course.dto.js';
 import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
+import slugify from 'slugify';
 
 @Injectable()
 export class CoursesService {
@@ -131,16 +132,19 @@ export class CoursesService {
 
   // create course by teacher
   async create(userId: string, dto: CreateCourseDto) {
+    // check teacher exists and approved or not
     const teacher = await this.instructorHelper.getTeacher(userId);
-
+    // Create Slug
+    const slug = slugify(dto.title, { lower: true });
+    // Create Course
     const course = await this.prisma.course.create({
       data: {
-        slug: dto.slug,
+        slug,
         teacherId: teacher.id,
         title: dto.title,
         description: dto.description,
         price: dto.price,
-        thumbnailId: dto.thumbnail,
+        thumbnailId: dto.thumbnailId,
 
         categories: dto.categoryIds
           ? {
@@ -180,7 +184,7 @@ export class CoursesService {
         title: dto.title,
         description: dto.description,
         price: dto.price,
-        thumbnailId: dto.thumbnail,
+        thumbnailId: dto.thumbnailId,
 
         ...(dto.categoryIds && {
           categories: {

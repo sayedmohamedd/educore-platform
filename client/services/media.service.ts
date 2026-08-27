@@ -3,7 +3,6 @@ export const mediaService = {
     const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/media`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("access_token")}`,
         Accept: "application/json",
       },
       credentials: "include",

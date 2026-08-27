@@ -5,13 +5,14 @@ import Link from "next/link";
 const CoursesList = ({ courses, role }: { courses: any[]; role?: Role }) => {
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-      {courses.slice(0, 3).map((course: any) => (
+      {courses.map((course: any) => (
         <CourseCard
           teacher={course?.teacher?.user?.fullName}
           key={course?.id}
           id={course?.id}
           title={course?.title}
           status={course?.status}
+          thumbnail={course?.thumbnail}
           thumbnailId={course?.thumbnailId}
           description={course?.description}
           price={course?.price}

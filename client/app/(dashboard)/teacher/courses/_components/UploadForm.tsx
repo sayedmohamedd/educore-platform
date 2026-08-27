@@ -32,9 +32,9 @@ export default function UploadForm({ onFileUpload }: UploadFormProps) {
 
       // استخراج الـ URL حسب شكل الستركتشر اللي راجع من الـ Backend
       const publicUrl = data.url || data.data?.url || data.secure_url;
-
-      if (publicUrl) {
-        onFileUpload(publicUrl);
+      const id = data.id || data.data?.id || data.public_id;
+      if (publicUrl && id) {
+        onFileUpload(id);
         setIsUploaded(true);
       }
     } catch (error: any) {
