@@ -26,6 +26,11 @@ export class TeachersController {
     return this.teachersService.getAll();
   }
 
+  @Get(':id')
+  getTeacher(@Param('id') id: string) {
+    return this.teachersService.findOne(id);
+  }
+
   @Post('apply')
   @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
@@ -54,7 +59,12 @@ export class TeachersController {
   @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getTeacherCourses(@Req() req: AuthenticatedRequest) {
-    return this.teachersService.getTeacherCourses(req.user.userId);
+    return this.teachersService.getMyCourses(req.user.userId);
+  }
+
+  @Get(':id/courses')
+  getCourses(@Param('id') id: string) {
+    return this.teachersService.getPublicCourses(id);
   }
 
   @Patch(':teacherId/courses/:courseId/categories')

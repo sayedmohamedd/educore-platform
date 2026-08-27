@@ -7,7 +7,7 @@ export const teachersService = {
     apiServer<teacherData>(`/teachers?${new URLSearchParams(params)}`, options),
 
   getTeacher: (teacherId: string, options?: RequestInit) =>
-    apiServer<teacherData>(`/teachers/${teacherId}`, options),
+    apiServer<any>(`/teachers/${teacherId}`, options),
 
   getTeacherStudents: (teacherId: string, options?: RequestInit) =>
     apiServer<teacherData>(`/teachers/${teacherId}/students`, options),

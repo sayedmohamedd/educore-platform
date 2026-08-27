@@ -8,7 +8,9 @@ export const useLogout = () => {
   const signout = async () => {
     try {
       setLoading(true);
-      await authService.logout();
+      await authService.logout({
+        method: "POST",
+      });
       useAuthStore.getState().logout();
     } finally {
       setLoading(false);

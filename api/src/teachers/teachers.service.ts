@@ -19,12 +19,33 @@ export class TeachersService {
   // Find All Teachers - done
   async getAll() {
     const teachers = await this.prisma.teacherProfile.findMany({
-      include: {
+      where: {
+        status: 'APPROVED',
+      },
+      select: {
+        id: true,
+        title: true,
+        bio: true,
+        expertise: true,
+
         user: {
           select: {
-            id: true,
             fullName: true,
-            email: true,
+            avatar: {
+              select: {
+                url: true,
+              },
+            },
+          },
+        },
+
+        _count: {
+          select: {
+            courses: {
+              where: {
+                status: 'PUBLISHED',
+              },
+            },
           },
         },
       },
@@ -33,6 +54,79 @@ export class TeachersService {
     return new ApiResponse(true, 'Teachers retrieved successfully', {
       teachers,
     });
+  }
+
+  async findOne(teacherId: string) {
+    const teacher = await this.prisma.teacherProfile.findUnique({
+      where: {
+        id: teacherId,
+        status: 'APPROVED',
+      },
+      select: {
+        id: true,
+        title: true,
+        bio: true,
+        expertise: true,
+
+        user: {
+          select: {
+            fullName: true,
+            avatar: {
+              select: {
+                url: true,
+              },
+            },
+          },
+        },
+
+        courses: {
+          where: {
+            status: 'PUBLISHED',
+          },
+          include: {
+            categories: {
+              include: {
+                category: {
+                  select: { id: true, name: true },
+                },
+              },
+            },
+          },
+        },
+
+        _count: {
+          select: {
+            courses: {
+              where: {
+                status: 'PUBLISHED',
+              },
+            },
+          },
+        },
+      },
+    });
+
+    return new ApiResponse(true, 'Teachers retrieved successfully', teacher);
+  }
+
+  async getPublicCourses(teacherId: string) {
+    const courses = await this.prisma.course.findMany({
+      where: {
+        teacherId,
+        status: 'PUBLISHED',
+      },
+      include: {
+        categories: {
+          include: {
+            category: {
+              select: { id: true, name: true },
+            },
+          },
+        },
+      },
+    });
+
+    return new ApiResponse(true, 'Courses retrieved successfully', { courses });
   }
 
   // Apply for Teacher - done
@@ -160,13 +254,13 @@ export class TeachersService {
   }
 
   // Find Teacher Courses - done
-  async getTeacherCourses(userId: string) {
+  async getMyCourses(userId: string) {
     // check if teacher is exists and approved or not
     const teacher = await this.instructorHelper.getTeacher(userId);
 
     // get teacher courses
     const rawCourses = await this.prisma.course.findMany({
-      where: { teacherId: teacher.id },
+      where: { teacherId: teacher.id, status: 'PUBLISHED' },
       include: {
         categories: {
           include: {
@@ -177,6 +271,9 @@ export class TeachersService {
         },
       },
     });
+
+    console.log(teacher);
+    console.log(rawCourses);
 
     // format
     const courses = rawCourses.map((course) => ({

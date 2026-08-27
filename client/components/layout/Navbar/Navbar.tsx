@@ -13,6 +13,7 @@ import SearchInput from "./SearchInput";
 import NotificationButton from "./NotificationButton";
 import TopButton from "@/components/shared/TopButton";
 import LogoutButton from "@/components/features/auth/LogoutButton";
+import UserBadge from "./UserBadge";
 
 const Navbar = () => {
   const { user, loading } = useAuthStore();
@@ -42,7 +43,9 @@ const Navbar = () => {
             <div className="h-10 w-24 animate-pulse rounded-md bg-slate-200" />
           ) : user ? (
             <>
-              <NotificationButton />
+              {/* <NotificationButton /> */}
+
+              <UserBadge />
 
               {(user.role === Role.ADMIN || user.role === Role.TEACHER) && (
                 <Link
@@ -98,8 +101,9 @@ const Navbar = () => {
                 <div className="h-10 w-full animate-pulse rounded-md bg-slate-200" />
               ) : user ? (
                 <>
-                  <NotificationButton />
+                  {/* <NotificationButton /> */}
 
+                  <UserBadge />
                   {(user.role === Role.ADMIN || user.role === Role.TEACHER) && (
                     <Link
                       href={user.role === Role.ADMIN ? "/admin" : "/teacher"}

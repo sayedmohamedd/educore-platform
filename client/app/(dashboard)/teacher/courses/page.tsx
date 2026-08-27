@@ -6,12 +6,14 @@ import IconButton from "@/components/ui/IconButton";
 import { Suspense } from "react";
 import CoursesList from "@/app/(public)/_components/CoursesList";
 import { teachersService } from "@/services/teachers.service";
+import { Role } from "@/store/auth.store";
 
 const TeacherCourses = async () => {
   let errorMessage = "";
   let courses: any = [];
   try {
     const data = await teachersService.getTeacherCourses();
+    console.log(data);
     courses = data.courses;
   } catch (error: any) {
     errorMessage = error?.message;
@@ -37,7 +39,7 @@ const TeacherCourses = async () => {
       </header>
       {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       <Suspense fallback={<h3>Loading...</h3>}>
-        <CoursesList courses={courses} />
+        <CoursesList role={Role.TEACHER} courses={courses} />
       </Suspense>
     </main>
   );

@@ -24,7 +24,7 @@ const TablePagination = ({ meta }: TablePaginationProps) => {
     router.push(`?${params.toString()}`, { scroll: false });
   };
 
-  if (lastPage <= 1) return null;
+  // if (lastPage <= 1) return null;
 
   const limit = 10;
   const startItem = (currentPage - 1) * limit + 1;
