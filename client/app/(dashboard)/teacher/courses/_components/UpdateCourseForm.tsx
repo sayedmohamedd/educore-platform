@@ -43,7 +43,7 @@ const UpdateCourseForm = ({ course }: { course: any }) => {
     title: course?.title,
     description: course?.description,
     price: course?.price,
-    thumbnail: "",
+    thumbnail: course?.thumbnail.url,
     categoryIds: course?.categories?.map((category: any) => category?.id),
   });
 

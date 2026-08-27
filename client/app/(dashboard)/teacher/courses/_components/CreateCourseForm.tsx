@@ -9,7 +9,7 @@ import IconButton from "@/components/ui/IconButton";
 import UploadForm from "./UploadForm";
 import { Category, CreateCourse } from "@/services/courses/types";
 import { courseClientService } from "@/services/courses/courses.service";
-import { useRouter } from "next/router";
+import { useRouter } from "next/navigation";
 
 export default function CreateCourseForm({
   categories,
