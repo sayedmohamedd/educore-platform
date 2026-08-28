@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -178,6 +179,10 @@ export class CoursesService {
 
   // update course by teacher
   async update(userId: string, courseId: string, dto: UpdateCourseDto) {
+    if (!userId || !courseId || !dto) {
+      throw new BadRequestException('Missing required fields');
+    }
+
     // check course and teacher Authorization
     await this.instructorHelper.getTeacherCourse(userId, courseId);
 

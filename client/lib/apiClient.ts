@@ -1,11 +1,12 @@
-const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+// const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL;
+// const BASE_URL = process.env.NEXT_PUBLIC_BACKEND_URL;
 
 // Client
 export async function apiClient<T>(
   endpoint: string,
   options?: RequestInit,
 ): Promise<T> {
-  const res = await fetch(`${BASE_URL}${endpoint}`, {
+  const res = await fetch(`/api/v1${endpoint}`, {
     ...options,
     headers: {
       ...options?.headers,
