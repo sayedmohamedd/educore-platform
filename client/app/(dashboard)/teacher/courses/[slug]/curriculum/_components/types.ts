@@ -10,6 +10,7 @@ export type CurriculumLesson = {
 
 export type CurriculumSection = {
   id: string;
+  courseId?: string;
   title: string;
   slug: string;
   order: number;

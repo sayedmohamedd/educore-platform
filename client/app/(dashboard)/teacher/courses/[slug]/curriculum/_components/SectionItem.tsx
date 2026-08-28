@@ -2,11 +2,18 @@
 "use client";
 
 import { useState } from "react";
-import { ChevronDown, ChevronUp, GripVertical, Plus } from "lucide-react";
+import {
+  ChevronDown,
+  ChevronUp,
+  GripVertical,
+  Plus,
+  Video,
+} from "lucide-react";
 
 import { courseClientService } from "@/services/courses/courses.service";
 import { CreateLessonInput, CurriculumSection } from "./types";
 import AddLessonForm from "./AddLessonForm";
+import Link from "next/link";
 
 interface SectionItemProps {
   section: CurriculumSection;
@@ -104,8 +111,9 @@ const SectionItem = ({ section, index, onLessonCreated }: SectionItemProps) => {
                 lesson: CurriculumSection["lessons"][number],
                 lessonIndex: number,
               ) => (
-                <div
+                <Link
                   key={lesson.id}
+                  href={`/teacher/courses/${section?.courseId}/lessons/${lesson.id}`}
                   className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-3 transition hover:border-primary/30 hover:bg-primary/5 sm:gap-3 sm:px-4"
                 >
                   <GripVertical
@@ -114,14 +122,12 @@ const SectionItem = ({ section, index, onLessonCreated }: SectionItemProps) => {
                   />
 
                   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100">
-                    <span className="text-xs font-semibold text-muted-foreground">
-                      {lessonIndex + 1}
-                    </span>
+                    <Video size={16} className="text-muted-foreground" />
                   </div>
 
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium text-slate-700">
-                      {lesson.title}
+                      {lessonIndex + 1}. {lesson.title}
                     </p>
 
                     <div className="mt-1 flex flex-wrap items-center gap-2 sm:gap-3">
@@ -138,7 +144,42 @@ const SectionItem = ({ section, index, onLessonCreated }: SectionItemProps) => {
                       )}
                     </div>
                   </div>
-                </div>
+                </Link>
+                // <div
+                //   key={lesson.id}
+                //   className="flex items-center gap-2 rounded-lg border border-slate-200 px-3 py-3 transition hover:border-primary/30 hover:bg-primary/5 sm:gap-3 sm:px-4"
+                // >
+                //   <GripVertical
+                //     size={16}
+                //     className="hidden cursor-grab text-slate-400 sm:block"
+                //   />
+
+                //   <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-slate-100">
+                //     <span className="text-xs font-semibold text-muted-foreground">
+                //       {lessonIndex + 1}
+                //     </span>
+                //   </div>
+
+                //   <div className="min-w-0 flex-1">
+                //     <p className="truncate text-sm font-medium text-slate-700">
+                //       {lesson.title}
+                //     </p>
+
+                //     <div className="mt-1 flex flex-wrap items-center gap-2 sm:gap-3">
+                //       <span className="text-xs text-muted-foreground">
+                //         {lesson.duration
+                //           ? `${lesson.duration} min`
+                //           : "No video"}
+                //       </span>
+
+                //       {lesson.isFree && (
+                //         <span className="rounded-md bg-green-100 px-2 py-0.5 text-[11px] font-medium text-green-700">
+                //           Free Preview
+                //         </span>
+                //       )}
+                //     </div>
+                //   </div>
+                // </div>
               ),
             )}
           </div>

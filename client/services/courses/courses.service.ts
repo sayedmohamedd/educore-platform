@@ -25,11 +25,37 @@ export const courseClientService = {
       body: JSON.stringify(body),
     }),
 
+  updateSection: (sectionId: string, body: any, options?: RequestInit) =>
+    apiClient<any>(`/sections/${sectionId}`, {
+      ...options,
+      method: "PUT",
+      body: JSON.stringify(body),
+    }),
+
+  deleteSection: (sectionId: string, options?: RequestInit) =>
+    apiClient<any>(`/sections/${sectionId}`, {
+      ...options,
+      method: "DELETE",
+    }),
+
   // Lessons
   addLesson: (sectionId: string, body: any, options?: RequestInit) =>
     apiClient<any>(`/sections/${sectionId}/lessons`, {
       ...options,
       method: "POST",
       body: JSON.stringify(body),
+    }),
+
+  updateLesson: (lessonId: string, body: any, options?: RequestInit) =>
+    apiClient<any>(`/lessons/${lessonId}`, {
+      ...options,
+      method: "PUT",
+      body: JSON.stringify(body),
+    }),
+
+  deleteLesson: (lessonId: string, options?: RequestInit) =>
+    apiClient<any>(`/lessons/${lessonId}`, {
+      ...options,
+      method: "DELETE",
     }),
 };

@@ -1,6 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { Plus } from "lucide-react";
-import { coursesTabs } from "@/lib/data";
 import Tabs from "./[slug]/_components/Tabs";
 import IconButton from "@/components/ui/IconButton";
 import { Suspense } from "react";
@@ -20,7 +19,7 @@ const TeacherCourses = async () => {
   }
   return (
     <main className="container mx-auto px-4 py-4 sm:px-6 lg:px-8">
-      <Tabs tabs={coursesTabs} />
+      <Tabs />
 
       <header className="my-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>

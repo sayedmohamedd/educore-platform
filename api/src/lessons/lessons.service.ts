@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   BadRequestException,
   ForbiddenException,
@@ -31,6 +30,8 @@ export class LessonsService {
   }
 
   async findOne(lessonId: string) {
+    if (!lessonId) throw new BadRequestException('Invalid lessonId');
+
     const lesson = await this.prisma.lesson.findUnique({
       where: { id: lessonId },
       include: {
@@ -42,9 +43,7 @@ export class LessonsService {
       },
     });
 
-    if (!lesson) {
-      throw new NotFoundException('Lesson not found');
-    }
+    if (!lesson) throw new NotFoundException('Lesson not found');
 
     return new ApiResponse(true, 'Lesson retrieved successfully', lesson);
   }

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import IconButton from "@/components/ui/IconButton";
 import { courseClientService } from "@/services/courses/courses.service";
+import Link from "next/link";
 
 type Lesson = {
   id: string;
@@ -64,9 +65,7 @@ const CurriculumBuilder = ({ course }: { course: Course }) => {
     );
   };
 
-  // =========================
   // Add Section
-  // =========================
   const addSection = async () => {
     const title = sectionTitle.trim();
 
@@ -82,14 +81,6 @@ const CurriculumBuilder = ({ course }: { course: Course }) => {
         order,
       });
 
-      /**
-       * Assuming backend returns the created section directly.
-       *
-       * If your apiClient returns:
-       * { data: section }
-       * then change this to:
-       * const newSection = response.data;
-       */
       const newSection = response;
 
       const section: Section = {
@@ -111,9 +102,7 @@ const CurriculumBuilder = ({ course }: { course: Course }) => {
     }
   };
 
-  // =========================
   // Add Lesson
-  // =========================
   const addLesson = async (sectionId: string) => {
     const title = lessonTitle.trim();
 
@@ -135,14 +124,6 @@ const CurriculumBuilder = ({ course }: { course: Course }) => {
         isFree: false,
       });
 
-      /**
-       * Assuming backend returns the created lesson directly.
-       *
-       * If your apiClient returns:
-       * { data: lesson }
-       * then use:
-       * const newLesson = response.data;
-       */
       const newLesson = response;
 
       setSections((prev) =>
@@ -166,18 +147,14 @@ const CurriculumBuilder = ({ course }: { course: Course }) => {
     }
   };
 
-  // =========================
   // Delete Section
-  // =========================
   const deleteSection = (sectionId: string) => {
     setSections((prev) => prev.filter((section) => section.id !== sectionId));
 
     setExpandedSections((prev) => prev.filter((id) => id !== sectionId));
   };
 
-  // =========================
   // Delete Lesson
-  // =========================
   const deleteLesson = (sectionId: string, lessonId: string) => {
     setSections((prev) =>
       prev.map((section) =>
@@ -400,12 +377,13 @@ const CurriculumBuilder = ({ course }: { course: Course }) => {
                           </div>
 
                           <div className="flex shrink-0 items-center gap-1">
-                            <button
+                            <Link
+                              href={`/teacher/courses/erd-course/curriculum/lessons/${lesson.id}`}
                               type="button"
                               className="rounded-lg p-2 text-slate-500 transition hover:bg-white hover:text-primary"
                             >
                               <Edit size={16} />
-                            </button>
+                            </Link>
 
                             <button
                               type="button"

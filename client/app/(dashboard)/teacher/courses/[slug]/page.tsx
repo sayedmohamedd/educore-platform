@@ -6,7 +6,6 @@ import Thumbnail from "./_components/Thumbnail";
 import Tabs from "./_components/Tabs";
 import CourseDetailsForm from "./_components/CourseDetailsForm";
 import Categorization from "./_components/Categorization";
-import { tabs } from "@/lib/data";
 
 const EditCourse = () => {
   return (
@@ -21,7 +20,7 @@ const EditCourse = () => {
         </nav>
 
         {/* Course Tabs */}
-        <Tabs tabs={tabs} />
+        <Tabs />
 
         <div className="grid grid-cols-12 gap-4">
           {/* Course Details */}

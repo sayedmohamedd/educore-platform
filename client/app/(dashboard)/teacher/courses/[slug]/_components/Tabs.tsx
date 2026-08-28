@@ -3,13 +3,23 @@ import { Tab } from "@/lib/data";
 import { cn } from "@/lib/utils";
 import { useState } from "react";
 
-const Tabs = ({ tabs }: { tabs: Tab[] }) => {
-  const [activeTab, setActiveTab] = useState(tabs[0].label
-    
-  );
+const tabs: Tab[] = [
+  {
+    label: "Active",
+  },
+  {
+    label: "Archived",
+  },
+  {
+    label: "Courses",
+  },
+];
+
+const Tabs = () => {
+  const [activeTab, setActiveTab] = useState(tabs[0].label);
   return (
     <ul className="flex items-center gap-2 bg-gray-100 py-4 px-6 mx-auto my-4 rounded-lg">
-      {tabs.map(({ label, Icon }) => (
+      {tabs.map(({ label }) => (
         <li
           key={label}
           onClick={() => setActiveTab(label)}
@@ -20,7 +30,7 @@ const Tabs = ({ tabs }: { tabs: Tab[] }) => {
             },
           )}
         >
-          {Icon && <Icon />}
+          {/* {Icon && <Icon />} */}
           <span>{label}</span>
         </li>
       ))}

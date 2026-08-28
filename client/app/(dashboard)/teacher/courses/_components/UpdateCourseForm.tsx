@@ -2,14 +2,18 @@
 "use client";
 
 import { useState } from "react";
-import { ImagePlus, Plus } from "lucide-react";
+import { ImagePlus, Loader2, Plus } from "lucide-react";
 import Link from "next/link";
 
 import IconButton from "@/components/ui/IconButton";
 import { courseClientService } from "@/services/courses/courses.service";
 import { UpdateCourse } from "@/services/courses/types";
+import { useRouter } from "next/navigation";
 
 const UpdateCourseForm = ({ course }: { course: any }) => {
+  const router = useRouter();
+  const [isUpdating, setIsUpdating] = useState<boolean>(false);
+  const [errorMessage, setErrorMessasge] = useState<string>("");
   const [formData, setFormData] = useState<UpdateCourse>({
     title: course?.title,
     description: course?.description,
@@ -20,8 +24,16 @@ const UpdateCourseForm = ({ course }: { course: any }) => {
 
   const handleSubmit = async (e: any) => {
     e.preventDefault();
-
-    await courseClientService.updateCourse(course?.id, formData);
+    try {
+      setIsUpdating(true);
+      await courseClientService.updateCourse(course?.id, formData);
+      router.push("/teacher/courses/" + course?.id + "/cirrculum");
+    } catch (error: any) {
+      setIsUpdating(false);
+      setErrorMessasge(error?.message);
+    } finally {
+      setIsUpdating(false);
+    }
   };
 
   return (
@@ -213,6 +225,15 @@ const UpdateCourseForm = ({ course }: { course: any }) => {
           text="Update Course"
           className="bg-primary text-white hover:bg-secondary"
         />
+        {isUpdating && (
+          <IconButton
+            Icon={Loader2}
+            text="Updating..."
+            className="bg-primary text-white hover:bg-secondary"
+            disabled
+          />
+        )}
+        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
       </div>
     </form>
   );

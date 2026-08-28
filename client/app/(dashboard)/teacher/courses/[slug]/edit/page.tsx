@@ -20,12 +20,10 @@ const EditCoursePage = async ({ params }: { params: Promise<any> }) => {
       {/* Header */}
       <header className="flex-between">
         <div>
-          <h2 className="text-2xl font-bold text-slate-700">
-            Create New Course
-          </h2>
+          <h2 className="text-2xl font-bold text-slate-700">Edit Course</h2>
 
           <p className="paragraph">
-            Create and configure a new course for your students.
+            Configure your course content and settings.
           </p>
         </div>
 

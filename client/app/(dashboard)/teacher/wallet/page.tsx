@@ -2,7 +2,6 @@ import StatsCard from "@/components/shared/cards/StatsCard";
 import { Wallet as WalletIcon } from "lucide-react";
 import Withdraw from "./_components/Withdraw";
 import Table from "@/components/features/dashboard/table/Table";
-import { Suspense } from "react";
 
 const stats = [
   {

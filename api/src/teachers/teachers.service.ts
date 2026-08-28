@@ -274,6 +274,11 @@ export class TeachersService {
             },
           },
         },
+        sections: {
+          include: {
+            lessons: true,
+          },
+        },
       },
     });
 

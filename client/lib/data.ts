@@ -183,18 +183,6 @@ export const tabs: Tab[] = [
   },
 ];
 
-export const coursesTabs = [
-  {
-    label: "Active Courses",
-  },
-  {
-    label: "Archived Courses",
-  },
-  {
-    label: "Courses Analytics",
-  },
-];
-
 export const tableData = [
   {
     id: "#TRX-1025",

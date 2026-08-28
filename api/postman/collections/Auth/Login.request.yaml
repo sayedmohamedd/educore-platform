@@ -11,6 +11,8 @@ body:
 
     \    \"email\":\"teacher1@educore.com\",\r
 
+    \    // \"email\":\"teacher2@educore.com\",\r
+
     \    // \"email\":\"student1@educore.com\",\r
 
     \    \"password\":\"test1234\"\r

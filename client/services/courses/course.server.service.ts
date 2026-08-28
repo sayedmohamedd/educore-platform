@@ -12,4 +12,8 @@ export const courseServerService = {
 
   getTeacherCourses: (teacherId: string, options?: RequestInit) =>
     apiServer<CoursesData>(`/teachers/${teacherId}/courses`, options),
+
+  // Lessons
+  getLessonById: (lessonId: string, options?: RequestInit) =>
+    apiServer<any>(`/lessons/${lessonId}`, options),
 };
