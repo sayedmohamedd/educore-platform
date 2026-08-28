@@ -1,9 +1,33 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { apiClient } from "@/lib/apiClient";
-import { CoursesData, CreateCourse } from "./types";
+import { CoursesData, CreateCourse, UpdateCourse } from "./types";
 
 export const courseClientService = {
   createCourse: (body: CreateCourse, options?: RequestInit) =>
     apiClient<CoursesData>("/courses", {
+      ...options,
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  updateCourse: (courseId: string, body: UpdateCourse, options?: RequestInit) =>
+    apiClient<CoursesData>(`/courses/${courseId}`, {
+      ...options,
+      method: "PUT",
+      body: JSON.stringify(body),
+    }),
+
+  // Sections
+  addSection: (courseId: string, body: any, options?: RequestInit) =>
+    apiClient<any>(`/courses/${courseId}/sections`, {
+      ...options,
+      method: "POST",
+      body: JSON.stringify(body),
+    }),
+
+  // Lessons
+  addLesson: (sectionId: string, body: any, options?: RequestInit) =>
+    apiClient<any>(`/sections/${sectionId}/lessons`, {
       ...options,
       method: "POST",
       body: JSON.stringify(body),

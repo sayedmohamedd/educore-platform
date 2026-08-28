@@ -9,6 +9,7 @@ import { ApiResponse } from '../helper/APIResponse.js';
 import { UpdateLessonDto } from './dtos/update-lesson.dto.js';
 import { CreateLessonDto } from './dtos/create-lesson.dto.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import slugify from 'slugify';
 
 @Injectable()
 export class LessonsService {
@@ -17,9 +18,11 @@ export class LessonsService {
   async create(userId: string, sectionId: string, dto: CreateLessonDto) {
     await this.getTeacherSection(userId, sectionId);
 
+    const slug = slugify(dto.title, { lower: true });
     const lesson = await this.prisma.lesson.create({
       data: {
         ...dto,
+        slug,
         sectionId,
       },
     });

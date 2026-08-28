@@ -3,6 +3,11 @@ import CourseCard from "@/components/shared/cards/CourseCard";
 import { Role } from "@/store/auth.store";
 import Link from "next/link";
 const CoursesList = ({ courses, role }: { courses: any[]; role?: Role }) => {
+  // check if there are no courses
+  if (!courses || courses.length === 0) {
+    return <div className="text-center py-10">لا توجد كورسات متاحة حالياً</div>;
+  }
+
   return (
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {courses.map((course: any) => (

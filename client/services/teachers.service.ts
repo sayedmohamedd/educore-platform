@@ -12,7 +12,7 @@ export const teachersService = {
   getTeacherStudents: (teacherId: string, options?: RequestInit) =>
     apiServer<teacherData>(`/teachers/${teacherId}/students`, options),
 
-  getTeacherCourses: (options?: RequestInit) =>
+  getMyCourses: (options?: RequestInit) =>
     apiServer<CoursesData>(`/teachers/me/courses`, options),
 };
 

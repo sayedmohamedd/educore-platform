@@ -277,9 +277,6 @@ export class TeachersService {
       },
     });
 
-    console.log(teacher);
-    console.log(rawCourses);
-
     // format
     const courses = rawCourses.map((course) => ({
       ...course,

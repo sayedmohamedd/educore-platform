@@ -14,11 +14,6 @@ export class CreateLessonDto {
   @IsNotEmpty()
   title!: string;
 
-  @ApiProperty({ type: String, description: 'The slug of the lesson' })
-  @IsString()
-  @IsNotEmpty()
-  slug!: string;
-
   @ApiProperty({ type: String, description: 'The description of the lesson' })
   @IsOptional()
   @IsString()

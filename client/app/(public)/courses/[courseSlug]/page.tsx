@@ -5,10 +5,10 @@ import TeacherCard from "@/app/(public)/courses/_components/TeacherCard";
 // import { courses } from "@/lib/data";
 import { CircleCheck, ChevronLeft, Star } from "lucide-react";
 import Link from "next/link";
-import CoursesList from "../_components/CoursesList";
 import { courseServerService } from "@/services/courses/course.server.service";
 import { Suspense } from "react";
 import CourseContent from "../_components/CourseContent";
+import CoursesList from "../../_components/CoursesList";
 
 const CoursePage = async () => {
   let courses: any = [];

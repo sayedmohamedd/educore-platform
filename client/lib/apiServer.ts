@@ -13,9 +13,9 @@ export async function apiServer<T>(
     headers: {
       ...options?.headers,
       "Content-Type": "application/json",
-      // credentials: "include",
       Cookie: cookieStore.toString(),
     },
+    credentials: "include",
   });
 
   const json = await res.json();

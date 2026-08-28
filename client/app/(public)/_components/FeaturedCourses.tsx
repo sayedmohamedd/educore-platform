@@ -25,7 +25,7 @@ const FeaturedCourses = async () => {
         </header>
         {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <Suspense fallback={<h3>Loading Courses...</h3>}>
-          <CoursesList courses={courses} />
+          <CoursesList courses={courses.slice(0, 3)} />
         </Suspense>
         <Link className="link text-lg flex-center mt-8" href="/courses">
           View All

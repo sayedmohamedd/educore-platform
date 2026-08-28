@@ -4,8 +4,8 @@ import CoursesTopics from "@/app/(public)/courses/_components/CoursesTopics";
 import TablePagination from "@/components/features/dashboard/table/TablePagination";
 import Select from "@/components/ui/Select";
 import { Suspense } from "react";
-import CoursesList from "./_components/CoursesList";
 import { courseServerService } from "@/services/courses/course.server.service";
+import CoursesList from "../_components/CoursesList";
 
 const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
   const params = await searchParams;

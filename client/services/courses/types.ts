@@ -7,6 +7,15 @@ export type CreateCourse = {
   categoryIds?: string[];
 };
 
+export type UpdateCourse = {
+  title?: string;
+  description?: string;
+  price?: number;
+  thumbnail?: string;
+  thumbnailId?: string;
+  categoryIds?: string[];
+};
+
 export type Course = {
   id: string;
   title: string;
@@ -18,7 +27,7 @@ export type Course = {
   thumbnailId: string;
   createdAt: string;
   updatedAt: string;
-
+  sections?: Section[];
   teacher?: {
     id: string;
     bio: string;
@@ -50,4 +59,23 @@ export type Meta = {
 export type CoursesData = {
   courses: Course[];
   meta?: Meta;
+};
+
+type Lesson = {
+  id: string;
+  title: string;
+  description?: string | null;
+  videoId?: string | null;
+  videoUrl?: string | null;
+  duration: number;
+  order: number;
+  isFree: boolean;
+};
+
+type Section = {
+  id: string;
+  title: string;
+  slug: string;
+  order: number;
+  lessons: Lesson[];
 };

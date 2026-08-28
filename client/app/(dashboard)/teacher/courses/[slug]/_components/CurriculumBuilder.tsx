@@ -12,58 +12,39 @@ import {
   X,
 } from "lucide-react";
 import IconButton from "@/components/ui/IconButton";
+import { courseClientService } from "@/services/courses/courses.service";
 
 type Lesson = {
   id: string;
   title: string;
+  description?: string | null;
+  videoId?: string | null;
+  videoUrl?: string | null;
   duration: number;
+  order: number;
   isFree: boolean;
 };
 
 type Section = {
   id: string;
   title: string;
+  slug: string;
+  order: number;
   lessons: Lesson[];
 };
 
-const mockSections: Section[] = [
-  {
-    id: "section-1",
-    title: "Introduction to NestJS",
-    lessons: [
-      {
-        id: "lesson-1",
-        title: "What is NestJS?",
-        duration: 20,
-        isFree: true,
-      },
-      {
-        id: "lesson-2",
-        title: "Controllers and Services",
-        duration: 35,
-        isFree: false,
-      },
-    ],
-  },
-  {
-    id: "section-2",
-    title: "Prisma and PostgreSQL",
-    lessons: [
-      {
-        id: "lesson-3",
-        title: "Prisma with PostgreSQL",
-        duration: 45,
-        isFree: false,
-      },
-    ],
-  },
-];
+type Course = {
+  id: string;
+  title: string;
+  description?: string | null;
+  sections?: Section[];
+};
 
-const CurriculumBuilder = ({ courseId }: { courseId: string }) => {
-  const [sections, setSections] = useState<Section[]>(mockSections);
+const CurriculumBuilder = ({ course }: { course: Course }) => {
+  const [sections, setSections] = useState<Section[]>(course.sections ?? []);
 
   const [expandedSections, setExpandedSections] = useState<string[]>(
-    mockSections.map((section) => section.id),
+    (course.sections ?? []).map((section) => section.id),
   );
 
   const [showSectionForm, setShowSectionForm] = useState(false);
@@ -71,6 +52,9 @@ const CurriculumBuilder = ({ courseId }: { courseId: string }) => {
 
   const [sectionTitle, setSectionTitle] = useState("");
   const [lessonTitle, setLessonTitle] = useState("");
+
+  const [isAddingSection, setIsAddingSection] = useState(false);
+  const [isAddingLesson, setIsAddingLesson] = useState<string | null>(null);
 
   const toggleSection = (sectionId: string) => {
     setExpandedSections((prev) =>
@@ -80,51 +64,120 @@ const CurriculumBuilder = ({ courseId }: { courseId: string }) => {
     );
   };
 
-  const addSection = () => {
-    if (!sectionTitle.trim()) return;
+  // =========================
+  // Add Section
+  // =========================
+  const addSection = async () => {
+    const title = sectionTitle.trim();
 
-    const newSection: Section = {
-      id: crypto.randomUUID(),
-      title: sectionTitle,
-      lessons: [],
-    };
+    if (!title || isAddingSection) return;
 
-    setSections((prev) => [...prev, newSection]);
-    setExpandedSections((prev) => [...prev, newSection.id]);
+    try {
+      setIsAddingSection(true);
 
-    setSectionTitle("");
-    setShowSectionForm(false);
+      const order = sections.length;
+
+      const response = await courseClientService.addSection(course.id, {
+        title,
+        order,
+      });
+
+      /**
+       * Assuming backend returns the created section directly.
+       *
+       * If your apiClient returns:
+       * { data: section }
+       * then change this to:
+       * const newSection = response.data;
+       */
+      const newSection = response;
+
+      const section: Section = {
+        ...newSection,
+        lessons: newSection.lessons ?? [],
+      };
+
+      setSections((prev) => [...prev, section]);
+
+      setExpandedSections((prev) => [...prev, section.id]);
+
+      setSectionTitle("");
+      setShowSectionForm(false);
+    } catch (error) {
+      console.error("Failed to add section:", error);
+      alert("Failed to add section");
+    } finally {
+      setIsAddingSection(false);
+    }
   };
 
-  const addLesson = (sectionId: string) => {
-    if (!lessonTitle.trim()) return;
+  // =========================
+  // Add Lesson
+  // =========================
+  const addLesson = async (sectionId: string) => {
+    const title = lessonTitle.trim();
 
-    const newLesson: Lesson = {
-      id: crypto.randomUUID(),
-      title: lessonTitle,
-      duration: 0,
-      isFree: false,
-    };
+    if (!title || isAddingLesson === sectionId) return;
 
-    setSections((prev) =>
-      prev.map((section) =>
-        section.id === sectionId
-          ? {
-              ...section,
-              lessons: [...section.lessons, newLesson],
-            }
-          : section,
-      ),
-    );
+    const section = sections.find((section) => section.id === sectionId);
 
-    setLessonTitle("");
-    setShowLessonForm(null);
+    if (!section) return;
+
+    try {
+      setIsAddingLesson(sectionId);
+
+      const order = section.lessons.length;
+
+      const response = await courseClientService.addLesson(sectionId, {
+        title,
+        duration: 0,
+        order,
+        isFree: false,
+      });
+
+      /**
+       * Assuming backend returns the created lesson directly.
+       *
+       * If your apiClient returns:
+       * { data: lesson }
+       * then use:
+       * const newLesson = response.data;
+       */
+      const newLesson = response;
+
+      setSections((prev) =>
+        prev.map((section) =>
+          section.id === sectionId
+            ? {
+                ...section,
+                lessons: [...section.lessons, newLesson],
+              }
+            : section,
+        ),
+      );
+
+      setLessonTitle("");
+      setShowLessonForm(null);
+    } catch (error) {
+      console.error("Failed to add lesson:", error);
+      alert("Failed to add lesson");
+    } finally {
+      setIsAddingLesson(null);
+    }
   };
 
+  // =========================
+  // Delete Section
+  // =========================
   const deleteSection = (sectionId: string) => {
     setSections((prev) => prev.filter((section) => section.id !== sectionId));
+
+    setExpandedSections((prev) => prev.filter((id) => id !== sectionId));
   };
 
+  // =========================
+  // Delete Lesson
+  // =========================
   const deleteLesson = (sectionId: string, lessonId: string) => {
     setSections((prev) =>
       prev.map((section) =>
@@ -151,12 +204,11 @@ const CurriculumBuilder = ({ courseId }: { courseId: string }) => {
             </p>
 
             <h3 className="text-lg font-semibold text-slate-700">
-              NestJS Backend Development
+              {course.title}
             </h3>
 
             <p className="mt-1 text-sm leading-6 text-muted-foreground">
-              Build production-ready REST APIs using NestJS, Prisma and
-              PostgreSQL.
+              {course.description}
             </p>
           </div>
 
@@ -186,8 +238,9 @@ const CurriculumBuilder = ({ courseId }: { courseId: string }) => {
 
           <IconButton
             Icon={Plus}
-            text="Add Section"
+            text={isAddingSection ? "Adding..." : "Add Section"}
             onClick={() => setShowSectionForm(true)}
+            disabled={isAddingSection}
             className="w-full bg-primary text-white hover:bg-secondary sm:w-auto"
           />
         </div>
@@ -200,25 +253,35 @@ const CurriculumBuilder = ({ courseId }: { courseId: string }) => {
                 value={sectionTitle}
                 onChange={(e) => setSectionTitle(e.target.value)}
                 placeholder="e.g. Introduction to NestJS"
-                className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                disabled={isAddingSection}
+                autoFocus
+                onKeyDown={(e) => {
+                  if (e.key === "Enter") {
+                    e.preventDefault();
+                    addSection();
+                  }
+                }}
+                className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 disabled:opacity-60"
               />
 
               <div className="flex gap-2">
                 <button
                   type="button"
                   onClick={addSection}
-                  className="flex-1 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:bg-secondary sm:flex-none"
+                  disabled={isAddingSection}
+                  className="flex-1 rounded-lg bg-primary px-5 py-2.5 text-sm font-medium text-white transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
                 >
-                  Add
+                  {isAddingSection ? "Adding..." : "Add"}
                 </button>
 
                 <button
                   type="button"
+                  disabled={isAddingSection}
                   onClick={() => {
                     setShowSectionForm(false);
                     setSectionTitle("");
                   }}
-                  className="flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-slate-600 transition hover:bg-slate-50"
+                  className="flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-slate-600 transition hover:bg-slate-50 disabled:opacity-60"
                 >
                   <X size={18} />
                 </button>
@@ -366,25 +429,37 @@ const CurriculumBuilder = ({ courseId }: { courseId: string }) => {
                             value={lessonTitle}
                             onChange={(e) => setLessonTitle(e.target.value)}
                             placeholder="e.g. What is NestJS?"
-                            className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+                            disabled={isAddingLesson === section.id}
+                            autoFocus
+                            onKeyDown={(e) => {
+                              if (e.key === "Enter") {
+                                e.preventDefault();
+                                addLesson(section.id);
+                              }
+                            }}
+                            className="min-w-0 flex-1 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10 disabled:opacity-60"
                           />
 
                           <div className="flex gap-2">
                             <button
                               type="button"
                               onClick={() => addLesson(section.id)}
-                              className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-secondary sm:flex-none"
+                              disabled={isAddingLesson === section.id}
+                              className="flex-1 rounded-lg bg-primary px-4 py-2.5 text-sm font-medium text-white transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-60 sm:flex-none"
                             >
-                              Add Lesson
+                              {isAddingLesson === section.id
+                                ? "Adding..."
+                                : "Add Lesson"}
                             </button>
 
                             <button
                               type="button"
+                              disabled={isAddingLesson === section.id}
                               onClick={() => {
                                 setShowLessonForm(null);
                                 setLessonTitle("");
                               }}
-                              className="flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-slate-600 transition hover:bg-slate-50"
+                              className="flex items-center justify-center rounded-lg border border-slate-200 bg-white px-3 text-slate-600 transition hover:bg-slate-50 disabled:opacity-60"
                             >
                               <X size={18} />
                             </button>
@@ -438,7 +513,7 @@ const CurriculumBuilder = ({ courseId }: { courseId: string }) => {
           text="Continue"
           className="w-full bg-primary text-white hover:bg-secondary sm:w-auto"
           onClick={() => {
-            console.log("courseId:", courseId);
+            console.log("courseId:", course.id);
             console.log("sections:", sections);
           }}
         />

@@ -7,39 +7,10 @@ import Link from "next/link";
 
 import IconButton from "@/components/ui/IconButton";
 import { courseClientService } from "@/services/courses/courses.service";
-import { CreateCourse } from "@/services/courses/types";
-
-// export type Category = {
-//   id: string;
-//   name: string;
-// };
-
-// export type Teacher = {
-//   id: string;
-//   userId: string;
-//   bio: string;
-//   title: string;
-//   expertise: string;
-//   [key: string]: any; // لو فيه خصائص تانية في الـ Teacher مش ظاهرة كلها
-// };
-
-// export type Course = {
-//   id: string;
-//   title: string;
-//   description: string;
-//   price: string;
-//   status: string; // أو ممكن تقلبها Enum لو حابب ('DRAFT' | 'PUBLISHED')
-//   teacherId: string;
-//   thumbnailId: string;
-//   createdAt: string;
-//   updatedAt: string;
-//   categories: Category[];
-//   sections?: any[]; // ممكن تغيرها لـ Type الخاص بالسكشنز لما تعمله
-//   teacher: Teacher;
-// };
+import { UpdateCourse } from "@/services/courses/types";
 
 const UpdateCourseForm = ({ course }: { course: any }) => {
-  const [formData, setFormData] = useState<CreateCourse>({
+  const [formData, setFormData] = useState<UpdateCourse>({
     title: course?.title,
     description: course?.description,
     price: course?.price,
@@ -50,7 +21,7 @@ const UpdateCourseForm = ({ course }: { course: any }) => {
   const handleSubmit = async (e: any) => {
     e.preventDefault();
 
-    await courseClientService.createCourse(formData);
+    await courseClientService.updateCourse(course?.id, formData);
   };
 
   return (
@@ -239,7 +210,7 @@ const UpdateCourseForm = ({ course }: { course: any }) => {
         <IconButton
           type="submit"
           Icon={Plus}
-          text="Create Course"
+          text="Update Course"
           className="bg-primary text-white hover:bg-secondary"
         />
       </div>

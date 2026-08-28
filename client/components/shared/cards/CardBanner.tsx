@@ -12,8 +12,10 @@ export default function CardBanner({ image, status }: Props) {
     <div className="relative h-44 overflow-hidden rounded-2xl">
       {image && (
         <Image
-          // src={image}
-          src={"/courses/online-course.jpg"}
+          src={
+            image.includes("cloudinary") ? image : "/courses/online-course.jpg"
+          }
+          // src="https://res.cloudinary.com/akcry6mk/image/upload/v1787851274/educore/cernujm18mgc59lhjib8.png"
           alt={"Course"}
           width={0}
           height={0}

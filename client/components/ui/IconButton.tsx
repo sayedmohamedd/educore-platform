@@ -7,17 +7,31 @@ type Props = {
   className?: string;
   href?: string;
   type?: "button" | "submit";
+  disabled?: boolean;
   onClick?: () => void;
 };
 
-const IconButton = ({ Icon, text, className, href, type, onClick }: Props) => {
+const IconButton = ({
+  Icon,
+  text,
+  className,
+  href,
+  type,
+  onClick,
+  disabled,
+}: Props) => {
   return href ? (
     <Link href={href} className={`btn gap-2 ${className}`} onClick={onClick}>
       <Icon />
       <span>{text}</span>
     </Link>
   ) : (
-    <button type={type} className={`btn gap-2 ${className}`} onClick={onClick}>
+    <button
+      type={type}
+      className={`btn gap-2 ${className}`}
+      onClick={onClick}
+      disabled={disabled}
+    >
       <Icon />
       <span>{text}</span>
     </button>

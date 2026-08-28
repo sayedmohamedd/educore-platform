@@ -26,7 +26,6 @@ const CourseCard = ({
   price,
   actions,
 }: Props) => {
-  console.log("thumbnail", thumbnail);
   return (
     <article className="p-2 group h-fit bg-white  overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Image */}

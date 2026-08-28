@@ -7,11 +7,6 @@ export class CreateSectionDto {
   @IsNotEmpty()
   title!: string;
 
-  @ApiProperty({ type: String, description: 'The Slug of the section' })
-  @IsString()
-  @IsNotEmpty()
-  slug!: string;
-
   @ApiProperty({ type: Number, description: 'The order of the section' })
   @IsInt()
   @Min(0)

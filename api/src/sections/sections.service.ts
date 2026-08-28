@@ -4,6 +4,7 @@ import { CreateSectionDto } from './dtos/create-section.dto.js';
 import { UpdateSectionDto } from './dtos/update-section.dto.js';
 import { ApiResponse } from '../helper/APIResponse.js';
 import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
+import slugify from 'slugify';
 
 @Injectable()
 export class SectionsService {
@@ -55,9 +56,11 @@ export class SectionsService {
     // check course and teacher Authorization
     await this.instructorHelper.getTeacherCourse(userId, courseId);
 
+    const slug = slugify(dto.title, { lower: true });
+
     const section = await this.prisma.section.create({
       data: {
-        slug: dto.slug,
+        slug,
         courseId,
         title: dto.title,
         order: dto.order,

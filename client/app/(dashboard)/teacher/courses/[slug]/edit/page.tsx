@@ -7,6 +7,7 @@ import { courseServerService } from "@/services/courses/course.server.service";
 
 const EditCoursePage = async ({ params }: { params: Promise<any> }) => {
   const { slug } = await params;
+  console.log(slug);
   let errorMessage = "";
   let course: any = {};
   try {

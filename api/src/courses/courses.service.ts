@@ -66,6 +66,7 @@ export class CoursesService {
           categories: {
             include: { category: true },
           },
+          thumbnail: { select: { url: true } },
         },
       }),
       this.prisma.course.count({ where }),
@@ -110,6 +111,11 @@ export class CoursesService {
           },
           orderBy: {
             order: 'asc',
+          },
+        },
+        thumbnail: {
+          select: {
+            url: true,
           },
         },
       },
@@ -205,6 +211,7 @@ export class CoursesService {
             category: true,
           },
         },
+        thumbnail: { select: { url: true } },
       },
     });
 
