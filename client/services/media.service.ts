@@ -1,6 +1,6 @@
 export const mediaService = {
   upload: async (formData: FormData) => {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL}/media`, {
+    const response = await fetch(`/api/v1/media`, {
       method: "POST",
       headers: {
         Accept: "application/json",
