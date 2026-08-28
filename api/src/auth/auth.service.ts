@@ -230,8 +230,8 @@ export class AuthService {
   setRefreshTokenCookie(res: Response, hashedRefreshToken: string) {
     res.cookie('refreshToken', hashedRefreshToken, {
       httpOnly: true,
-      secure: false,
-      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 7 * 24 * 60 * 60 * 1000, // 7 days
     });
   }
@@ -239,8 +239,8 @@ export class AuthService {
   setAccessTokenCookie(res: Response, accessToken: string) {
     res.cookie('accessToken', accessToken, {
       httpOnly: false,
-      secure: false,
-      sameSite: 'lax',
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax',
       maxAge: 15 * 60 * 1000, // 15 minutes
     });
   }
