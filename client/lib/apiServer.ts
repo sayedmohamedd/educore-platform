@@ -8,6 +8,7 @@ export async function apiServer<T>(
   options?: RequestInit,
 ): Promise<T> {
   const cookieStore = await cookies();
+  console.log("SERVER COOKIES:", cookieStore.toString());
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers: {
