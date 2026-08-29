@@ -1,13 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { categoryService } from "@/services/categories.service";
 import CategoriesList from "./CategoriesList";
 import { Suspense } from "react";
+import { Category } from "@/services/categories/types";
+import { categoryServerService } from "@/services/categories/category.server.service";
 
 const Categories = async () => {
-  let categories: any = [];
+  let categories: Category[] = [];
   let errorMessage = "";
   try {
-    categories = await categoryService.getCategories();
+    const data = await categoryServerService.getAll();
+    categories = data.categories;
   } catch (error: any) {
     errorMessage = error?.message;
   }

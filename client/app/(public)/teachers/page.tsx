@@ -2,7 +2,7 @@
 import TablePagination from "@/components/features/dashboard/table/TablePagination";
 import TeachersList from "./_components/TeachersList";
 import { Suspense } from "react";
-import { teachersService } from "@/services/teachers.service";
+import { teachersService } from "@/services/teachers/teacher.server.service";
 
 // const teachers = [
 //   {

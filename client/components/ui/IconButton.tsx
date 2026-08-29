@@ -1,14 +1,16 @@
 import { LucideIcon } from "lucide-react";
 import Link from "next/link";
+import { ReactNode } from "react";
 
 type Props = {
-  Icon: LucideIcon;
-  text: string;
+  Icon?: LucideIcon;
+  text?: string;
   className?: string;
   href?: string;
   type?: "button" | "submit";
   disabled?: boolean;
   onClick?: () => void;
+  children?: ReactNode;
 };
 
 const IconButton = ({
@@ -19,11 +21,13 @@ const IconButton = ({
   type,
   onClick,
   disabled,
+  children,
 }: Props) => {
   return href ? (
     <Link href={href} className={`btn gap-2 ${className}`} onClick={onClick}>
-      <Icon />
-      <span>{text}</span>
+      {Icon && <Icon />}
+      {text && <span>{text}</span>}
+      {children}
     </Link>
   ) : (
     <button
@@ -32,8 +36,9 @@ const IconButton = ({
       onClick={onClick}
       disabled={disabled}
     >
-      <Icon />
-      <span>{text}</span>
+      {Icon && <Icon />}
+      {text && <span>{text}</span>}
+      {children}
     </button>
   );
 };

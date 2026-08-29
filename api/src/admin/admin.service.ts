@@ -9,6 +9,7 @@ import { ApiResponse } from '../helper/APIResponse.js';
 import { RejectionDto } from '../payments/dtos/reject-payment.dto.js';
 import { UpdateCategoryDto } from '../categories/dto/update-category.dto.js';
 import { CreateCategoryDto } from '../categories/dto/create-category.dto.js';
+import slugify from 'slugify';
 
 @Injectable()
 export class AdminService {
@@ -174,7 +175,9 @@ export class AdminService {
 
   //   Categories
   async createCategory(dto: CreateCategoryDto) {
-    const category = await this.prisma.category.create({ data: dto });
+    const category = await this.prisma.category.create({
+      data: { name: dto.name, slug: slugify(dto.name) },
+    });
     return new ApiResponse(true, 'Category created successfully', category);
   }
 

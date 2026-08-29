@@ -19,13 +19,15 @@ export class CategoriesService {
       },
     });
 
-    const data = categories.map((category) => ({
+    const formatedCategories = categories.map((category) => ({
       id: category.id,
       name: category.name,
       coursesCount: category._count.courses,
     }));
 
-    return new ApiResponse(true, 'Categories retrieved successfully', data);
+    return new ApiResponse(true, 'Categories retrieved successfully', {
+      categories: formatedCategories,
+    });
   }
 
   async findOne(categoryId: string) {

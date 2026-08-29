@@ -1,9 +1,7 @@
 $kind: http-request
 name: Get Lesson
-url: "{{url}}/courses/{{courseId}}/sections/{{sectionId}}/lessons/{{lessonId}}"
+url: "{{url}}/lessons/cmtc681w60002k0f3lcvmf5ba"
 method: GET
 auth:
-  type: bearer
-  credentials:
-    token: "{{access_token}}"
+  type: noauth
 order: 1000000000018

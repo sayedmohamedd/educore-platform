@@ -1,7 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import type { Teacher } from "@/services/teachers.service";
+import type { Teacher } from "@/services/teachers/teacher.server.service";
 
 const MentorCard = ({ props }: { props: Teacher }) => {
   return (

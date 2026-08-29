@@ -154,6 +154,7 @@ export const commonQuestions = [
 export type Tab = {
   label: string;
   Icon?: LucideIcon;
+  value?: string;
 };
 
 export const tabs: Tab[] = [
@@ -264,7 +265,7 @@ export const menuItems = {
     },
     {
       title: "Courses",
-      href: "/teacher/courses",
+      href: "/teacher/courses?status=ALL",
       icon: GraduationCap,
     },
     {

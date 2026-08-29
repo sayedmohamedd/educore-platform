@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
-import { teachersService } from "@/services/teachers.service";
+import { teachersService } from "@/services/teachers/teacher.server.service";
 import { Suspense } from "react";
 import MentorsList from "./MentorsList";
 

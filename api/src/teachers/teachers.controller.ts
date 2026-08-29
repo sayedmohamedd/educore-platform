@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -14,7 +15,7 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/jwt-auth.guard/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import type { AuthenticatedRequest } from '../common/types/authenticated-request.js';
-import { Role } from '../generated/prisma/client.js';
+import { Role, CourseStatus } from '../generated/prisma/client.js';
 import { AssignCategoryDto } from '../courses/dtos/assign-category.dto.js';
 
 @Controller('teachers')
@@ -58,8 +59,11 @@ export class TeachersController {
   @Get('me/courses')
   @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  getTeacherCourses(@Req() req: AuthenticatedRequest) {
-    return this.teachersService.getMyCourses(req.user.userId);
+  getTeacherCourses(
+    @Req() req: AuthenticatedRequest,
+    @Query() query: { status: CourseStatus },
+  ) {
+    return this.teachersService.getMyCourses(req.user.userId, query.status);
   }
 
   @Get(':id/courses')

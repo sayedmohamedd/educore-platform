@@ -1,30 +1,74 @@
-import Button from "@/components/ui/Button";
-import { GraduationCap, List, User } from "lucide-react";
+"use client";
 
-type Props = {
-  title: string;
-  number: number;
-};
+import {
+  BarChart3,
+  FolderTree,
+  GraduationCap,
+  Pencil,
+  Trash2,
+} from "lucide-react";
+import type { Category } from "@/services/categories/types";
+import IconButton from "@/components/ui/IconButton";
 
-const CategoryCard = ({ title, number }: Props) => {
+interface Props {
+  category: Category;
+  onEdit: (category: Category) => void;
+  onDelete: (category: Category) => void;
+}
+
+const CategoryCard = ({ category, onEdit, onDelete }: Props) => {
+  const coursesCount = category.coursesCount ?? 0;
+
   return (
-    <div className="p-4 bg-white shadow rounded-md">
-      <div className="flex-between mt-2">
-        <User className="text-muted" />
-        <List className="text-muted" />
+    <article className="group rounded-2xl border border-slate-200 bg-white p-5 shadow-sm transition hover:-translate-y-0.5 hover:border-primary/30 hover:shadow-md">
+      <div className="flex items-center justify-between">
+        <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-primary/10">
+          <FolderTree className="size-5 text-primary" />
+        </div>
+
+        <div className="rounded-lg bg-slate-50 p-2 text-slate-400">
+          <BarChart3 className="size-4" />
+        </div>
       </div>
-      <h4 className="text-xl font-medium mt-6 text-slate-800">{title}</h4>
-      <p className="text-muted flex-center gap-2">
-        <GraduationCap />
-        {number} active courses
-      </p>
-      <div className="flex-between mt-8">
-        <Button className="border-2 border-primary text-primary bg-white">
+
+      <div className="mt-5">
+        <h4 className="truncate text-lg font-semibold text-slate-700">
+          {category.name}
+        </h4>
+
+        <p className="mt-1 min-h-10 text-sm leading-5 text-muted-foreground">
+          {category.description || "No description available."}
+        </p>
+
+        <div className="mt-4 flex items-center gap-2 text-sm text-muted-foreground">
+          <GraduationCap className="size-4" />
+
+          <span>
+            {coursesCount} {coursesCount === 1 ? "course" : "courses"}
+          </span>
+        </div>
+      </div>
+
+      <div className="mt-6 flex gap-2">
+        <IconButton
+          type="button"
+          onClick={() => onEdit(category)}
+          className="flex-1 border border-slate-200 bg-white text-slate-700 hover:bg-slate-50"
+        >
+          <Pencil className="mr-2 size-4" />
           Edit
-        </Button>
-        <Button className="bg-[#e2e7ff] text-[#2e293c]">Stats</Button>
+        </IconButton>
+
+        <IconButton
+          type="button"
+          onClick={() => onDelete(category)}
+          className="flex-1 bg-red-50 text-red-500 hover:bg-red-100"
+        >
+          <Trash2 className="mr-2 size-4" />
+          Delete
+        </IconButton>
       </div>
-    </div>
+    </article>
   );
 };
 

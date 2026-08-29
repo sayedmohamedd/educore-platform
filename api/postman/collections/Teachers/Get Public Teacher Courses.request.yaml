@@ -1,4 +1,5 @@
 $kind: http-request
-url: ""
+name: Get Public Teacher Courses
+url: "{{url}}/teachers/cmtah76wp0000mgf3lgo63mxt/courses"
 method: GET
 order: 4406538898545158

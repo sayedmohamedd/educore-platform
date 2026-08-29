@@ -67,10 +67,7 @@ const AsideFilter = ({ meta }: { meta: Meta }) => {
     return current.split(",").includes(value);
   };
 
-  // =========================
   // Filter Content
-  // =========================
-
   const filterContent = (
     <>
       {/* Level */}
@@ -141,18 +138,12 @@ const AsideFilter = ({ meta }: { meta: Meta }) => {
 
   return (
     <>
-      {/* ========================================= */}
       {/* Desktop Filter */}
-      {/* ========================================= */}
-
       <aside className="hidden h-fit w-fit shrink-0 rounded-2xl border border-border bg-white p-6 shadow-sm md:block">
         {filterContent}
       </aside>
 
-      {/* ========================================= */}
       {/* Mobile Filter Button */}
-      {/* ========================================= */}
-
       <div className="w-full md:hidden">
         <button
           onClick={() => setIsOpen(true)}
@@ -163,10 +154,7 @@ const AsideFilter = ({ meta }: { meta: Meta }) => {
         </button>
       </div>
 
-      {/* ========================================= */}
       {/* Mobile Filter Drawer */}
-      {/* ========================================= */}
-
       {isOpen && (
         <div className="fixed inset-0 z-50 md:hidden">
           {/* Overlay */}

@@ -4,15 +4,20 @@ import Tabs from "./[slug]/_components/Tabs";
 import IconButton from "@/components/ui/IconButton";
 import { Suspense } from "react";
 import CoursesList from "@/app/(public)/_components/CoursesList";
-import { teachersService } from "@/services/teachers.service";
+import { teachersService } from "@/services/teachers/teacher.server.service";
 import { Role } from "@/store/auth.store";
 import TablePagination from "@/components/features/dashboard/table/TablePagination";
 
-const TeacherCourses = async () => {
+const TeacherCourses = async ({
+  searchParams,
+}: {
+  searchParams: Promise<any>;
+}) => {
+  const params = await searchParams;
   let errorMessage = "";
   let courses: any = [];
   try {
-    const data = await teachersService.getMyCourses();
+    const data = await teachersService.getMyCourses(params);
     courses = data.courses;
   } catch (error: any) {
     errorMessage = error?.message;

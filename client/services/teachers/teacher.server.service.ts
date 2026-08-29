@@ -1,5 +1,5 @@
 import { apiServer } from "@/lib/apiServer";
-import { CoursesData, Meta } from "./courses/types";
+import { CoursesData, Meta } from "../courses/types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const teachersService = {
@@ -14,6 +14,9 @@ export const teachersService = {
 
   getMyCourses: (options?: RequestInit) =>
     apiServer<CoursesData>(`/teachers/me/courses`, options),
+
+  getMyStudents: (options?: RequestInit) =>
+    apiServer<any>(`/teachers/me/students`, options),
 };
 
 export type Teacher = {

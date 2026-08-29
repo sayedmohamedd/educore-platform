@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, BookOpen, UserRound } from "lucide-react";
 
 import CourseCard from "@/components/shared/cards/CourseCard";
-import { teachersService } from "@/services/teachers.service";
+import { teachersService } from "@/services/teachers/teacher.server.service";
 
 // const teacher = {
 //   id: "1",

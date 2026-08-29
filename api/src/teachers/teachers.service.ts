@@ -8,6 +8,7 @@ import { TeacherApplicationDto } from './dtos/teacher-application.dto.js';
 import { ApiResponse } from '../helper/APIResponse.js';
 import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
 import { AssignCategoryDto } from '../courses/dtos/assign-category.dto.js';
+import { CourseStatus } from 'src/generated/prisma/enums.js';
 
 @Injectable()
 export class TeachersService {
@@ -235,9 +236,23 @@ export class TeachersService {
   // Find Teacher Students
   async getTeacherStudents(userId: string) {
     const teacher = await this.instructorHelper.getTeacher(userId);
+    // const students = await this.prisma.user.findMany({
+    //   where: {
+    //     role: 'STUDENT',
+    //     enrollments: {
+    //       some: {
+    //         course: {
+    //           teacherId: teacher.id,
+    //         },
+    //       },
+    //     },
+    //   },
+    // });
+
     const students = await this.prisma.user.findMany({
       where: {
         role: 'STUDENT',
+
         enrollments: {
           some: {
             course: {
@@ -245,6 +260,44 @@ export class TeachersService {
             },
           },
         },
+      },
+
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+
+        enrollments: {
+          where: {
+            course: {
+              teacherId: teacher.id,
+            },
+          },
+
+          select: {
+            enrolledAt: true,
+          },
+
+          orderBy: {
+            enrolledAt: 'asc',
+          },
+        },
+
+        _count: {
+          select: {
+            enrollments: {
+              where: {
+                course: {
+                  teacherId: teacher.id,
+                },
+              },
+            },
+          },
+        },
+      },
+
+      orderBy: {
+        createdAt: 'desc',
       },
     });
 
@@ -254,13 +307,13 @@ export class TeachersService {
   }
 
   // Find Teacher Courses - done
-  async getMyCourses(userId: string) {
+  async getMyCourses(userId: string, status: CourseStatus) {
     // check if teacher is exists and approved or not
     const teacher = await this.instructorHelper.getTeacher(userId);
 
     // get teacher courses
     const rawCourses = await this.prisma.course.findMany({
-      where: { teacherId: teacher.id },
+      where: { teacherId: teacher.id, status: status },
       include: {
         thumbnail: {
           select: {
@@ -277,6 +330,16 @@ export class TeachersService {
         sections: {
           include: {
             lessons: true,
+          },
+        },
+        teacher: {
+          select: {
+            user: {
+              select: {
+                id: true,
+                fullName: true,
+              },
+            },
           },
         },
       },
@@ -380,8 +443,6 @@ export class TeachersService {
         },
       },
     });
-
-    console.log('course', course);
 
     return new ApiResponse(true, 'Students retrieved successfully', course);
   }

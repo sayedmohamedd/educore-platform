@@ -37,7 +37,6 @@ export class MediaController {
     @Req() req: AuthenticatedRequest,
     @UploadedFile() file: Express.Multer.File,
   ) {
-    console.log(file);
     return this.mediaService.upload(req.user.userId, file);
   }
 
