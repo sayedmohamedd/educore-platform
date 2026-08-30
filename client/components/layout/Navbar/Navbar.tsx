@@ -2,17 +2,13 @@
 
 import Link from "next/link";
 import { Suspense, useState } from "react";
-// Icons
 import { TextAlignJustify, X } from "lucide-react";
 
 import { useAuthStore, Role } from "@/store/auth.store";
 
-// Components
 import NavbarLinks from "./NavbarLinks";
 import SearchInput from "./SearchInput";
-import NotificationButton from "./NotificationButton";
 import TopButton from "@/components/shared/TopButton";
-import LogoutButton from "@/components/features/auth/LogoutButton";
 import UserBadge from "./UserBadge";
 
 const Navbar = () => {
@@ -31,22 +27,31 @@ const Navbar = () => {
           </Link>
         </h1>
 
-        {/* Desktop */}
+        {/* Desktop Navigation */}
         <NavbarLinks className="hidden md:flex" />
 
+        {/* Desktop Search */}
         <Suspense fallback={null}>
           <SearchInput className="hidden md:flex" />
         </Suspense>
 
+        {/* Desktop User Area */}
         <div className="hidden items-center gap-4 md:flex">
           {loading ? (
             <div className="h-10 w-24 animate-pulse rounded-md bg-slate-200" />
           ) : user ? (
             <>
-              {/* <NotificationButton /> */}
+              {/* Student My Courses */}
+              {user.role === Role.STUDENT && (
+                <Link
+                  href="/my-courses"
+                  className="rounded-md px-3 py-2 text-sm font-semibold text-slate-600 transition-colors hover:bg-primary/10 hover:text-primary"
+                >
+                  كورساتي
+                </Link>
+              )}
 
-              <UserBadge />
-
+              {/* Dashboard */}
               {(user.role === Role.ADMIN || user.role === Role.TEACHER) && (
                 <Link
                   href={user.role === Role.ADMIN ? "/admin" : "/teacher"}
@@ -56,7 +61,8 @@ const Navbar = () => {
                 </Link>
               )}
 
-              <LogoutButton />
+              {/* User Dropdown */}
+              <UserBadge />
             </>
           ) : (
             <Link
@@ -68,42 +74,55 @@ const Navbar = () => {
           )}
         </div>
 
-        {/* Mobile button */}
+        {/* Mobile Menu Button */}
         <button
           type="button"
-          onClick={() => setIsOpen(!isOpen)}
+          onClick={() => setIsOpen((prev) => !prev)}
           className="relative z-50 text-muted md:hidden"
           aria-label="Toggle menu"
+          aria-expanded={isOpen}
         >
           {isOpen ? (
-            <X className="fill-muted cursor-pointer" size={28} />
+            <X className="cursor-pointer" size={28} />
           ) : (
-            <TextAlignJustify className="fill-muted cursor-pointer" size={28} />
+            <TextAlignJustify className="cursor-pointer" size={28} />
           )}
         </button>
       </div>
 
-      {/* Mobile menu */}
+      {/* Mobile Menu */}
       {isOpen && (
         <div className="border-t bg-white md:hidden">
           <div className="container py-5">
+            {/* Search */}
             <Suspense fallback={null}>
               <SearchInput />
             </Suspense>
 
+            {/* Main Links */}
             <NavbarLinks
               className="mt-5 flex flex-col gap-5"
               onClick={closeMenu}
             />
 
+            {/* User Area */}
             <div className="mt-5 flex flex-col gap-3 border-t pt-5">
               {loading ? (
                 <div className="h-10 w-full animate-pulse rounded-md bg-slate-200" />
               ) : user ? (
                 <>
-                  {/* <NotificationButton /> */}
+                  {/* Student My Courses */}
+                  {user.role === Role.STUDENT && (
+                    <Link
+                      href="/my-courses"
+                      onClick={closeMenu}
+                      className="rounded-xl border border-slate-200 px-4 py-2.5 text-center font-semibold text-slate-700 transition hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
+                    >
+                      كورساتي
+                    </Link>
+                  )}
 
-                  <UserBadge />
+                  {/* Dashboard */}
                   {(user.role === Role.ADMIN || user.role === Role.TEACHER) && (
                     <Link
                       href={user.role === Role.ADMIN ? "/admin" : "/teacher"}
@@ -114,7 +133,8 @@ const Navbar = () => {
                     </Link>
                   )}
 
-                  <LogoutButton />
+                  {/* User Profile / Dropdown */}
+                  <UserBadge mobile onNavigate={closeMenu} />
                 </>
               ) : (
                 <Link

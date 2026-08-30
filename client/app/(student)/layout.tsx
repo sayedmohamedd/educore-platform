@@ -1,7 +1,8 @@
 import Footer from "@/components/layout/Footer";
 import NotificationButton from "@/components/layout/Navbar/NotificationButton";
-import CourseProgress from "./learn/_components/CourseProgress";
-import UserMenu from "./learn/_components/UserMenu";
+import CourseProgress from "./my-courses/_components/CourseProgress";
+import UserBadge from "@/components/layout/Navbar/UserBadge";
+import Link from "next/link";
 
 export default function PublicLayout({
   children,
@@ -11,12 +12,14 @@ export default function PublicLayout({
   return (
     <>
       <nav className="sticky top-0 z-50 bg-white shadow-md">
-        <div className="container flex-between py-5">
-          <h1 className="text-2xl font-bold text-primary">EduCore</h1>
+        <div className="container flex-between py-3.5">
+          <Link href="/">
+            <h1 className="text-2xl font-bold text-primary">EduCore</h1>
+          </Link>
           <div className="flex-center gap-4">
             <CourseProgress />
             <NotificationButton />
-            <UserMenu />
+            <UserBadge />
           </div>
         </div>
       </nav>
