@@ -1,7 +1,7 @@
 export interface Category {
   id: string;
   name: string;
-  slug?: string;
+  slug: string;
   description?: string | null;
   coursesCount: number;
 }

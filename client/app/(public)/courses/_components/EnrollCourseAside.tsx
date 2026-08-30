@@ -1,92 +1,137 @@
 /* eslint-disable @next/next/no-img-element */
+
+"use client";
+
 import {
   BadgeCheck,
-  Download,
-  MonitorPlay,
+  Clock3,
+  FileImage,
   PlayCircle,
   Smartphone,
+  Upload,
 } from "lucide-react";
+import Link from "next/link";
 
 const EnrollCourseAside = () => {
   return (
-    <aside className="min-w-0 lg:col-span-3">
-      <div className="overflow-hidden rounded-2xl bg-card shadow-md lg:sticky lg:top-20">
+    <aside className="order-first min-w-0 lg:order-0 lg:col-span-3">
+      <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:sticky lg:top-24">
         {/* Course Preview */}
-        <div className="relative aspect-video bg-muted">
+        <div className="relative aspect-video bg-slate-100">
           <img
             src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop"
             alt="Course Preview"
             className="h-full w-full object-cover"
           />
 
-          <button className="absolute inset-0 flex items-center justify-center bg-black/40 transition hover:bg-black/50">
-            <PlayCircle
-              className="fill-white text-white"
-              size={64}
-              strokeWidth={1.5}
-            />
+          <button
+            type="button"
+            className="absolute inset-0 flex items-center justify-center bg-black/30 transition hover:bg-black/40"
+          >
+            <div className="flex size-14 items-center justify-center rounded-full bg-white/95 shadow-lg">
+              <PlayCircle className="size-8 text-primary" />
+            </div>
           </button>
         </div>
 
-        <div className="space-y-6 p-5 sm:p-6">
+        <div className="p-5 sm:p-6">
           {/* Price */}
-          <div className="space-y-3">
-            <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold uppercase tracking-wide text-primary">
-              Bestseller
+          <div>
+            <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+              الأكثر مبيعًا
             </span>
 
-            <div className="flex flex-wrap items-end gap-3">
-              <span className="text-4xl font-bold">$89.99</span>
+            <div className="mt-3 flex flex-wrap items-end gap-3">
+              <span className="text-3xl font-bold text-slate-800 sm:text-4xl">
+                $89.99
+              </span>
 
-              <span className="text-lg text-muted-foreground line-through">
+              <span className="text-base text-muted-foreground line-through">
                 $149.99
               </span>
             </div>
 
-            <p className="text-sm font-medium text-red-500">
-              Offer ends in 12 hours!
+            <div className="mt-2 flex items-center gap-2 text-sm text-red-500">
+              <Clock3 className="size-4" />
+              <span>العرض ينتهي خلال 12 ساعة</span>
+            </div>
+          </div>
+
+          {/* Enrollment CTA */}
+          <div className="mt-6">
+            <Link
+              href={`/courses/slug/enroll`}
+              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-semibold text-white transition hover:opacity-90"
+            >
+              <Upload className="size-5" />
+              طلب التسجيل في الدورة
+            </Link>
+
+            <p className="mt-3 text-center text-xs leading-5 text-muted-foreground">
+              بعد الدفع، أرسل بيانات التحويل وصورة الإيصال لمراجعة طلبك.
             </p>
           </div>
 
-          {/* Actions */}
-          <div className="space-y-3">
-            <button className="w-full rounded-xl bg-primary py-3 font-semibold text-primary-foreground transition hover:opacity-90">
-              Enroll Now
-            </button>
+          {/* Payment Process */}
+          <div className="mt-6 rounded-xl border border-primary/10 bg-primary/5 p-4">
+            <h4 className="font-semibold text-slate-700">طريقة التسجيل</h4>
 
-            <button className="w-full rounded-xl border border-primary py-3 font-semibold text-primary transition hover:bg-primary/5">
-              Add to Cart
-            </button>
+            <ol className="mt-3 space-y-3">
+              <li className="flex gap-3">
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
+                  1
+                </span>
+
+                <p className="text-sm leading-6 text-muted-foreground">
+                  حوّل قيمة الدورة إلى حساب المنصة.
+                </p>
+              </li>
+
+              <li className="flex gap-3">
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
+                  2
+                </span>
+
+                <p className="text-sm leading-6 text-muted-foreground">
+                  أدخل بيانات التحويل وارفع صورة الإيصال.
+                </p>
+              </li>
+
+              <li className="flex gap-3">
+                <span className="flex size-6 shrink-0 items-center justify-center rounded-full bg-primary text-xs font-semibold text-white">
+                  3
+                </span>
+
+                <p className="text-sm leading-6 text-muted-foreground">
+                  انتظر مراجعة الإدارة وتأكيد التسجيل.
+                </p>
+              </li>
+            </ol>
           </div>
 
           {/* Includes */}
-          <div className="border-t pt-6">
-            <h4 className="mb-4 font-semibold">This course includes:</h4>
+          <div className="mt-6 border-t border-slate-100 pt-6">
+            <h4 className="mb-4 font-semibold text-slate-700">الدورة تشمل:</h4>
 
-            <ul className="space-y-4 text-sm text-muted-foreground">
+            <ul className="grid grid-cols-1 gap-3 text-sm text-muted-foreground sm:grid-cols-2 lg:grid-cols-1">
               <li className="flex items-center gap-3">
-                <PlayCircle className="h-5 w-5 shrink-0 text-primary" />
-                <span>24 hours on-demand video</span>
+                <PlayCircle className="size-5 shrink-0 text-primary" />
+                <span>24 ساعة فيديو</span>
               </li>
 
               <li className="flex items-center gap-3">
-                <Download className="h-5 w-5 shrink-0 text-primary" />
-                <span>15 downloadable resources</span>
+                <FileImage className="size-5 shrink-0 text-primary" />
+                <span>15 ملفًا وموارد</span>
               </li>
 
               <li className="flex items-center gap-3">
-                <BadgeCheck className="h-5 w-5 shrink-0 text-primary" />
-                <span>Full lifetime access</span>
+                <BadgeCheck className="size-5 shrink-0 text-primary" />
+                <span>وصول كامل للدورة</span>
               </li>
 
               <li className="flex items-center gap-3">
-                <Smartphone className="h-5 w-5 shrink-0 text-primary" />
-                <span>Access on mobile & TV</span>
-              </li>
-
-              <li className="flex items-center gap-3">
-                <MonitorPlay className="h-5 w-5 shrink-0 text-primary" />
-                <span>Certificate of completion</span>
+                <Smartphone className="size-5 shrink-0 text-primary" />
+                <span>الوصول من الهاتف والكمبيوتر</span>
               </li>
             </ul>
           </div>

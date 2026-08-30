@@ -1,17 +1,26 @@
-const topics = ["الكل", "الفيزياء", "الكيمياء", "الرياضيات", "البرمجة"];
+import { categoryServerService } from "@/services/categories/category.server.service";
+import { Category } from "@/services/categories/types";
+import { Suspense } from "react";
+import TopicsList from "./TopicsList";
 
-const CoursesTopics = () => {
+const CoursesTopics = async () => {
+  let categories: Category[] = [];
+  let errorMessage = "";
+  try {
+    const data = await categoryServerService.getAll();
+    categories = data.categories;
+  } catch (error) {
+    errorMessage =
+      error instanceof Error ? error.message : "Failed to load categories";
+  }
+
   return (
-    <ul className="flex flex-wrap gap-1 md:gap-4 items-center my-2 text-white">
-      {topics.map((topic) => (
-        <li
-          key={topic}
-          className="font-bold rounded-2xl bg-secondary px-4 py-2 cursor-pointer"
-        >
-          {topic}
-        </li>
-      ))}
-    </ul>
+    <section>
+      {errorMessage && <span className="text-red-500">{errorMessage}</span>}
+      <Suspense fallback={<h3>Loading...</h3>}>
+        <TopicsList categories={categories} endpoint="courses" />
+      </Suspense>
+    </section>
   );
 };
 

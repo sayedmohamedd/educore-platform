@@ -6,6 +6,7 @@ import Select from "@/components/ui/Select";
 import { Suspense } from "react";
 import { courseServerService } from "@/services/courses/course.server.service";
 import CoursesList from "../_components/CoursesList";
+import SearchInput from "@/components/layout/Navbar/SearchInput";
 
 const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
   const params = await searchParams;
@@ -23,15 +24,17 @@ const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
   }
 
   return (
-    <section className="py-8 sm:py-12">
+    <section className="pb-4 sm:py-12">
       <div className="container">
-        <h1 className="page-title my-4 text-muted-foreground">
+        <h1 className="page-title mb-4 text-muted-foreground">
           اكتشف الكورسات
         </h1>
 
         <div>
           {/* Topics */}
-          <CoursesTopics />
+          <Suspense fallback={<h3>Loading...</h3>}>
+            <CoursesTopics />
+          </Suspense>
 
           {/* Sort */}
           <div className="mt-4 sm:mt-6">
@@ -54,7 +57,14 @@ const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
             {errorMessage && <p className="text-red-500">{errorMessage}</p>}
 
             {/* Courses */}
-            <div className="min-w-0 flex-1">
+            <div className="min-w-0 flex-1 flex flex-col gap-8">
+              <Suspense fallback={<div>Loading...</div>}>
+                <SearchInput
+                  endpoint="courses"
+                  className="w-full md:max-w-3/5"
+                />
+              </Suspense>
+
               <Suspense fallback={<div>Loading...</div>}>
                 <CoursesList courses={courses} />
               </Suspense>
