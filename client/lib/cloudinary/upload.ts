@@ -1,3 +1,6 @@
+import { mediaService } from "@/services/media/media.service";
+import { apiClient } from "../apiClient";
+
 export type CloudinaryUploadResult = {
   public_id: string;
   secure_url: string;
@@ -20,22 +23,23 @@ export async function uploadToCloudinary({
   folder = "educore",
   onProgress,
 }: UploadOptions): Promise<CloudinaryUploadResult> {
-  const signatureResponse = await fetch(
-    `${process.env.NEXT_PUBLIC_BASE_URL}/media/signature?folder=${encodeURIComponent(folder)}`,
-    {
-      credentials: "include",
-    },
-  );
+  // const signatureResponse = await fetch(
+  //   `${process.env.NEXT_PUBLIC_BASE_URL}/media/signature?folder=${encodeURIComponent(folder)}`,
+  //   {
+  //     credentials: "include",
+  //   },
+  // );
+  // if (!signatureResponse.ok) {
+  //   const message = await signatureResponse.text();
 
-  if (!signatureResponse.ok) {
-    const message = await signatureResponse.text();
+  //   throw new Error(message || "Failed to get upload signature");
+  // }
 
-    throw new Error(message || "Failed to get upload signature");
-  }
+  // const signatureData = await signatureResponse.json();
 
-  const signatureData = await signatureResponse.json();
+  const signatureData = await mediaService.getUploadSignature(folder);
 
-  const { timestamp, signature, apiKey, cloudName } = signatureData.data;
+  const { timestamp, signature, apiKey, cloudName } = signatureData;
 
   const resourceType = file.type.startsWith("video/")
     ? "video"
