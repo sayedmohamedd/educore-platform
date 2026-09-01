@@ -7,13 +7,13 @@ import {
   Pencil,
   Trash2,
 } from "lucide-react";
-import type { Category } from "@/services/categories/types";
+import type { CategoryWithCoursesCount } from "@/services/categories/types";
 import IconButton from "@/components/ui/IconButton";
 
 interface Props {
-  category: Category;
-  onEdit: (category: Category) => void;
-  onDelete: (category: Category) => void;
+  category: CategoryWithCoursesCount;
+  onEdit: (category: CategoryWithCoursesCount) => void;
+  onDelete: (category: CategoryWithCoursesCount) => void;
 }
 
 const CategoryCard = ({ category, onEdit, onDelete }: Props) => {

@@ -31,28 +31,24 @@ export class MediaController {
   }
 
   @Post()
-  @Roles(Role.INSTRUCTOR)
-  @UseGuards(RolesGuard)
   upload(@Req() req: AuthenticatedRequest, @Body() dto: CreateMediaDto) {
     return this.mediaService.upload(req.user.userId, dto);
   }
 
   @Get('signature')
-  @Roles(Role.INSTRUCTOR)
-  @UseGuards(RolesGuard)
   getUploadSignature(@Query('folder') folder?: string) {
     return this.mediaService.getUploadSignature(folder ?? 'educore');
   }
 
   @Get(':id')
-  @Roles(Role.INSTRUCTOR)
+  @Roles(Role.INSTRUCTOR, Role.ADMIN)
   @UseGuards(RolesGuard)
   getMediaById(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.mediaService.findOne(req.user.userId, id);
   }
 
   @Delete(':id')
-  @Roles(Role.INSTRUCTOR)
+  @Roles(Role.INSTRUCTOR, Role.ADMIN)
   @UseGuards(RolesGuard)
   remove(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.mediaService.remove(req.user.userId, id);

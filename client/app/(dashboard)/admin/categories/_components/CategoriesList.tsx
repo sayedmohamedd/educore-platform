@@ -4,20 +4,20 @@ import { useState } from "react";
 import { BookOpen, FolderTree, Layers3, Plus, ShieldCheck } from "lucide-react";
 
 import StatsCard from "@/components/shared/cards/StatsCard";
-import Button from "@/components/ui/Button";
 
-import type { Category } from "@/services/categories/types";
+import type { CategoryWithCoursesCount } from "@/services/categories/types";
 
 import CategoryCard from "./CategoryCard";
 import CreateCategoryDialog from "./CreateCategoryDialog";
 import IconButton from "@/components/ui/IconButton";
 
 interface Props {
-  categories: Category[];
+  categories: CategoryWithCoursesCount[];
 }
 
 const CategoriesList = ({ categories: initialCategories }: Props) => {
-  const [categories, setCategories] = useState<Category[]>(initialCategories);
+  const [categories, setCategories] =
+    useState<CategoryWithCoursesCount[]>(initialCategories);
 
   const [showCreateDialog, setShowCreateDialog] = useState(false);
 
@@ -63,15 +63,15 @@ const CategoriesList = ({ categories: initialCategories }: Props) => {
     },
   ];
 
-  const handleCreated = (category: Category) => {
+  const handleCreated = (category: CategoryWithCoursesCount) => {
     setCategories((current) => [category, ...current]);
   };
 
-  const handleEdit = (category: Category) => {
+  const handleEdit = (category: CategoryWithCoursesCount) => {
     console.log("Edit category:", category.id);
   };
 
-  const handleDelete = (category: Category) => {
+  const handleDelete = (category: CategoryWithCoursesCount) => {
     console.log("Delete category:", category.id);
   };
 

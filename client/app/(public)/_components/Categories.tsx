@@ -1,14 +1,14 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CategoriesList from "./CategoriesList";
 import { Suspense } from "react";
-import { Category } from "@/services/categories/types";
+import { CategoryWithCoursesCount } from "@/services/categories/types";
 import { categoryServerService } from "@/services/categories/category.server.service";
 
 const Categories = async () => {
-  let categories: Category[] = [];
-  let errorMessage = "";
+  let categories: CategoryWithCoursesCount[] = [];
+  let errorMessage: string = "";
   try {
-    const data = await categoryServerService.getAll();
+    const data = await categoryServerService.getAllWithCoursesCount();
     categories = data.categories;
   } catch (error: any) {
     errorMessage = error?.message;

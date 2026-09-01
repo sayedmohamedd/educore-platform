@@ -1,3 +1,5 @@
+import { Category } from "../categories/types";
+
 export type CreateCourse = {
   title: string;
   description: string;
@@ -51,11 +53,6 @@ export type Enrollment = {
   id: string;
   createdAt: string;
   course: Course;
-};
-
-export type Category = {
-  id: string;
-  name: string;
 };
 
 export type Meta = {

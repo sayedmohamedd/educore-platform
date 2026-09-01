@@ -21,4 +21,9 @@ export class CreatePaymentDto {
   @IsString()
   @IsOptional()
   couponCode?: string;
+
+  @ApiProperty({ type: String, description: 'The transaction ID' })
+  @IsString()
+  @IsOptional()
+  transactionId?: string;
 }

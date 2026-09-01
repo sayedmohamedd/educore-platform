@@ -3,11 +3,11 @@ import { categoryServerService } from "@/services/categories/category.server.ser
 import { Category } from "@/services/categories/types";
 import { X } from "lucide-react";
 import Link from "next/link";
-import CreateCourseForm from "../_components/CreateCourseForm";
 import { Suspense } from "react";
+import CreateCourseForm from "../_components/CreateCourseForm";
 
 const CreateCourse = async () => {
-  let errorMessage = "";
+  let errorMessage: string = "";
   let categories: Category[] = [];
   try {
     const data = await categoryServerService.getAll();

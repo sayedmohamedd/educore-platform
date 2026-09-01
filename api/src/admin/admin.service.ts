@@ -19,8 +19,20 @@ export class AdminService {
   async getStatistics() {}
 
   // payments
-  async getPayments() {
-    const payments = await this.prisma.payment.findMany();
+  async getAllPayments() {
+    const payments = await this.prisma.payment.findMany({
+      select: {
+        id: true,
+        amount: true,
+        status: true,
+        createdAt: true,
+        rejectionReason: true,
+        course: { select: { id: true, title: true } },
+        user: { select: { id: true, fullName: true, email: true } },
+        receiptFile: { select: { id: true, url: true } },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
     return new ApiResponse(true, 'Payments retrieved successfully', payments);
   }
 

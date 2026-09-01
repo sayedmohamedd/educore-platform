@@ -58,14 +58,14 @@ export class CoursesController {
     return this.coursesService.remove(req.user.userId, id);
   }
 
-  @Post(':id/submit')
+  @Patch(':id/submit')
   @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   submit(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
     return this.coursesService.submit(req.user.userId, id);
   }
 
-  @Post(':id/publish')
+  @Patch(':id/publish')
   @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   publish(@Req() req: AuthenticatedRequest, @Param('id') id: string) {

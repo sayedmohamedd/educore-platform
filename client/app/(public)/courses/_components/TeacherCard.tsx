@@ -17,6 +17,7 @@ const TeacherCard = () => {
         <div className="flex flex-col gap-6 sm:flex-row sm:items-start">
           {/* Avatar */}
           <img
+            loading="lazy"
             src="/mentors/sayed.jpeg"
             alt="Sayed Mohamed"
             className="size-20 shrink-0 rounded-full object-cover shadow-sm sm:size-24"

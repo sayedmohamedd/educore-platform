@@ -8,6 +8,7 @@ import {
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreatePaymentDto } from './dtos/create-payment.dto.js';
 import { ApiResponse } from '../helper/APIResponse.js';
+import { PaymentStatus } from '../generated/prisma/client.js';
 
 @Injectable()
 export class PaymentsService {
@@ -41,13 +42,18 @@ export class PaymentsService {
       where: {
         userId,
         courseId: dto.courseId,
-        status: 'PENDING',
       },
     });
 
-    if (pendingPayment) {
+    if (pendingPayment?.status === PaymentStatus.PENDING) {
       throw new ConflictException(
         'You already have a pending payment request for this course',
+      );
+    }
+
+    if (pendingPayment?.status === PaymentStatus.APPROVED) {
+      throw new ConflictException(
+        'You have already completed the payment for this course',
       );
     }
 

@@ -16,16 +16,17 @@ import { courseClientService } from "@/services/courses/courses.client.service";
 import { Course } from "@/services/courses/types";
 import { mediaService } from "@/services/media/media.service";
 import { uploadToCloudinary } from "@/lib/cloudinary/upload";
+import { studentClientService } from "@/services/students/student.client.service";
 
 const EnrollPage = () => {
   const { courseSlug } = useParams<{ courseSlug: string }>();
 
   const router = useRouter();
 
-  const [course, setCourse] = useState<Course>();
+  const [course, setCourse] = useState<Course>({} as Course);
   const [errorMessage, setErrorMessage] = useState("");
 
-  const [amount, setAmount] = useState<string | number | undefined>();
+  const [amount, setAmount] = useState<string | number>();
 
   const [transactionId, setTransactionId] = useState("");
   const [transferDate, setTransferDate] = useState("");
@@ -122,9 +123,8 @@ const EnrollPage = () => {
       setLoading(true);
       setUploadError("");
 
-      /*
-       * 1. Upload receipt directly to Cloudinary
-       */
+      // 1. Upload receipt directly to Cloudinary
+
       setUploadingReceipt(true);
       setReceiptProgress(0);
 
@@ -134,9 +134,7 @@ const EnrollPage = () => {
         onProgress: setReceiptProgress,
       });
 
-      /*
-       * 2. Create Media record in database
-       */
+      // 2. Create Media record in database
       const media = await mediaService.uploadMetadata({
         url: result.secure_url,
         publicId: result.public_id,
@@ -146,23 +144,17 @@ const EnrollPage = () => {
         mimeType: receipt.type,
       });
 
-      console.log("Receipt media:", media);
+      console.log("Media record created:", media);
 
-      /*
-       * 3. الآن عندنا media.id
-       *
-       * هنا نبعت enrollment/payment request
-       *
-       * مثال:
-       *
-       * await enrollmentService.createEnrollment({
-       *   courseId: course!.id,
-       *   amount: Number(amount),
-       *   transactionId,
-       *   transferDate,
-       *   receiptId: media.id,
-       * });
-       */
+      // 3. Create Payment record in database
+      const payment = await studentClientService.createPayment({
+        courseId: course?.id,
+        amount: Number(amount),
+        recipientId: media.id,
+        transactionId,
+      });
+
+      console.log("Payment record created:", payment);
 
       router.replace("/my-courses");
     } catch (error: any) {
@@ -406,6 +398,7 @@ const EnrollPage = () => {
                   {receiptPreview ? (
                     <>
                       <img
+                        loading="lazy"
                         src={receiptPreview}
                         alt="Payment receipt preview"
                         className="mb-4 max-h-72 max-w-full rounded-xl object-contain"

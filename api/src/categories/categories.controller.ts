@@ -10,7 +10,17 @@ export class CategoriesController {
     return this.categoriesService.findAll();
   }
 
-  @Get('/:categoryId')
+  @Get('with-courses')
+  getAllWithCourses() {
+    return this.categoriesService.findAllWithCourses();
+  }
+
+  @Get('with-courses-count')
+  getAllWithCoursesCount() {
+    return this.categoriesService.findAllWithCoursesCount();
+  }
+
+  @Get(':categoryId')
   getOne(@Param('categoryId') id: string) {
     return this.categoriesService.findOne(id);
   }

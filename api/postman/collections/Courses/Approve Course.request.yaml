@@ -1,6 +1,6 @@
 $kind: http-request
 name: Approve Course
-url: "{{url}}/admin/courses/cmtc26roe0003akf38o4khxnu/approve"
+url: "{{url}}/admin/courses/cmtbsigla0001bcf3vik7u09z/approve"
 method: PATCH
 auth:
   type: noauth

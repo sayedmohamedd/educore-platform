@@ -18,7 +18,6 @@ const SearchInput = ({
   const handleSearch = (term: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    // Search يلغي Category
     params.delete("category");
 
     if (term) {

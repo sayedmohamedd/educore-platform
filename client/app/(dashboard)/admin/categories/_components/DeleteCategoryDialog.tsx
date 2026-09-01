@@ -2,20 +2,16 @@
 
 import { useState } from "react";
 import { AlertTriangle, X } from "lucide-react";
-import type { Category } from "@/services/categories/types";
+import type { CategoryWithCoursesCount } from "@/services/categories/types";
 import { categoryClientService } from "@/services/categories/category.client.service";
 
 interface Props {
-  category: Category;
+  category: CategoryWithCoursesCount;
   onClose: () => void;
   onDeleted: (categoryId: string) => void;
 }
 
-const DeleteCategoryDialog = ({
-  category,
-  onClose,
-  onDeleted,
-}: Props) => {
+const DeleteCategoryDialog = ({ category, onClose, onDeleted }: Props) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -30,9 +26,7 @@ const DeleteCategoryDialog = ({
       onClose();
     } catch (error) {
       setError(
-        error instanceof Error
-          ? error.message
-          : "Failed to delete category",
+        error instanceof Error ? error.message : "Failed to delete category",
       );
     } finally {
       setLoading(false);
@@ -49,9 +43,7 @@ const DeleteCategoryDialog = ({
             </div>
 
             <div>
-              <h3 className="font-semibold text-slate-700">
-                Delete Category
-              </h3>
+              <h3 className="font-semibold text-slate-700">Delete Category</h3>
 
               <p className="mt-1 text-sm text-muted-foreground">
                 This action cannot be undone.
@@ -80,7 +72,7 @@ const DeleteCategoryDialog = ({
           </p>
         </div>
 
-        {category.coursesCount > 0 && (
+        {category?.coursesCount > 0 && (
           <div className="mt-3 rounded-xl border border-amber-200 bg-amber-50 p-3 text-sm text-amber-700">
             This category contains {category.coursesCount}{" "}
             {category.coursesCount === 1 ? "course" : "courses"}.

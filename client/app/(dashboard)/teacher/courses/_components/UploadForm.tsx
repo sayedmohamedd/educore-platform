@@ -137,6 +137,7 @@ export default function UploadForm({
           {previewUrl ? (
             <div className="relative min-h-64 w-full">
               <img
+                loading="lazy"
                 src={previewUrl}
                 alt="Preview"
                 className="absolute inset-0 h-full w-full object-cover"

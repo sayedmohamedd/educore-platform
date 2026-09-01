@@ -1,16 +1,16 @@
 import { Suspense } from "react";
 
 import { categoryServerService } from "@/services/categories/category.server.service";
-import type { Category } from "@/services/categories/types";
+import type { CategoryWithCoursesCount } from "@/services/categories/types";
 
 import CategoriesList from "./_components/CategoriesList";
 
 const CategoriesPage = async () => {
-  let categories: Category[] = [];
+  let categories: CategoryWithCoursesCount[] = [];
   let errorMessage = "";
 
   try {
-    const data = await categoryServerService.getAll();
+    const data = await categoryServerService.getAllWithCoursesCount();
     categories = data.categories;
   } catch (error) {
     errorMessage =

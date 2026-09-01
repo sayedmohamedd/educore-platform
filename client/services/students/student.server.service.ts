@@ -3,7 +3,7 @@ import { apiServer } from "@/lib/apiServer";
 
 export const studentServerService = {
   enrollCourse: (options?: RequestInit) =>
-    apiServer<any>(`/enrollments}`, options),
+    apiServer<any>(`/enrollments`, options),
 
   getMyCourses: (options?: RequestInit) =>
     apiServer<any>(`/enrollments/me`, options),

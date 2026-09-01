@@ -2,12 +2,12 @@
 
 import { useState } from "react";
 import { X } from "lucide-react";
-import type { Category } from "@/services/categories/types";
+import type { CategoryWithCoursesCount } from "@/services/categories/types";
 import { categoryClientService } from "@/services/categories/category.client.service";
 
 interface Props {
   onClose: () => void;
-  onCreated: (category: Category) => void;
+  onCreated: (category: CategoryWithCoursesCount) => void;
 }
 
 const CreateCategoryDialog = ({ onClose, onCreated }: Props) => {

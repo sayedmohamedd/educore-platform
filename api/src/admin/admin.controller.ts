@@ -50,8 +50,8 @@ export class AdminController {
 
   //   Payments - done
   @Get('payments')
-  getPayments() {
-    return this.adminService.getPayments();
+  getAllPayments() {
+    return this.adminService.getAllPayments();
   }
 
   @Patch('payments/:id/approve')

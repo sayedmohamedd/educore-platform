@@ -9,8 +9,9 @@ import { useRouter } from "next/navigation";
 import IconButton from "@/components/ui/IconButton";
 import UploadForm from "./UploadForm";
 
-import { Category, CreateCourse } from "@/services/courses/types";
+import { CreateCourse } from "@/services/courses/types";
 import { courseClientService } from "@/services/courses/courses.client.service";
+import { Category } from "@/services/categories/types";
 
 interface CreateCourseFormProps {
   categories: Category[];

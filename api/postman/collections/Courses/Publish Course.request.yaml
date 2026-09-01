@@ -1,7 +1,7 @@
 $kind: http-request
 name: Publish Course
-url: "{{url}}/courses/cmtc26roe0003akf38o4khxnu/publish"
-method: POST
+url: "{{url}}/courses/cmtbsigla0001bcf3vik7u09z/publish"
+method: PATCH
 auth:
   type: noauth
 order: 1000000000006

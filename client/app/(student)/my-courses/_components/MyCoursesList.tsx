@@ -14,6 +14,7 @@ const MyCoursesList = ({ enrollments }: { enrollments: Enrollment[] }) => {
           {/* Thumbnail */}
           <div className="relative aspect-video overflow-hidden bg-slate-100">
             <img
+              loading="lazy"
               src={
                 "https://images.unsplash.com/photo-1633356122544-f134324a6cee?w=800&q=80"
               }

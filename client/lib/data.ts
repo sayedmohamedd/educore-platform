@@ -2,6 +2,7 @@ import {
   ArrowLeftRight,
   Book,
   BookOpen,
+  CreditCard,
   FileText,
   GraduationCap,
   Image,
@@ -235,6 +236,11 @@ export const menuItems = {
       title: "Courses",
       href: "/admin/courses",
       icon: GraduationCap,
+    },
+    {
+      title: "Payment Requests",
+      href: "/admin/payment-requests",
+      icon: CreditCard,
     },
     {
       title: "Transactions",

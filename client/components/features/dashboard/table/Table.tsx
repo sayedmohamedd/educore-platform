@@ -29,7 +29,7 @@ const Table = <T extends { id: string | number }>({
       {showFilter && <TableFilter />}
 
       <div className="w-full overflow-x-auto">
-        <table className="w-full min-w-[650px] sm:min-w-[750px] lg:min-w-0">
+        <table className="w-full min-w-162.5 sm:min-w-187.5 lg:min-w-0">
           <THeader columns={columns} />
 
           <TBody data={data} columns={columns} isLoading={isLoading} />

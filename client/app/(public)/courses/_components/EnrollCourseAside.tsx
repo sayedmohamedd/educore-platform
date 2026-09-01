@@ -20,6 +20,7 @@ const EnrollCourseAside = ({ course }: { course: Course }) => {
         {/* Course Preview */}
         <div className="relative aspect-video bg-slate-100">
           <img
+          loading="lazy"
             src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop"
             alt="Course Preview"
             className="h-full w-full object-cover"
