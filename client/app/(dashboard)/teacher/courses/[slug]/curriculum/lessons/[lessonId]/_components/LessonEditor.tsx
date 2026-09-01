@@ -6,7 +6,7 @@ import { Save } from "lucide-react";
 import Link from "next/link";
 
 import IconButton from "@/components/ui/IconButton";
-import { courseClientService } from "@/services/courses/courses.service";
+import { courseClientService } from "@/services/courses/courses.client.service";
 
 import { Lesson, LessonEditorData } from "./types";
 import LessonBasicInfo from "./LessonBasicInfo";

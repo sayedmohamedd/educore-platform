@@ -99,6 +99,7 @@ model Course {
   description String?
   price       Decimal      @db.Decimal(10, 2)
   status      CourseStatus @default(DRAFT)
+  duration    Int?         @default(0) // totoal duration in seconds
 
   teacherId String
   teacher   TeacherProfile @relation(fields: [teacherId], references: [id])
@@ -162,7 +163,7 @@ model Lesson {
   description String?
   slug        String  @unique
 
-  duration Int?
+  duration Int     @default(0)
   order    Int
   isFree   Boolean @default(false)
 

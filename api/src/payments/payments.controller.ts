@@ -16,13 +16,12 @@ import { PaymentsService } from './payments.service.js';
 import { Role } from '../generated/prisma/client.js';
 
 @Controller('payments')
-@UseGuards(JwtAuthGuard)
+@Roles(Role.STUDENT)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class PaymentsController {
   constructor(private paymentsService: PaymentsService) {}
 
   @Post()
-  @Roles(Role.STUDENT)
-  @UseGuards(RolesGuard)
   createPayment(
     @Body() body: CreatePaymentDto,
     @Req() req: AuthenticatedRequest,
@@ -30,20 +29,16 @@ export class PaymentsController {
     return this.paymentsService.create(req.user.userId, body);
   }
 
+  @Get('/me')
+  getMyPayments(@Req() req: AuthenticatedRequest) {
+    return this.paymentsService.getMyPayments(req.user.userId);
+  }
+
   @Get('/:paymentId')
-  @Roles(Role.STUDENT)
-  @UseGuards(RolesGuard)
   getPaymentById(
     @Param('paymentId') paymentId: string,
     @Req() req: AuthenticatedRequest,
   ) {
     return this.paymentsService.getPayment(req.user.userId, paymentId);
-  }
-
-  @Get('/my')
-  @Roles(Role.STUDENT)
-  @UseGuards(RolesGuard)
-  getMyPayments(@Req() req: AuthenticatedRequest) {
-    return this.paymentsService.getMyPayments(req.user.userId);
   }
 }

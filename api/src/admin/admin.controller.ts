@@ -106,6 +106,13 @@ export class AdminController {
   updateUser(@Param('id') id: string, @Body() dto: any) {
     return this.adminService.updateUser(id, dto);
   }
+
+  // Wallets
+  @Post('/wallets')
+  createWallet(@Body() dto: { teacherProfileId: string }) {
+    return this.adminService.createWallet(dto.teacherProfileId);
+  }
+
   //   Withdrawals
   //   @Get('withdrawals')
   //   getWithdrawals() {

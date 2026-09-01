@@ -1,9 +1,7 @@
 $kind: http-request
 name: Approve Course
-url: "{{url}}/courses/{{courseId}}/approve"
+url: "{{url}}/admin/courses/cmtc26roe0003akf38o4khxnu/approve"
 method: PATCH
 auth:
-  type: bearer
-  credentials:
-    token: "{{access_token}}"
+  type: noauth
 order: 1000000000008

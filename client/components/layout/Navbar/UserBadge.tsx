@@ -2,13 +2,7 @@
 
 import Link from "next/link";
 import { useState } from "react";
-import {
-  ChevronDown,
-  GraduationCap,
-  LogOut,
-  Settings,
-  User,
-} from "lucide-react";
+import { ChevronDown, GraduationCap, Settings, User } from "lucide-react";
 
 import { Role, useAuthStore } from "@/store/auth.store";
 import LogoutButton from "@/components/features/auth/LogoutButton";

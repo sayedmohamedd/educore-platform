@@ -1,0 +1,5 @@
+$kind: http-request
+name: Approve Payment
+url: "{{url}}/admin/payments/cmtg9fn6k0001ecf3odjewo1o/approve"
+method: PATCH
+order: 2306820005388075

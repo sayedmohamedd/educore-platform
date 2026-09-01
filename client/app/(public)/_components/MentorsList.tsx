@@ -1,11 +1,11 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import MentorCard from "./MentorCard";
+import { Teacher } from "@/services/teachers/types";
+import TeacherCard from "../teachers/_components/TeacherCard";
 
-const MentorsList = ({ teachers }: { teachers: any[] }) => {
+const MentorsList = ({ teachers }: { teachers: Teacher[] }) => {
   return (
     <div className="mt-10 grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-4">
-      {teachers.map((mentor: any) => (
-        <MentorCard props={mentor} key={mentor.id} />
+      {teachers.map((teacher) => (
+        <TeacherCard teacher={teacher} key={teacher.id} />
       ))}
     </div>
   );

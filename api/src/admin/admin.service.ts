@@ -236,4 +236,25 @@ export class AdminService {
 
     return new ApiResponse(true, 'User Updated Successfully', updatedUser);
   }
+
+  // Wallets
+  async getWallets() {
+    const wallets = await this.prisma.wallet.findMany();
+    return new ApiResponse(true, 'Wallets retrieved successfully', wallets);
+  }
+
+  // async updateWallet(walletId: string, dto: UpdateWalletDto) {
+  //   const wallet = await this.prisma.wallet.update({
+  //     where: { id: walletId },
+  //     data: dto,
+  //   });
+  //   return new ApiResponse(true, 'Wallet updated successfully', wallet);
+  // }
+
+  async createWallet(teacherProfileId: string) {
+    const wallet = await this.prisma.wallet.create({
+      data: { teacherProfileId },
+    });
+    return new ApiResponse(true, 'Wallet created successfully', wallet);
+  }
 }

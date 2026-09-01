@@ -5,6 +5,6 @@ export const studentServerService = {
   enrollCourse: (options?: RequestInit) =>
     apiServer<any>(`/enrollments}`, options),
 
-  myCourses: (options?: RequestInit) =>
-    apiServer<any>(`/enrollments/me}`, options),
+  getMyCourses: (options?: RequestInit) =>
+    apiServer<any>(`/enrollments/me`, options),
 };

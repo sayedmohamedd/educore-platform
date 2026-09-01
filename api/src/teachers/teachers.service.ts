@@ -8,7 +8,7 @@ import { TeacherApplicationDto } from './dtos/teacher-application.dto.js';
 import { ApiResponse } from '../helper/APIResponse.js';
 import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
 import { AssignCategoryDto } from '../courses/dtos/assign-category.dto.js';
-import { CourseStatus } from 'src/generated/prisma/enums.js';
+import { CourseStatus } from '../generated/prisma/enums.js';
 
 @Injectable()
 export class TeachersService {

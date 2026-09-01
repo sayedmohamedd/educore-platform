@@ -3,7 +3,5 @@ name: Get My Students
 url: "{{url}}/teachers/me/students"
 method: GET
 auth:
-  type: bearer
-  credentials:
-    token: "{{access_token}}"
+  type: noauth
 order: 4049162921688691

@@ -11,6 +11,7 @@ export class EnrollmentsController {
   constructor(private readonly enrollmentsService: EnrollmentsService) {}
 
   // @Post('courses/:courseId/enroll')
+  // @UseGuards(RolesGuard)
   // enroll(
   //   @Req() req: AuthenticatedRequest,
   //   @Param('courseId') courseId: string,
@@ -18,9 +19,9 @@ export class EnrollmentsController {
   //   return this.enrollmentsService.enroll(req.user.userId, courseId);
   // }
 
-  @Get('enrollments')
+  @Get('enrollments/me')
   @Roles(Role.STUDENT)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @UseGuards(RolesGuard)
   findAll(@Req() req: AuthenticatedRequest) {
     return this.enrollmentsService.findAll(req.user.userId);
   }

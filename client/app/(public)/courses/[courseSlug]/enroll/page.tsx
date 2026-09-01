@@ -1,26 +1,75 @@
+/* eslint-disable @next/next/no-img-element */
+/* eslint-disable @typescript-eslint/no-explicit-any */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   CheckCircle2,
   Clipboard,
   CreditCard,
-  ImagePlus,
+  Loader2,
   Upload,
-  WalletCards,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { useRouter, useParams } from "next/navigation";
+
+import { courseClientService } from "@/services/courses/courses.client.service";
+import { Course } from "@/services/courses/types";
+import { mediaService } from "@/services/media/media.service";
+import { uploadToCloudinary } from "@/lib/cloudinary/upload";
 
 const EnrollPage = () => {
-  const [amount, setAmount] = useState("1500");
-  const [transactionId, setTransactionId] = useState("");
-  const [transferDate, setTransferDate] = useState("");
-  const [receipt, setReceipt] = useState<File | null>(null);
-  const [copied, setCopied] = useState(false);
+  const { courseSlug } = useParams<{ courseSlug: string }>();
 
-  const paymentNumber = "01012345678";
   const router = useRouter();
 
+  const [course, setCourse] = useState<Course>();
+  const [errorMessage, setErrorMessage] = useState("");
+
+  const [amount, setAmount] = useState<string | number | undefined>();
+
+  const [transactionId, setTransactionId] = useState("");
+  const [transferDate, setTransferDate] = useState("");
+
+  const [receipt, setReceipt] = useState<File | null>(null);
+  const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
+
+  const [copied, setCopied] = useState(false);
+
+  const [uploadingReceipt, setUploadingReceipt] = useState(false);
+  const [receiptProgress, setReceiptProgress] = useState(0);
+
+  const [uploadError, setUploadError] = useState("");
+
+  const [loading, setLoading] = useState(false);
+
+  const paymentNumber = "01012345678";
+
+  // Fetch Course
+  useEffect(() => {
+    const getCourse = async () => {
+      try {
+        const data = await courseClientService.getCourseBySlug(courseSlug);
+
+        setCourse(data);
+        setAmount(data?.price);
+      } catch (error: any) {
+        setErrorMessage(error?.message || "Failed to load course.");
+      }
+    };
+
+    getCourse();
+  }, [courseSlug]);
+
+  // Cleanup preview
+  useEffect(() => {
+    return () => {
+      if (receiptPreview?.startsWith("blob:")) {
+        URL.revokeObjectURL(receiptPreview);
+      }
+    };
+  }, [receiptPreview]);
+
+  // Copy Number
   const handleCopy = async () => {
     await navigator.clipboard.writeText(paymentNumber);
 
@@ -31,16 +80,99 @@ const EnrollPage = () => {
     }, 2000);
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  // Receipt Change
+  const handleReceiptChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+
+    if (!file) return;
+
+    setUploadError("");
+    setReceiptProgress(0);
+
+    // Validate size
+    if (file.size > 5 * 1024 * 1024) {
+      setUploadError("Receipt image must be less than 5MB.");
+      e.target.value = "";
+      return;
+    }
+
+    // Cleanup old preview
+    if (receiptPreview?.startsWith("blob:")) {
+      URL.revokeObjectURL(receiptPreview);
+    }
+
+    const preview = URL.createObjectURL(file);
+
+    setReceipt(file);
+    setReceiptPreview(preview);
+
+    e.target.value = "";
+  };
+
+  // Submit
+  const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    console.log({
-      amount,
-      transactionId,
-      transferDate,
-      receipt,
-    });
-    router.replace('/my-courses')
+    if (!amount || !transactionId || !transferDate || !receipt) {
+      setUploadError("Please complete all payment details.");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      setUploadError("");
+
+      /*
+       * 1. Upload receipt directly to Cloudinary
+       */
+      setUploadingReceipt(true);
+      setReceiptProgress(0);
+
+      const result = await uploadToCloudinary({
+        file: receipt,
+        folder: "educore/payment-receipts",
+        onProgress: setReceiptProgress,
+      });
+
+      /*
+       * 2. Create Media record in database
+       */
+      const media = await mediaService.uploadMetadata({
+        url: result.secure_url,
+        publicId: result.public_id,
+        resourceType: result.resource_type,
+        filename: receipt.name,
+        size: receipt.size,
+        mimeType: receipt.type,
+      });
+
+      console.log("Receipt media:", media);
+
+      /*
+       * 3. الآن عندنا media.id
+       *
+       * هنا نبعت enrollment/payment request
+       *
+       * مثال:
+       *
+       * await enrollmentService.createEnrollment({
+       *   courseId: course!.id,
+       *   amount: Number(amount),
+       *   transactionId,
+       *   transferDate,
+       *   receiptId: media.id,
+       * });
+       */
+
+      router.replace("/my-courses");
+    } catch (error: any) {
+      console.error("Enrollment error:", error);
+
+      setUploadError(error?.message || "Failed to submit enrollment request.");
+    } finally {
+      setUploadingReceipt(false);
+      setLoading(false);
+    }
   };
 
   return (
@@ -56,6 +188,12 @@ const EnrollPage = () => {
             Complete your payment and submit your enrollment request.
           </p>
         </header>
+
+        {errorMessage && (
+          <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
+            {errorMessage}
+          </div>
+        )}
 
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           {/* Main Form */}
@@ -85,7 +223,7 @@ const EnrollPage = () => {
                       <p className="text-sm text-muted-foreground">Course</p>
 
                       <h3 className="mt-1 font-semibold text-slate-700">
-                        Advanced Backend Development
+                        {course?.title}
                       </h3>
                     </div>
 
@@ -93,7 +231,7 @@ const EnrollPage = () => {
                       <p className="text-sm text-muted-foreground">Price</p>
 
                       <p className="mt-1 text-lg font-bold text-primary">
-                        EGP 1,500
+                        EGP {course?.price}
                       </p>
                     </div>
                   </div>
@@ -104,7 +242,7 @@ const EnrollPage = () => {
               <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
                 <div className="mb-5 flex items-center gap-3">
                   <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
-                    <WalletCards className="size-5 text-primary" />
+                    <WalletCardsIcon />
                   </div>
 
                   <div>
@@ -131,7 +269,7 @@ const EnrollPage = () => {
                     </div>
 
                     <div className="flex size-10 items-center justify-center rounded-xl bg-white shadow-sm">
-                      <WalletCards className="size-5 text-primary" />
+                      <WalletCardsIcon />
                     </div>
                   </div>
 
@@ -171,7 +309,7 @@ const EnrollPage = () => {
                     </p>
 
                     <p className="mt-1 text-xl font-bold text-primary">
-                      EGP 1,500
+                      EGP {course?.price}
                     </p>
 
                     <p className="mt-1 text-xs text-muted-foreground">
@@ -203,14 +341,13 @@ const EnrollPage = () => {
                     <div className="relative">
                       <input
                         type="number"
-                        value={amount}
+                        value={amount ?? ""}
                         onChange={(e) => setAmount(e.target.value)}
-                        placeholder="1500"
                         className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                       />
 
                       <span className="absolute right-4 top-1/2 -translate-y-1/2 text-xs font-medium text-muted-foreground">
-                        EGP
+                        {!amount && "EGP"}
                       </span>
                     </div>
                   </div>
@@ -260,21 +397,57 @@ const EnrollPage = () => {
 
                 <label
                   htmlFor="receipt"
-                  className="flex cursor-pointer flex-col items-center justify-center rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-10 text-center transition hover:border-primary/40 hover:bg-primary/5"
+                  className={`relative flex cursor-pointer flex-col items-center justify-center overflow-hidden rounded-2xl border border-dashed border-slate-300 bg-slate-50 px-5 py-10 text-center transition ${
+                    uploadingReceipt
+                      ? "cursor-wait"
+                      : "hover:border-primary/40 hover:bg-primary/5"
+                  }`}
                 >
-                  {receipt ? (
+                  {receiptPreview ? (
                     <>
-                      <div className="flex size-12 items-center justify-center rounded-xl bg-green-100">
-                        <ImagePlus className="size-6 text-green-600" />
-                      </div>
+                      <img
+                        src={receiptPreview}
+                        alt="Payment receipt preview"
+                        className="mb-4 max-h-72 max-w-full rounded-xl object-contain"
+                      />
 
-                      <p className="mt-3 text-sm font-semibold text-slate-700">
-                        {receipt.name}
+                      <p className="text-sm font-semibold text-slate-700">
+                        {receipt?.name}
                       </p>
 
-                      <p className="mt-1 text-xs text-muted-foreground">
-                        Click to replace the receipt
-                      </p>
+                      {!uploadingReceipt && (
+                        <p className="mt-1 text-xs text-muted-foreground">
+                          Click to replace the receipt
+                        </p>
+                      )}
+
+                      {/* Progress */}
+                      {uploadingReceipt && (
+                        <div className="mt-5 w-full max-w-md">
+                          <div className="mb-2 flex items-center justify-between">
+                            <div className="flex items-center gap-2">
+                              <Loader2 className="size-4 animate-spin text-primary" />
+
+                              <span className="text-sm font-medium text-slate-700">
+                                Uploading receipt...
+                              </span>
+                            </div>
+
+                            <span className="text-sm font-semibold text-primary">
+                              {receiptProgress}%
+                            </span>
+                          </div>
+
+                          <div className="h-2 overflow-hidden rounded-full bg-slate-200">
+                            <div
+                              className="h-full rounded-full bg-primary transition-[width] duration-200"
+                              style={{
+                                width: `${receiptProgress}%`,
+                              }}
+                            />
+                          </div>
+                        </div>
+                      )}
                     </>
                   ) : (
                     <>
@@ -297,17 +470,34 @@ const EnrollPage = () => {
                     type="file"
                     accept="image/png,image/jpeg,image/jpg"
                     className="hidden"
-                    onChange={(e) => setReceipt(e.target.files?.[0] ?? null)}
+                    disabled={uploadingReceipt || loading}
+                    onChange={handleReceiptChange}
                   />
                 </label>
+
+                {uploadError && (
+                  <div className="mt-3 rounded-xl border border-red-200 bg-red-50 p-3 text-sm text-red-600">
+                    {uploadError}
+                  </div>
+                )}
               </div>
 
               {/* Submit */}
               <button
                 type="submit"
-                className="flex h-12 w-full items-center justify-center rounded-xl bg-primary px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-secondary"
+                disabled={loading || uploadingReceipt}
+                className="flex h-12 w-full items-center justify-center gap-2 rounded-xl bg-primary px-6 text-sm font-semibold text-white shadow-sm transition hover:bg-secondary disabled:cursor-not-allowed disabled:opacity-60"
               >
-                Submit Enrollment Request
+                {loading ? (
+                  <>
+                    <Loader2 className="size-4 animate-spin" />
+                    {uploadingReceipt
+                      ? "Uploading Receipt..."
+                      : "Submitting..."}
+                  </>
+                ) : (
+                  "Submit Enrollment Request"
+                )}
               </button>
             </form>
           </section>
@@ -330,7 +520,7 @@ const EnrollPage = () => {
                   <p className="text-xs text-muted-foreground">Course</p>
 
                   <p className="mt-1 text-sm font-medium text-slate-700">
-                    Advanced Backend Development
+                    {course?.title}
                   </p>
                 </div>
 
@@ -340,7 +530,7 @@ const EnrollPage = () => {
                   </span>
 
                   <span className="font-semibold text-slate-700">
-                    EGP 1,500
+                    EGP {course?.price}
                   </span>
                 </div>
 
@@ -350,7 +540,7 @@ const EnrollPage = () => {
                   </span>
 
                   <span className="text-lg font-bold text-primary">
-                    EGP {amount || "0"}
+                    EGP {course?.price || "0"}
                   </span>
                 </div>
               </div>
@@ -374,5 +564,13 @@ const EnrollPage = () => {
     </main>
   );
 };
+
+function WalletCardsIcon() {
+  return (
+    <div className="flex size-10 items-center justify-center rounded-xl bg-primary/10">
+      <CreditCard className="size-5 text-primary" />
+    </div>
+  );
+}
 
 export default EnrollPage;

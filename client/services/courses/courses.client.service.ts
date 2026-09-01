@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { apiClient } from "@/lib/apiClient";
-import { CoursesData, CreateCourse, UpdateCourse } from "./types";
+import { Course, CoursesData, CreateCourse, UpdateCourse } from "./types";
 
 export const courseClientService = {
   createCourse: (body: CreateCourse, options?: RequestInit) =>
@@ -15,6 +15,11 @@ export const courseClientService = {
       ...options,
       method: "PUT",
       body: JSON.stringify(body),
+    }),
+
+  getCourseBySlug: (courseSlug: string, options?: RequestInit) =>
+    apiClient<Course>(`/courses/${courseSlug}`, {
+      ...options,
     }),
 
   // Sections

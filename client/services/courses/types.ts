@@ -1,10 +1,10 @@
 export type CreateCourse = {
   title: string;
-  description?: string;
+  description: string;
   price: number;
   thumbnail?: string;
   thumbnailId?: string;
-  categoryIds?: string[];
+  categoryIds: string[];
 };
 
 export type UpdateCourse = {
@@ -20,6 +20,7 @@ export type Course = {
   id: string;
   title: string;
   slug: string;
+  duration: number;
   description: string;
   price: string;
   status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
@@ -41,8 +42,15 @@ export type Course = {
       };
     };
   };
-
   categories: Category[];
+  rating?: number;
+  totalLessons?: number;
+};
+
+export type Enrollment = {
+  id: string;
+  createdAt: string;
+  course: Course;
 };
 
 export type Category = {

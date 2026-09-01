@@ -1,22 +1,32 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import EnrollCourseAside from "@/app/(public)/courses/_components/EnrollCourseAside";
 import TeacherCard from "@/app/(public)/courses/_components/TeacherCard";
-// import CourseCard from "@/components/shared/cards/CourseCard";
-// import { courses } from "@/lib/data";
 import { CircleCheck, ChevronLeft, Star } from "lucide-react";
 import Link from "next/link";
 import { courseServerService } from "@/services/courses/course.server.service";
 import { Suspense } from "react";
 import CourseContent from "../_components/CourseContent";
 import CoursesList from "../../_components/CoursesList";
+import { Course } from "@/services/courses/types";
 
-const CoursePage = async () => {
+const CoursePage = async ({
+  params,
+}: {
+  params: Promise<{ courseSlug: string }>;
+}) => {
+  const { courseSlug } = await params;
   let courses: any = [];
   let errorMessage = "";
-
+  let course: Course | any = {};
   try {
     const data = await courseServerService.getCourses();
     courses = data.courses.slice(0, 3);
+  } catch (error: any) {
+    errorMessage = error?.message;
+  }
+
+  try {
+    course = await courseServerService.getCourse(courseSlug);
   } catch (error: any) {
     errorMessage = error?.message;
   }
@@ -155,7 +165,9 @@ const CoursePage = async () => {
         </section>
       </main>
 
-      <EnrollCourseAside />
+      <Suspense fallback={<h3>Loading...</h3>}>
+        <EnrollCourseAside course={course} />
+      </Suspense>
     </div>
   );
 };

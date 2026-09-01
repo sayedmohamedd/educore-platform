@@ -1,5 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
-/* eslint-disable @typescript-eslint/prefer-promise-reject-errors */
 import {
   BadRequestException,
   Injectable,
@@ -11,53 +9,60 @@ import type { Multer } from 'multer';
 import cloudinary from '../config/cloudinary.config.js';
 import { ApiResponse } from '../helper/APIResponse.js';
 import { PrismaService } from '../prisma/prisma.service.js';
+import { MediaType } from '../generated/prisma/client.js';
+import { CreateMediaDto } from './dtos/create-media.dto.js';
 
 @Injectable()
 export class MediaService {
   constructor(private readonly prisma: PrismaService) {}
 
-  async upload(userId: string, file: Express.Multer.File) {
-    if (!file) {
-      throw new BadRequestException('File is required');
-    }
+  getUploadSignature(folder: string) {
+    const timestamp = Math.round(Date.now() / 1000);
 
-    const result = await new Promise<any>((resolve, reject) => {
-      const stream = cloudinary.uploader.upload_stream(
-        {
-          folder: 'educore',
-          resource_type: 'auto',
-        },
-        (error, result) => {
-          if (error) {
-            reject(error);
-          } else {
-            resolve(result);
-          }
-        },
-      );
+    const signature = cloudinary.utils.api_sign_request(
+      {
+        timestamp,
+        folder,
+      },
+      // process.env.CLOUDINARY_API_SECRET!,
+      cloudinary.config().api_secret!,
+    );
 
-      stream.end(file.buffer);
+    return new ApiResponse(true, 'Upload signature generated successfully', {
+      timestamp,
+      signature,
+      // apiKey: process.env.CLOUDINARY_API_KEY,
+      // cloudName: process.env.CLOUDINARY_CLOUD_NAME,
+      apiKey: cloudinary.config().api_key,
+      cloudName: cloudinary.config().cloud_name,
+      folder,
     });
+  }
 
-    let type: 'IMAGE' | 'VIDEO' | 'DOCUMENT';
+  async upload(userId: string, dto: CreateMediaDto) {
+    let type: MediaType;
 
-    if (result.resource_type === 'image') {
-      type = 'IMAGE';
-    } else if (result.resource_type === 'video') {
-      type = 'VIDEO';
-    } else {
-      type = 'DOCUMENT';
+    switch (dto.resourceType) {
+      case 'image':
+        type = MediaType.IMAGE;
+        break;
+      case 'video':
+        type = MediaType.VIDEO;
+        break;
+      default:
+        type = MediaType.DOCUMENT;
     }
 
+    // Create Media record in the database
     const media = await this.prisma.media.create({
       data: {
-        url: result.secure_url,
-        publicId: result.public_id,
+        url: dto.url,
+        publicId: dto.publicId,
         type,
-        resourceType: result.resource_type,
-        filename: file.originalname,
-        size: file.size,
-        mimeType: file.mimetype,
+        resourceType: dto.resourceType,
+        filename: dto.filename,
+        size: dto.size,
+        mimeType: dto.mimeType,
         uploaderId: userId,
       },
     });
@@ -112,3 +117,56 @@ export class MediaService {
     return new ApiResponse(true, 'Media fetched successfully', media);
   }
 }
+
+// async upload(userId: string, file: Express.Multer.File) {
+//   if (!file) {
+//     throw new BadRequestException('File is required');
+//   }
+
+//   const result = await new Promise<any>((resolve, reject) => {
+//     const stream = cloudinary.uploader.upload_stream(
+//       {
+//         folder: 'educore',
+//         resource_type: 'auto',
+//       },
+//       (error, result) => {
+//         if (error) {
+//           reject(error);
+//         } else {
+//           resolve(result);
+//         }
+//       },
+//     );
+
+//     stream.end(file.buffer);
+//   });
+
+//   let type: MediaType;
+
+//   switch (result.resource_type) {
+//     case 'image':
+//       type = MediaType.IMAGE;
+//       break;
+//     case 'video':
+//       type = MediaType.VIDEO;
+//       break;
+//     default:
+//       type = MediaType.DOCUMENT;
+//   }
+
+//   // Create Media record in the database
+//   const media = await this.prisma.media.create({
+//     data: {
+//       url: result.secure_url,
+//       publicId: result.public_id,
+//       type,
+//       resourceType: result.resource_type,
+//       filename: file.originalname,
+//       size: file.size,
+//       mimeType: file.mimetype,
+//       uploaderId: userId,
+//     },
+//   });
+
+//   return new ApiResponse(true, 'File uploaded successfully', media);
+// }

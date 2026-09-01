@@ -12,7 +12,7 @@ import {
   X,
 } from "lucide-react";
 import IconButton from "@/components/ui/IconButton";
-import { courseClientService } from "@/services/courses/courses.service";
+import { courseClientService } from "@/services/courses/courses.client.service";
 import Link from "next/link";
 
 type Lesson = {

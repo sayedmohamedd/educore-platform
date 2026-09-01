@@ -1,5 +1,5 @@
 import { apiClient } from "@/lib/apiClient";
-import { CoursesData, Meta } from "../courses/types";
+import { CoursesData } from "../courses/types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const teacherClientService = {

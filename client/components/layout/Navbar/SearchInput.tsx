@@ -29,9 +29,11 @@ const SearchInput = ({
 
     params.set("page", "1");
 
-    startTransition(() => {
-      router.push(`/${endpoint}?${params.toString()}`);
-    });
+    if (endpoint) {
+      startTransition(() => {
+        router.push(`/${endpoint}?${params.toString()}`);
+      });
+    }
   };
 
   // const handleSearch = (term: string) => {

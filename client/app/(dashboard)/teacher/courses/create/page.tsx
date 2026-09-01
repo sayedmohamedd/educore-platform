@@ -1,15 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { categoryServerService } from "@/services/categories/category.server.service";
+import { Category } from "@/services/categories/types";
 import { X } from "lucide-react";
-import { categoryService } from "@/services/categories.service";
 import Link from "next/link";
 import CreateCourseForm from "../_components/CreateCourseForm";
 import { Suspense } from "react";
 
 const CreateCourse = async () => {
   let errorMessage = "";
-  let categories: any = [];
+  let categories: Category[] = [];
   try {
-    categories = await categoryService.getCategories();
+    const data = await categoryServerService.getAll();
+    categories = data.categories;
   } catch (error: any) {
     errorMessage = error?.message;
   }

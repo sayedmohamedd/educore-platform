@@ -10,7 +10,7 @@ import {
   Video,
 } from "lucide-react";
 
-import { courseClientService } from "@/services/courses/courses.service";
+import { courseClientService } from "@/services/courses/courses.client.service";
 import { CreateLessonInput, CurriculumSection } from "./types";
 import AddLessonForm from "./AddLessonForm";
 import Link from "next/link";

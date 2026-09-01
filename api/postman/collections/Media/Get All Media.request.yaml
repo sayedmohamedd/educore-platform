@@ -1,0 +1,7 @@
+$kind: http-request
+name: Get All Media
+url: "{{url}}/media"
+method: GET
+auth:
+  type: noauth
+order: 1048818693507

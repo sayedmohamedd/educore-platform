@@ -1,0 +1,12 @@
+$kind: http-request
+name: Create Teacher Wallet
+url: "{{url}}/admin/wallets"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"teacherProfileId\":\"cmtah76wp0000mgf3lgo63mxt\"\r
+
+    }"
+order: 4320629007165394

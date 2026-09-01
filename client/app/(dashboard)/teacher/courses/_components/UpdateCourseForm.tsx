@@ -6,7 +6,7 @@ import { ImagePlus, Loader2, Plus } from "lucide-react";
 import Link from "next/link";
 
 import IconButton from "@/components/ui/IconButton";
-import { courseClientService } from "@/services/courses/courses.service";
+import { courseClientService } from "@/services/courses/courses.client.service";
 import { UpdateCourse } from "@/services/courses/types";
 import { useRouter } from "next/navigation";
 

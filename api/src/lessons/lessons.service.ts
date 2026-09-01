@@ -9,22 +9,28 @@ import { UpdateLessonDto } from './dtos/update-lesson.dto.js';
 import { CreateLessonDto } from './dtos/create-lesson.dto.js';
 import { PrismaService } from '../prisma/prisma.service.js';
 import slugify from 'slugify';
+import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
 
 @Injectable()
 export class LessonsService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(
+    private readonly prisma: PrismaService,
+    private readonly instructorHelper: InstructorHelperService,
+  ) {}
 
   async create(userId: string, sectionId: string, dto: CreateLessonDto) {
-    await this.getTeacherSection(userId, sectionId);
+    const section = await this.getTeacherSection(userId, sectionId);
 
-    const slug = slugify(dto.title, { lower: true });
     const lesson = await this.prisma.lesson.create({
       data: {
         ...dto,
-        slug,
+        slug: slugify(dto.title, { lower: true }),
         sectionId,
       },
     });
+
+    // Recalculate course duration
+    await this.instructorHelper.recalculateCourseDuration(section.courseId);
 
     return new ApiResponse(true, 'Lesson created successfully', lesson);
   }

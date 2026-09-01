@@ -1,20 +1,5 @@
+import { Teacher } from "@/services/teachers/types";
 import TeacherCard from "./TeacherCard";
-
-type Teacher = {
-  id: string;
-  user: {
-    fullName: string;
-    avatar: {
-      url: string;
-    } | null;
-  };
-  title: string | null;
-  bio: string | null;
-  expertise: string | null;
-  _count: {
-    courses: number;
-  };
-};
 
 type Props = {
   teachers: Teacher[];

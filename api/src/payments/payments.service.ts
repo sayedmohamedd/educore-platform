@@ -12,6 +12,7 @@ import { ApiResponse } from '../helper/APIResponse.js';
 @Injectable()
 export class PaymentsService {
   constructor(readonly prisma: PrismaService) {}
+
   async create(userId: string, dto: CreatePaymentDto) {
     // check if course is exsits and published
     const course = await this.getCourse(dto.courseId);
@@ -50,6 +51,7 @@ export class PaymentsService {
       );
     }
 
+    // Create Payment
     const payment = await this.prisma.payment.create({
       data: {
         userId,

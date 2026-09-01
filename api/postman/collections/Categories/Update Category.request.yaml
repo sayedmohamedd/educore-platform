@@ -1,13 +1,10 @@
 $kind: http-request
 name: Update Category
-url: '{{url}}/categories/{{categoryId}}'
+url: "{{url}}/admin/categories/cmtah9zah00000kf3kj0k7q8p"
 method: PATCH
 auth:
-  type: bearer
-  credentials:
-    - key: token
-      value: '{{access_token}}'
+  type: noauth
 body:
   type: json
-  content: '{"name":"Updated Category","description":"Updated description"}'
+  content: "{\r\n    \"name\": \"Backend\"\r\n}"
 order: 2000000000003

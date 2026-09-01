@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsDecimal, IsNotEmpty, IsString } from 'class-validator';
+import { IsNotEmpty, IsNumber, IsOptional, IsString } from 'class-validator';
 
 export class CreatePaymentDto {
   @ApiProperty({ type: String, description: 'The course ID' })
@@ -8,7 +8,7 @@ export class CreatePaymentDto {
   courseId!: string;
 
   @ApiProperty({ type: Number, description: 'The amount of the payment' })
-  @IsDecimal()
+  @IsNumber()
   @IsNotEmpty()
   amount!: number;
 
@@ -16,4 +16,9 @@ export class CreatePaymentDto {
   @IsString()
   @IsNotEmpty()
   recipientId!: string;
+
+  @ApiProperty({ type: String, description: 'The Coupon Code' })
+  @IsString()
+  @IsOptional()
+  couponCode?: string;
 }

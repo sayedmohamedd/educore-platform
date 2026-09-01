@@ -5,74 +5,37 @@ import { PrismaService } from '../prisma/prisma.service.js';
 export class EnrollmentsService {
   constructor(private readonly prisma: PrismaService) {}
 
-  // async enroll(userId: string, courseId: string) {
-  //   // Check if course is published
-  //   const course = await this.prisma.course.findUnique({
-  //     where: {
-  //       id: courseId,
-  //     },
-  //   });
-
-  //   if (!course) {
-  //     throw new NotFoundException('Course not found');
-  //   }
-
-  //   if (course.status !== 'PUBLISHED') {
-  //     throw new ConflictException('Course is not available for enrollment');
-  //   }
-
-  //   // Check if user is already enrolled in the course
-  //   const existingEnrollment = await this.prisma.enrollment.findUnique({
-  //     where: {
-  //       userId_courseId: {
-  //         userId,
-  //         courseId,
-  //       },
-  //     },
-  //   });
-
-  //   if (existingEnrollment) {
-  //     throw new ConflictException('Already enrolled in this course');
-  //   }
-
-  //   const payment = await this.prisma.payment.findFirst({
-  //     where: {
-  //       userId: userId,
-  //       courseId: courseId,
-  //       status: PaymentStatus.APPROVED,
-  //     },
-  //   });
-
-  //   if (!payment) {
-  //     throw new ConflictException('You need to pay for this course first');
-  //   }
-
-  //   // Enroll user in the course
-  //   const enrollment = await this.prisma.enrollment.create({
-  //     data: {
-  //       userId,
-  //       courseId,
-  //     },
-  //   });
-
-  //   return new ApiResponse(true, 'Enrolled successfully', enrollment);
-  // }
-
   async findAll(userId: string) {
     const enrollments = await this.prisma.enrollment.findMany({
       where: {
         userId,
       },
-      include: {
+      select: {
+        id: true,
+        enrolledAt: true,
         course: {
-          include: {
+          select: {
+            id: true,
+            title: true,
+            duration: true,
+
             teacher: {
-              include: {
+              select: {
                 user: {
                   select: {
                     id: true,
                     fullName: true,
                     avatar: true,
+                  },
+                },
+              },
+            },
+
+            sections: {
+              select: {
+                _count: {
+                  select: {
+                    lessons: true,
                   },
                 },
               },
@@ -85,13 +48,22 @@ export class EnrollmentsService {
       },
     });
 
-    return new ApiResponse(
-      true,
-      'Enrollments retrieved successfully',
-      enrollments,
-    );
-  }
+    const result = enrollments.map((enrollment) => ({
+      ...enrollment,
+      course: {
+        ...enrollment.course,
+        totalLessons: enrollment.course.sections.reduce(
+          (total, section) => total + section._count.lessons,
+          0,
+        ),
+        sections: undefined,
+      },
+    }));
 
+    return new ApiResponse(true, 'Enrollments retrieved successfully', {
+      enrollments: result,
+    });
+  }
   async findOne(userId: string, id: string) {
     const enrollment = await this.prisma.enrollment.findFirst({
       where: {
@@ -140,3 +112,56 @@ export class EnrollmentsService {
     );
   }
 }
+
+// async enroll(userId: string, courseId: string) {
+//   // Check if course is published
+//   const course = await this.prisma.course.findUnique({
+//     where: {
+//       id: courseId,
+//     },
+//   });
+
+//   if (!course) {
+//     throw new NotFoundException('Course not found');
+//   }
+
+//   if (course.status !== 'PUBLISHED') {
+//     throw new ConflictException('Course is not available for enrollment');
+//   }
+
+//   // Check if user is already enrolled in the course
+//   const existingEnrollment = await this.prisma.enrollment.findUnique({
+//     where: {
+//       userId_courseId: {
+//         userId,
+//         courseId,
+//       },
+//     },
+//   });
+
+//   if (existingEnrollment) {
+//     throw new ConflictException('Already enrolled in this course');
+//   }
+
+//   const payment = await this.prisma.payment.findFirst({
+//     where: {
+//       userId: userId,
+//       courseId: courseId,
+//       status: PaymentStatus.APPROVED,
+//     },
+//   });
+
+//   if (!payment) {
+//     throw new ConflictException('You need to pay for this course first');
+//   }
+
+//   // Enroll user in the course
+//   const enrollment = await this.prisma.enrollment.create({
+//     data: {
+//       userId,
+//       courseId,
+//     },
+//   });
+
+//   return new ApiResponse(true, 'Enrolled successfully', enrollment);
+// }

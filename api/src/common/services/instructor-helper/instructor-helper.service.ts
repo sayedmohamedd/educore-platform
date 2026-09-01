@@ -45,4 +45,24 @@ export class InstructorHelperService {
 
     return course;
   }
+
+  async recalculateCourseDuration(courseId: string) {
+    const result = await this.prisma.lesson.aggregate({
+      where: {
+        section: {
+          courseId,
+        },
+      },
+      _sum: {
+        duration: true,
+      },
+    });
+
+    await this.prisma.course.update({
+      where: { id: courseId },
+      data: {
+        duration: result._sum.duration ?? 0,
+      },
+    });
+  }
 }

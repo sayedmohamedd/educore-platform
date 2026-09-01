@@ -2,6 +2,7 @@
 
 "use client";
 
+import { Course } from "@/services/courses/types";
 import {
   BadgeCheck,
   Clock3,
@@ -12,7 +13,7 @@ import {
 } from "lucide-react";
 import Link from "next/link";
 
-const EnrollCourseAside = () => {
+const EnrollCourseAside = ({ course }: { course: Course }) => {
   return (
     <aside className="order-first min-w-0 lg:order-0 lg:col-span-3">
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:sticky lg:top-24">
@@ -43,11 +44,11 @@ const EnrollCourseAside = () => {
 
             <div className="mt-3 flex flex-wrap items-end gap-3">
               <span className="text-3xl font-bold text-slate-800 sm:text-4xl">
-                $89.99
+                EG {course?.price}
               </span>
 
               <span className="text-base text-muted-foreground line-through">
-                $149.99
+                EG {course?.price + 200}
               </span>
             </div>
 
@@ -60,7 +61,7 @@ const EnrollCourseAside = () => {
           {/* Enrollment CTA */}
           <div className="mt-6">
             <Link
-              href={`/courses/slug/enroll`}
+              href={`/courses/${course?.slug}/enroll`}
               className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-semibold text-white transition hover:opacity-90"
             >
               <Upload className="size-5" />
@@ -116,7 +117,7 @@ const EnrollCourseAside = () => {
             <ul className="grid grid-cols-1 gap-3 text-sm text-muted-foreground sm:grid-cols-2 lg:grid-cols-1">
               <li className="flex items-center gap-3">
                 <PlayCircle className="size-5 shrink-0 text-primary" />
-                <span>24 ساعة فيديو</span>
+                <span>{course?.duration} ساعة فيديو</span>
               </li>
 
               <li className="flex items-center gap-3">

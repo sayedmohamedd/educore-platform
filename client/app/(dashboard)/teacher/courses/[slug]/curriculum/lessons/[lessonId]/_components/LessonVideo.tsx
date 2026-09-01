@@ -45,7 +45,15 @@ const LessonVideo = ({ data, onChange }: LessonVideoProps) => {
         )}
 
         {/* Upload */}
-        <UploadForm onFileUpload={handleVideoUpload} />
+        <UploadForm
+          value={data.videoUrl}
+          onChange={(fileId) => handleVideoUpload(fileId)}
+          title="Lesson Video"
+          description="Upload the video students will watch in this lesson."
+          uploadText="Upload Lesson Video"
+          helperText="MP4, WEBM or OGV · Recommended 1280 × 720"
+          folder="educore/lesson-videos"
+        />
 
         {/* Or URL */}
         <div>
