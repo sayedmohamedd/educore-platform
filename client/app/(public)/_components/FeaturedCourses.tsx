@@ -12,6 +12,7 @@ const FeaturedCourses = async () => {
     courses = data.courses;
     console.log("Featured Courses:", courses);
   } catch (error: unknown) {
+    console.error("Error fetching featured courses:", error);
     errorMessage = (error as Error).message;
   }
   return (
