@@ -11,6 +11,7 @@ import Mentors from "./_components/Mentors";
 // Data
 import { stats, studentOpinions, commonQuestions } from "@/lib/data";
 
+export const dynamic = "force-dynamic";
 
 export default async function Home() {
   return (

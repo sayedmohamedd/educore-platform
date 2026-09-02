@@ -1,6 +1,4 @@
-import { PaymentRequest } from "./types";
-
-export const mockPaymentRequests: PaymentRequest[] = [
+export const mockPaymentRequests = [
   {
     id: "pay_001",
     student: {
