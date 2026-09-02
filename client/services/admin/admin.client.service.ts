@@ -1,13 +1,13 @@
 import { apiClient } from "@/lib/apiClient";
-import { PaymentRequestFilter, PaymentData } from "./types";
+import { PaymentRequest } from "./types";
 
 export const adminClientService = {
-  getPaymentRequests: async (
-    filter: PaymentRequestFilter,
-    options?: RequestInit,
-  ) =>
-    apiClient<PaymentData>(
-      `/admin/payments?${new URLSearchParams({ filter }).toString()}`,
-      options,
+  approvePayment: (paymentId: string, options?: RequestInit) =>
+    apiClient<{ payment: PaymentRequest }>(
+      `/admin/payments/${paymentId}/approve`,
+      {
+        ...options,
+        method: "PATCH",
+      },
     ),
 };

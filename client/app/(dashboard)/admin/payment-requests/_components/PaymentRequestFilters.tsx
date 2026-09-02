@@ -1,6 +1,5 @@
+import { PaymentRequestFilter } from "@/services/admin/types";
 import { Search } from "lucide-react";
-
-import { PaymentRequestFilter } from "./types";
 
 type Props = {
   search: string;
@@ -9,37 +8,25 @@ type Props = {
   onFilterChange: (value: PaymentRequestFilter) => void;
 };
 
-const filters: {
-  label: string;
-  value: PaymentRequestFilter;
-}[] = [
-  {
-    label: "All",
-    value: "ALL",
-  },
-  {
-    label: "Pending",
-    value: "PENDING",
-  },
-  {
-    label: "Approved",
-    value: "APPROVED",
-  },
-  {
-    label: "Rejected",
-    value: "REJECTED",
-  },
-];
-
 const PaymentRequestFilters = ({
   search,
   filter,
   onSearchChange,
   onFilterChange,
 }: Props) => {
+  const filters: {
+    label: string;
+    value: PaymentRequestFilter;
+  }[] = [
+    { label: "All", value: "ALL" },
+    { label: "Pending", value: "PENDING" },
+    { label: "Approved", value: "APPROVED" },
+    { label: "Rejected", value: "REJECTED" },
+  ];
+
   return (
-    <div className="space-y-4">
-      <div className="relative max-w-md">
+    <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
+      <div className="relative w-full lg:max-w-md">
         <Search
           size={18}
           className="absolute left-3 top-1/2 -translate-y-1/2 text-muted-foreground"
@@ -48,25 +35,25 @@ const PaymentRequestFilters = ({
         <input
           type="text"
           value={search}
-          onChange={(e) => onSearchChange(e.target.value)}
-          placeholder="Search by student or course..."
-          className="h-11 w-full rounded-xl border border-border bg-background pl-10 pr-4 text-sm outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
+          onChange={(event) => onSearchChange(event.target.value)}
+          placeholder="Search student or course..."
+          className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-10 pr-4 text-sm outline-none transition focus:border-primary"
         />
       </div>
 
       <div className="flex flex-wrap gap-2">
         {filters.map((item) => {
-          const active = filter === item.value;
+          const isActive = filter === item.value;
 
           return (
             <button
               key={item.value}
               type="button"
               onClick={() => onFilterChange(item.value)}
-              className={`rounded-xl border px-4 py-2 text-sm font-medium transition ${
-                active
-                  ? "border-primary bg-primary text-primary-foreground"
-                  : "border-border bg-background text-muted-foreground hover:border-primary/30 hover:bg-primary/5 hover:text-primary"
+              className={`rounded-xl px-4 py-2 text-sm font-medium transition ${
+                isActive
+                  ? "bg-primary text-primary-foreground"
+                  : "bg-slate-100 text-slate-600 hover:bg-primary/10 hover:text-primary"
               }`}
             >
               {item.label}

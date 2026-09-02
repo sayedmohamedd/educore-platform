@@ -33,7 +33,9 @@ export class AdminService {
       },
       orderBy: { createdAt: 'desc' },
     });
-    return new ApiResponse(true, 'Payments retrieved successfully', payments);
+    return new ApiResponse(true, 'Payments retrieved successfully', {
+      payments,
+    });
   }
 
   async approvePayment(paymentId: string, adminId: string) {
