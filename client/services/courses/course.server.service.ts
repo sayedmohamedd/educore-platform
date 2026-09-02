@@ -5,7 +5,8 @@ import { Course, CoursesData } from "./types";
 
 export const courseServerService = {
   getCourses: (params: any = {}, options?: RequestInit) =>
-    apiServer<CoursesData>(`/courses?${new URLSearchParams(params)}`, options),
+    apiServer<CoursesData>(`/courses`, options),
+  // apiServer<CoursesData>(`/courses?${new URLSearchParams(params)}`, options),
 
   getCourse: (courseSlug: string, options?: RequestInit) =>
     apiServer<Course>(`/courses/${courseSlug}`, options),
