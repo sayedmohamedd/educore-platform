@@ -1,17 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import { Suspense } from "react";
 import CoursesList from "./CoursesList";
 import { courseServerService } from "@/services/courses/course.server.service";
+import { Course } from "@/services/courses/types";
 
 const FeaturedCourses = async () => {
-  let courses: any = [];
+  let courses: Course[] = [];
   let errorMessage = "";
   try {
     const data = await courseServerService.getCourses();
     courses = data.courses;
-  } catch (error: any) {
-    errorMessage = error?.message;
+    console.log("Featured Courses:", courses);
+  } catch (error: unknown) {
+    errorMessage = (error as Error).message;
   }
   return (
     <section className="py-16">

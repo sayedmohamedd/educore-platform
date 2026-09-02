@@ -18,6 +18,12 @@ export type UpdateCourse = {
   categoryIds?: string[];
 };
 
+export enum CourseStatus {
+  DRAFT = "DRAFT",
+  PUBLISHED = "PUBLISHED",
+  ARCHIVED = "ARCHIVED",
+}
+
 export type Course = {
   id: string;
   title: string;
@@ -25,11 +31,11 @@ export type Course = {
   duration: number;
   description: string;
   price: string;
-  status: "DRAFT" | "PUBLISHED" | "ARCHIVED";
-  teacherId: string;
+  status: CourseStatus;
+  teacherId?: string;
   thumbnailId: string;
   createdAt: string;
-  updatedAt: string;
+  updatedAt?: string;
   sections?: Section[];
   teacher?: {
     id: string;
