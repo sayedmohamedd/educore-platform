@@ -24,7 +24,16 @@ export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Get()
-  findAll(@Query() query: any) {
+  findAll(
+    @Query()
+    query: {
+      page: number;
+      limit: number;
+      search: string;
+      status: string;
+      maxPrice: number;
+    },
+  ) {
     return this.coursesService.findAll(query);
   }
 

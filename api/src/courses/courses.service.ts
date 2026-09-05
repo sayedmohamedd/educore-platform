@@ -19,7 +19,13 @@ export class CoursesService {
     private readonly instructorHelper: InstructorHelperService,
   ) {}
 
-  async findAll(query: any) {
+  async findAll(query: {
+    page: number;
+    limit: number;
+    search: string;
+    status: string;
+    maxPrice: number;
+  }) {
     const { page, limit, skip } = ApiFeatures.getPagination(query);
     const orderBy = ApiFeatures.getSorting(query);
 
