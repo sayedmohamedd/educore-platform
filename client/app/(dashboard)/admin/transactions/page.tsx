@@ -3,12 +3,10 @@ import {
   CalendarClock,
   CircleDollarSign,
   Download,
-  Plus,
   TrendingUp,
 } from "lucide-react";
 import TransactionCard from "./_components/TransactionCard";
 import IconButton from "@/components/ui/IconButton";
-import { Suspense } from "react";
 
 const stats = [
   {
@@ -29,46 +27,45 @@ const stats = [
   },
   {
     Icon: TrendingUp,
-    IconBgClass: "bg-primary/10",
+    IconBgClass: "bg-white/10",
+    IconClassName: "text-white",
     title: "Net Revenue",
     number: "$124,200.00",
     paragraph: "Performance: Excellent",
+    paragraphClassName: "text-white/70",
     cardBgClass: "bg-primary text-white",
   },
 ];
 
 const Transactions = () => {
   return (
-    <main className="py-4 px-8">
-      <header className="flex-between">
+    <main className="px-4 py-4 sm:px-6 lg:px-8">
+      {/* Header */}
+      <header className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <h2 className="text-2xl font-bold text-slate-700">Transactions</h2>
+
           <p className="paragraph">
             Manage and review your financial activities across Lumina.
           </p>
         </div>
-        <div className="flex-center gap-4">
-          <IconButton
-            className={"bg-white text-slate-700 hover:bg-slate-50"}
-            text="Export Report"
-            Icon={Download}
-          />
-          <IconButton
-            className={"bg-primary text-white hover:bg-secondary"}
-            text="New Request"
-            Icon={Plus}
-          />
-        </div>
+
+        <IconButton
+          className="w-fit bg-white text-slate-700 hover:bg-slate-50"
+          text="Export Report"
+          Icon={Download}
+        />
       </header>
-      {/*  */}
-      <section className="mt-8 grid gap-18 md:grid-cols-2 lg:grid-cols-3">
+
+      {/* Stats */}
+      <section className="mt-8 grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 lg:gap-6">
         {stats.map((stat) => (
           <TransactionCard key={stat.title} {...stat} />
         ))}
       </section>
-      <Suspense fallback={<div>Loading transactions...</div>}>
-        <TransactionsTable />
-      </Suspense>
+
+      {/* Transactions */}
+      <TransactionsTable />
     </main>
   );
 };

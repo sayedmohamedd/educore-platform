@@ -247,6 +247,11 @@ export const menuItems = {
       href: "/admin/transactions",
       icon: ArrowLeftRight,
     },
+    {
+      title: "Wallet",
+      href: "/admin/wallet",
+      icon: Wallet,
+    },
     // {
     //   title: "Messages",
     //   href: "/admin/messages",

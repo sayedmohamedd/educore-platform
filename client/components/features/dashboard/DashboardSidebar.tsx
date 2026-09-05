@@ -73,7 +73,7 @@ const DashboardSidebar = ({ role, open = false, onClose }: Props) => {
 
         {/* Navigation */}
         <nav className="mt-8 flex-1">
-          <ul className="space-y-2">
+          <ul className="space-y-1">
             {menuItems[menuRole].map((item: any) => {
               const Icon = item.icon;
               const isActive = pathname === item.href;
@@ -100,9 +100,8 @@ const DashboardSidebar = ({ role, open = false, onClose }: Props) => {
 
         {/* Footer */}
         <button className="flex items-center gap-4 px-4 py-2">
-          <HelpCircle size={20} className="text-muted-foreground" />
-
-          <p className="text-muted">Help Center</p>
+          <HelpCircle size={16} className="text-muted-foreground" />
+          <p className="text-muted text-sm">Help Center</p>
         </button>
 
         <LogoutButton />

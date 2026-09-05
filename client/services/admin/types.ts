@@ -30,6 +30,16 @@ export type PaymentRequest = {
 
 export type PaymentRequestFilter = "ALL" | "PENDING" | "APPROVED" | "REJECTED";
 
+export type ResponseData<K extends string, T> = {
+  [P in K]: T;
+} & {
+  meta?: {
+    total?: number;
+    page?: number;
+    lastPage?: number;
+  };
+};
+
 export type PaymentData = {
   payments: PaymentRequest[];
   meta?: {
@@ -39,27 +49,14 @@ export type PaymentData = {
   };
 };
 
-// export type Payment = {
-//   id: string;
-//   amount: number;
-//   status: "PENDING" | "APPROVED" | "REJECTED";
-//   createdAt: string;
-//   rejectionReason: string | null;
-//   transferReference?: string;
-//   paymentMethod?: "INSTAPAY" | "WALLET" | "CREDIT_CARD";
-//   user: {
-//     id: string;
-//     name: string;
-//     email: string;
-//   };
-//   course: {
-//     id: string;
-//     title: string;
-//   };
-//   receiptFile: {
-//     id: string;
-//     url: string;
-//   };
-// };
-
-// export type PaymentRequestFilter = "ALL" | "PENDING" | "APPROVED" | "REJECTED";
+export type User = {
+  id: string;
+  fullName: string;
+  email: string;
+  role: string;
+  createdAt: string;
+  avatar: {
+    id: string;
+    url: string;
+  };
+};

@@ -13,7 +13,7 @@ export const categoryClientService = {
   update: (categoryId: string, body: CreateCategory, options?: RequestInit) =>
     apiClient<any>(`/admin/categories/${categoryId}`, {
       ...options,
-      method: "PUT",
+      method: "PATCH",
       body: JSON.stringify(body),
     }),
 

@@ -9,7 +9,7 @@ type Props = {
 
 export default function CardBanner({ image, status }: Props) {
   return (
-    <div className="relative h-44 overflow-hidden rounded-2xl">
+    <div className="relative h-44 overflow-hidden">
       {image && (
         <Image
           src={

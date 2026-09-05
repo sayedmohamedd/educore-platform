@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{url}}/admin/users"
+method: GET
+auth:
+  type: noauth
+order: 1785989804476

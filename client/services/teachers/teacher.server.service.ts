@@ -1,19 +1,29 @@
 import { apiServer } from "@/lib/apiServer";
-import { CoursesData, Meta } from "../courses/types";
+import { Course } from "../courses/types";
+import { ResponseData } from "../admin/types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const teachersService = {
   getTeachers: (params: any = {}, options?: RequestInit) =>
-    apiServer<teacherData>(`/teachers?${new URLSearchParams(params)}`, options),
+    apiServer<ResponseData<"teachers", Teacher[]>>(
+      `/teachers?${new URLSearchParams(params)}`,
+      options,
+    ),
 
   getTeacher: (teacherId: string, options?: RequestInit) =>
     apiServer<any>(`/teachers/${teacherId}`, options),
 
   getTeacherStudents: (teacherId: string, options?: RequestInit) =>
-    apiServer<teacherData>(`/teachers/${teacherId}/students`, options),
+    apiServer<ResponseData<"teachers", Teacher[]>>(
+      `/teachers/${teacherId}/students`,
+      options,
+    ),
 
   getMyCourses: (options?: RequestInit) =>
-    apiServer<CoursesData>(`/teachers/me/courses`, options),
+    apiServer<ResponseData<"courses", Course[]>>(
+      `/teachers/me/courses`,
+      options,
+    ),
 
   getMyStudents: (options?: RequestInit) =>
     apiServer<any>(`/teachers/me/students`, options),
@@ -34,9 +44,4 @@ export type Teacher = {
     fullName: string;
     email: string;
   };
-};
-
-type teacherData = {
-  teachers: Teacher[];
-  meta?: Meta;
 };

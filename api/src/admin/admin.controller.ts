@@ -85,6 +85,12 @@ export class AdminController {
   }
 
   // Courses
+
+  @Get('courses')
+  getAllCourses() {
+    return this.adminService.getAllCourses();
+  }
+
   @Patch('courses/:id/approve')
   approveCourse(@Param('id') id: string) {
     return this.adminService.approveCourse(id);
@@ -111,6 +117,11 @@ export class AdminController {
   @Post('/wallets')
   createWallet(@Body() dto: { teacherProfileId: string }) {
     return this.adminService.createWallet(dto.teacherProfileId);
+  }
+
+  @Get('/platform-wallet')
+  getPlatformWallet() {
+    return this.adminService.getPlatformWallet();
   }
 
   //   Withdrawals

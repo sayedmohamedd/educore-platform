@@ -2,13 +2,13 @@
 
 import { useEffect, useState } from "react";
 import { X } from "lucide-react";
-import type { Category } from "@/services/categories/types";
+import type { CategoryWithCoursesCount } from "@/services/categories/types";
 import { categoryClientService } from "@/services/categories/category.client.service";
 
 interface Props {
-  category: Category;
+  category: CategoryWithCoursesCount;
   onClose: () => void;
-  onUpdated: (category: Category) => void;
+  onUpdated: (category: CategoryWithCoursesCount) => void;
 }
 
 const EditCategoryDialog = ({ category, onClose, onUpdated }: Props) => {
@@ -43,8 +43,8 @@ const EditCategoryDialog = ({ category, onClose, onUpdated }: Props) => {
         name: name.trim(),
         description: description.trim(),
       });
-      console.log(response)
-      onUpdated(response);
+      console.log(response);
+      onUpdated({ ...response, coursesCount: category.coursesCount });
       onClose();
     } catch (error) {
       setError(

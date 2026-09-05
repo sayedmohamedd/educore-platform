@@ -22,6 +22,10 @@ export enum CourseStatus {
   DRAFT = "DRAFT",
   PUBLISHED = "PUBLISHED",
   ARCHIVED = "ARCHIVED",
+  REJECTED = "REJECTED",
+  SUBMITTED = "SUBMITTED",
+  APPROVED = "APPROVED",
+  PENDING = "PENDING",
 }
 
 export type Course = {
@@ -67,9 +71,12 @@ export type Meta = {
   lastPage: number;
 };
 
-export type CoursesData = {
-  courses: Course[];
-  meta?: Meta;
+type Section = {
+  id: string;
+  title: string;
+  slug: string;
+  order: number;
+  lessons: Lesson[];
 };
 
 type Lesson = {
@@ -81,12 +88,4 @@ type Lesson = {
   duration: number;
   order: number;
   isFree: boolean;
-};
-
-type Section = {
-  id: string;
-  title: string;
-  slug: string;
-  order: number;
-  lessons: Lesson[];
 };

@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{url}}/admin/courses"
+method: GET
+order: 4395014204294401

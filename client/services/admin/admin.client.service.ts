@@ -1,5 +1,6 @@
 import { apiClient } from "@/lib/apiClient";
-import { PaymentRequest } from "./types";
+import { PaymentRequest, ResponseData } from "./types";
+import { Course } from "../courses/types";
 
 export const adminClientService = {
   approvePayment: (paymentId: string, options?: RequestInit) =>
@@ -10,4 +11,9 @@ export const adminClientService = {
         method: "PATCH",
       },
     ),
+
+  // Courses
+
+  getAllCourses: async (options?: RequestInit) =>
+    apiClient<ResponseData<"courses", Course[]>>(`/admin/courses`, options),
 };

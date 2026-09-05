@@ -93,13 +93,14 @@ enum CourseStatus {
 }
 
 model Course {
-  id          String       @id @default(cuid())
-  slug        String       @unique
-  title       String
-  description String?
-  price       Decimal      @db.Decimal(10, 2)
-  status      CourseStatus @default(DRAFT)
-  duration    Int?         @default(0) // totoal duration in seconds
+  id              String       @id @default(cuid())
+  slug            String       @unique
+  title           String
+  description     String?
+  price           Decimal      @db.Decimal(10, 2)
+  status          CourseStatus @default(DRAFT)
+  rejectionReason String?
+  duration        Int?         @default(0) // totoal duration in seconds
 
   teacherId String
   teacher   TeacherProfile @relation(fields: [teacherId], references: [id])

@@ -4,11 +4,16 @@ type Props = {
   title: string;
   number: string;
   paragraph?: string;
+
   badgeContent?: string;
   badgeClassName?: string;
+
   Icon?: LucideIcon;
-  cardBgClass?: string;
   IconBgClass?: string;
+  IconClassName?: string;
+
+  cardBgClass?: string;
+  paragraphClassName?: string;
 };
 
 const TransactionCard = ({
@@ -20,31 +25,52 @@ const TransactionCard = ({
   badgeClassName,
   cardBgClass,
   IconBgClass,
+  IconClassName,
+  paragraphClassName,
 }: Props) => {
   return (
     <div
-      className={`rounded-lg ${"bg-white"} p-4 shadow cursor-pointer hover:card-up-hover`}
+      className={`cursor-pointer rounded-lg p-4 shadow hover:card-up-hover ${
+        cardBgClass || "bg-white"
+      }`}
     >
       <div className="flex-between mb-6">
         <div
-          className={`flex h-11 w-11 items-center justify-center rounded-md ${IconBgClass || "bg-primary/10"} `}
+          className={`flex h-11 w-11 items-center justify-center rounded-md ${
+            IconBgClass || "bg-primary/10"
+          }`}
         >
-          {Icon && <Icon className={`h-5 w-5 text-primary`} />}
+          {Icon && (
+            <Icon className={`h-5 w-5 ${IconClassName || "text-primary"}`} />
+          )}
         </div>
 
         {badgeContent && (
-          <p className={`rounded-md ${badgeClassName} px-1.5 py-1 font-medium`}>
+          <p className={`rounded-md px-1.5 py-1 font-medium ${badgeClassName}`}>
             {badgeContent}
           </p>
         )}
       </div>
 
       <div className="mb-6">
-        <p className="mb-1 font-medium text-slate-700">{title}</p>
+        <p
+          className={`mb-1 font-medium ${
+            cardBgClass ? "text-white/90" : "text-slate-700"
+          }`}
+        >
+          {title}
+        </p>
+
         <span className="text-xl font-semibold">{number}</span>
       </div>
 
-      <p className="text-sm text-muted-foreground">{paragraph}</p>
+      {paragraph && (
+        <p
+          className={`text-sm ${paragraphClassName || "text-muted-foreground"}`}
+        >
+          {paragraph}
+        </p>
+      )}
     </div>
   );
 };

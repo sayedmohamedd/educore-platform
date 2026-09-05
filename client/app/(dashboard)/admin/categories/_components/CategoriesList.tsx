@@ -10,6 +10,8 @@ import type { CategoryWithCoursesCount } from "@/services/categories/types";
 import CategoryCard from "./CategoryCard";
 import CreateCategoryDialog from "./CreateCategoryDialog";
 import IconButton from "@/components/ui/IconButton";
+import EditCategoryDialog from "./EditCategoryDialog";
+import DeleteCategoryDialog from "./DeleteCategoryDialog";
 
 interface Props {
   categories: CategoryWithCoursesCount[];
@@ -19,7 +21,12 @@ const CategoriesList = ({ categories: initialCategories }: Props) => {
   const [categories, setCategories] =
     useState<CategoryWithCoursesCount[]>(initialCategories);
 
+  const [selectedCategory, setSelectedCategory] =
+    useState<CategoryWithCoursesCount | null>(null);
+
   const [showCreateDialog, setShowCreateDialog] = useState(false);
+  const [showEditDialog, setShowEditDialog] = useState(false);
+  const [showDeleteDialog, setShowDeleteDialog] = useState(false);
 
   const totalCategories = categories.length;
 
@@ -68,11 +75,23 @@ const CategoriesList = ({ categories: initialCategories }: Props) => {
   };
 
   const handleEdit = (category: CategoryWithCoursesCount) => {
-    console.log("Edit category:", category.id);
+    setSelectedCategory(category);
+    setShowEditDialog(true);
+  };
+
+  const onUpdated = (category: CategoryWithCoursesCount) => {
+    setCategories((current) =>
+      current.map((cat) => (cat.id === category.id ? category : cat)),
+    );
   };
 
   const handleDelete = (category: CategoryWithCoursesCount) => {
-    console.log("Delete category:", category.id);
+    setSelectedCategory(category);
+    setShowDeleteDialog(true);
+  };
+
+  const onDeleted = (categoryId: string) => {
+    setCategories((current) => current.filter((cat) => cat.id !== categoryId));
   };
 
   return (
@@ -223,6 +242,24 @@ const CategoriesList = ({ categories: initialCategories }: Props) => {
         <CreateCategoryDialog
           onClose={() => setShowCreateDialog(false)}
           onCreated={handleCreated}
+        />
+      )}
+
+      {/* Edit Dialog */}
+      {showEditDialog && selectedCategory && (
+        <EditCategoryDialog
+          category={selectedCategory}
+          onClose={() => setShowEditDialog(false)}
+          onUpdated={onUpdated}
+        />
+      )}
+
+      {/* Delete Dialog */}
+      {showDeleteDialog && selectedCategory && (
+        <DeleteCategoryDialog
+          category={selectedCategory}
+          onClose={() => setShowDeleteDialog(false)}
+          onDeleted={onDeleted}
         />
       )}
     </>

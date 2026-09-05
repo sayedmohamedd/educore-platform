@@ -27,7 +27,7 @@ const CourseCard = ({
   actions,
 }: Props) => {
   return (
-    <article className="p-2 group h-fit bg-white  overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
+    <article className="p-0 group h-fit bg-white  overflow-hidden rounded-2xl border border-border bg-card shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
       {/* Image */}
       <CardBanner image={thumbnail?.url} status={status} />
       {/* Content */}

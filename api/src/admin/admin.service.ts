@@ -211,6 +211,70 @@ export class AdminService {
   }
 
   // Courses
+
+  async getAllCourses() {
+    const courses = await this.prisma.course.findMany({
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        price: true,
+        status: true,
+        duration: true,
+        createdAt: true,
+        thumbnail: {
+          select: {
+            id: true,
+            url: true,
+          },
+        },
+        teacher: {
+          select: {
+            id: true,
+            user: {
+              select: {
+                id: true,
+                fullName: true,
+                email: true,
+                avatar: true,
+              },
+            },
+          },
+        },
+        categories: {
+          select: {
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+              },
+            },
+          },
+        },
+        sections: {
+          select: {
+            id: true,
+            title: true,
+            order: true,
+            lessons: {
+              select: {
+                id: true,
+                title: true,
+                order: true,
+              },
+            },
+          },
+        },
+      },
+      orderBy: {
+        updatedAt: 'desc',
+      },
+    });
+    return new ApiResponse(true, 'Courses retrieved successfully', { courses });
+  }
+
   async approveCourse(courseId: string) {
     if (!courseId) throw new NotFoundException('Course not found');
 
@@ -232,10 +296,24 @@ export class AdminService {
   }
 
   // Users
-
   async getAllUsers() {
-    const users = await this.prisma.user.findMany();
-    return new ApiResponse(true, 'Users retrieved successfully', users);
+    const users = await this.prisma.user.findMany({
+      where: { role: 'STUDENT' },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        avatar: {
+          select: {
+            id: true,
+            url: true,
+          },
+        },
+        role: true,
+        createdAt: true,
+      },
+    });
+    return new ApiResponse(true, 'Users retrieved successfully', { users });
   }
 
   async updateUser(userId: string, dto: any) {
@@ -270,5 +348,34 @@ export class AdminService {
       data: { teacherProfileId },
     });
     return new ApiResponse(true, 'Wallet created successfully', wallet);
+  }
+
+  async getPlatformWallet() {
+    const wallet = await this.prisma.platformWallet.findMany({
+      select: {
+        id: true,
+        balance: true,
+        transactions: {
+          select: {
+            id: true,
+            amount: true,
+            type: true,
+            createdAt: true,
+            payment: {
+              select: {
+                user: {
+                  select: {
+                    id: true,
+                    fullName: true,
+                    email: true,
+                  },
+                },
+              },
+            },
+          },
+        },
+      },
+    });
+    return new ApiResponse(true, 'Wallet retrieved successfully', wallet);
   }
 }

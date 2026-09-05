@@ -1,6 +1,6 @@
 import StatsCard from "@/components/shared/cards/StatsCard";
 import RecentActivityItem from "@/components/features/dashboard/RecentActivityItem";
-import { CircleDollarSign, FileText, UserPen, Users } from "lucide-react";
+import { CircleDollarSign, Clock3, UserPen, Users } from "lucide-react";
 import Link from "next/link";
 
 const stats = [
@@ -23,28 +23,34 @@ const stats = [
     Icon: Users,
   },
   {
-    title: "Published Courses",
-    number: "88",
-    percentage: 30,
-    Icon: FileText,
+    title: "Pending Payments",
+    number: "24",
+    percentage: 8.4,
+    Icon: Clock3,
   },
 ];
 
 const AdminDashboard = () => {
   return (
     <div className="p-4">
-      <div className="grid grid-cols-4 items-center gap-4 my-4">
+      {/* Stats */}
+      <div className="my-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
         {stats.map((stat) => (
           <StatsCard key={stat.title} {...stat} />
         ))}
       </div>
-      <div className="my-6 grid grid-cols-12 gap-6">
+
+      {/* Analytics + Recent Activity */}
+      <div className="my-6 grid grid-cols-1 gap-6 xl:grid-cols-12">
         {/* Revenue Analytics */}
-        <div className="col-span-8 rounded-2xl border border-border bg-white p-6 shadow-sm hover:card-up-hover">
+        <div className="rounded-2xl border border-border bg-white p-6 shadow-sm hover:card-up-hover xl:col-span-8">
           <div className="mb-6 flex items-center justify-between">
             <h4 className="section-title">Revenue Analytics</h4>
 
-            <button className="rounded-lg border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-muted">
+            <button
+              type="button"
+              className="rounded-lg border border-border px-4 py-2 text-sm font-medium transition-colors hover:bg-muted"
+            >
               This Month
             </button>
           </div>
@@ -57,7 +63,7 @@ const AdminDashboard = () => {
         </div>
 
         {/* Recent Activity */}
-        <div className="col-span-4 rounded-2xl border border-border bg-white p-6 shadow-sm">
+        <div className="rounded-2xl border border-border bg-white p-6 shadow-sm xl:col-span-4">
           <div className="flex items-center justify-between">
             <h4 className="section-title">Recent Activity</h4>
 

@@ -7,14 +7,16 @@ import CategoriesList from "./_components/CategoriesList";
 
 const CategoriesPage = async () => {
   let categories: CategoryWithCoursesCount[] = [];
-  let errorMessage = "";
 
   try {
     const data = await categoryServerService.getAllWithCoursesCount();
     categories = data.categories;
   } catch (error) {
-    errorMessage =
-      error instanceof Error ? error.message : "Failed to load categories";
+    console.error(
+      error instanceof Error
+        ? error.message
+        : "Failed to fetch categories data.",
+    );
   }
 
   return (
@@ -29,13 +31,6 @@ const CategoriesPage = async () => {
           Organize and monitor the categories used across the platform.
         </p>
       </header>
-
-      {/* Error */}
-      {errorMessage && (
-        <div className="mb-6 rounded-xl border border-red-200 bg-red-50 p-4 text-sm text-red-600">
-          {errorMessage}
-        </div>
-      )}
 
       <Suspense fallback={<h3>Loading...</h3>}>
         <CategoriesList categories={categories} />

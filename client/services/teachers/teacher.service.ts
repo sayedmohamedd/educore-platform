@@ -1,10 +1,14 @@
 import { apiClient } from "@/lib/apiClient";
-import { CoursesData } from "../courses/types";
+import { Course } from "../courses/types";
+import { ResponseData } from "../admin/types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const teacherClientService = {
   getMyCourses: (options?: RequestInit) =>
-    apiClient<CoursesData>(`/teachers/me/courses`, options),
+    apiClient<ResponseData<"courses", Course[]>>(
+      `/teachers/me/courses`,
+      options,
+    ),
 
   getMyStudents: (options?: RequestInit) =>
     apiClient<any>(`/teachers/me/students`, options),
