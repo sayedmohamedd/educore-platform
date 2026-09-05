@@ -381,22 +381,85 @@ export class TeachersService {
   }
 
   // teacher statistics - done
-  async getTeacherStatistics(userId: string, teacherId: string) {
-    const students = await this.getTeacherStudents(userId);
+  async getMyStatistics(userId: string) {
+    const teacher = await this.instructorHelper.getTeacher(userId);
 
-    const courses = await this.prisma.course.findMany({
-      where: { teacherId },
+    const students = await this.prisma.user.findMany({
+      where: {
+        role: 'STUDENT',
+        enrollments: {
+          some: {
+            course: {
+              teacherId: teacher.id,
+            },
+          },
+        },
+      },
     });
 
+    let courses = await this.prisma.course.findMany({
+      where: { teacherId: teacher.id },
+      select: {
+        id: true,
+        title: true,
+        status: true,
+        price: true,
+        _count: {
+          select: {
+            enrollments: true,
+          },
+        },
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+
+    courses = courses.map((course) => ({
+      ...course,
+      students: course._count.enrollments,
+    }));
+
+    const publishedCourses = courses.filter(
+      (course) => course.status === 'PUBLISHED',
+    );
+
     const totalRevenue = await this.prisma.wallet.findUnique({
-      where: { teacherProfileId: teacherId },
+      where: { teacherProfileId: teacher.id },
       select: { balance: true },
     });
 
+    const enrollments = await this.prisma.enrollment.findMany({
+      where: {
+        course: {
+          teacherId: teacher.id,
+        },
+      },
+      select: {
+        id: true,
+        enrolledAt: true,
+        course: {
+          select: {
+            title: true,
+          },
+        },
+        user: {
+          select: {
+            id: true,
+            fullName: true,
+            email: true,
+          },
+        },
+      },
+      orderBy: {
+        enrolledAt: 'desc',
+      },
+    });
+
     return new ApiResponse(true, 'Statistics retrieved successfully', {
-      courses: courses.length,
-      students: students.data?.students.length,
-      totalRevenue,
+      courses,
+      students: students.length,
+      publishedCourses: publishedCourses.length,
+      totalRevenue: totalRevenue?.balance,
+      enrollments,
     });
   }
 

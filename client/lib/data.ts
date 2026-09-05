@@ -11,6 +11,7 @@ import {
   LucideIcon,
   Settings,
   Star,
+  User,
   Wallet,
 } from "lucide-react";
 

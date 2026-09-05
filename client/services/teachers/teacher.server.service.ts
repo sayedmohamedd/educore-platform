@@ -27,6 +27,9 @@ export const teachersService = {
 
   getMyStudents: (options?: RequestInit) =>
     apiServer<any>(`/teachers/me/students`, options),
+
+  getMyStatistics: (options?: RequestInit) =>
+    apiServer<any>(`/teachers/me/statistics`, options),
 };
 
 export type Teacher = {

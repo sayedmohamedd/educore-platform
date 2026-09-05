@@ -38,6 +38,15 @@ export class AdminController {
     return this.adminService.getTeachers();
   }
 
+  @Get('admin/teachers/:teacherId/statistics')
+  @Roles(Role.ADMIN)
+  getTeacherStatistics(
+    @Param('teacherId') teacherId: string,
+    @Req() req: AuthenticatedRequest,
+  ) {
+    return this.adminService.getTeacherStatistics(req.user.userId, teacherId);
+  }
+
   @Patch('teachers/:id/approve')
   approveTeacher(@Param('id') id: string) {
     return this.adminService.approveTeacher(id);

@@ -10,10 +10,14 @@ import { RejectionDto } from '../payments/dtos/reject-payment.dto.js';
 import { UpdateCategoryDto } from '../categories/dto/update-category.dto.js';
 import { CreateCategoryDto } from '../categories/dto/create-category.dto.js';
 import slugify from 'slugify';
+import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
 
 @Injectable()
 export class AdminService {
-  constructor(readonly prisma: PrismaService) {}
+  constructor(
+    readonly prisma: PrismaService,
+    readonly instructorHelper: InstructorHelperService,
+  ) {}
 
   //   statistics
   async getStatistics() {}
@@ -131,6 +135,85 @@ export class AdminService {
       },
     });
     return new ApiResponse(true, 'Teachers retrieved successfully', teachers);
+  }
+
+  async getTeacherStudents(userId: string) {
+    const teacher = await this.instructorHelper.getTeacher(userId);
+
+    const students = await this.prisma.user.findMany({
+      where: {
+        role: 'STUDENT',
+
+        enrollments: {
+          some: {
+            course: {
+              teacherId: teacher.id,
+            },
+          },
+        },
+      },
+
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+
+        enrollments: {
+          where: {
+            course: {
+              teacherId: teacher.id,
+            },
+          },
+
+          select: {
+            enrolledAt: true,
+          },
+
+          orderBy: {
+            enrolledAt: 'asc',
+          },
+        },
+
+        _count: {
+          select: {
+            enrollments: {
+              where: {
+                course: {
+                  teacherId: teacher.id,
+                },
+              },
+            },
+          },
+        },
+      },
+
+      orderBy: {
+        createdAt: 'desc',
+      },
+    });
+
+    return new ApiResponse(true, 'Students retrieved successfully', {
+      students,
+    });
+  }
+
+  async getTeacherStatistics(userId: string, teacherId: string) {
+    const students = await this.getTeacherStudents(userId);
+
+    const courses = await this.prisma.course.findMany({
+      where: { teacherId },
+    });
+
+    const totalRevenue = await this.prisma.wallet.findUnique({
+      where: { teacherProfileId: teacherId },
+      select: { balance: true },
+    });
+
+    return new ApiResponse(true, 'Statistics retrieved successfully', {
+      courses: courses.length,
+      students: students.data?.students.length,
+      totalRevenue,
+    });
   }
 
   async approveTeacher(teacherId: string) {

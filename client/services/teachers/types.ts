@@ -14,3 +14,13 @@ export type Teacher = {
   };
 };
 
+export interface Enrollment {
+  id: string;
+  course: { title: string };
+  user: {
+    id: string;
+    fullName: string;
+    email: string;
+  };
+  enrolledAt: string;
+}

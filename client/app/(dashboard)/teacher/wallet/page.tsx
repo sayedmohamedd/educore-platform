@@ -1,26 +1,61 @@
+import { Clock3, DollarSign, Wallet as WalletIcon } from "lucide-react";
+
 import StatsCard from "@/components/shared/cards/StatsCard";
-import { Wallet as WalletIcon } from "lucide-react";
+
 import Withdraw from "./_components/Withdraw";
-import Table from "@/components/features/dashboard/table/Table";
+import { Transaction } from "./_components/types";
+import TransactionHistory from "./_components/TransactionHistory";
+import { Suspense } from "react";
 
 const stats = [
   {
-    title: "Total Balance",
-    number: "$12,450.80",
+    title: "Available Balance",
+    number: "$8,450.80",
     Icon: WalletIcon,
     percentage: "+12%",
   },
   {
-    title: "Total Balance",
-    number: "$12,450.80",
-    Icon: WalletIcon,
-    percentage: "+12%",
+    title: "Pending Balance",
+    number: "$2,000.00",
+    Icon: Clock3,
+    percentage: "+5%",
   },
   {
-    title: "Total Balance",
+    title: "Total Earnings",
     number: "$12,450.80",
-    Icon: WalletIcon,
+    Icon: DollarSign,
     percentage: "+12%",
+  },
+];
+
+const transactions: Transaction[] = [
+  {
+    id: "1",
+    type: "Course Sale",
+    amount: 50,
+    status: "Completed",
+    createdAt: "Sep 6, 2026",
+  },
+  {
+    id: "2",
+    type: "Withdrawal",
+    amount: 100,
+    status: "Pending",
+    createdAt: "Sep 5, 2026",
+  },
+  {
+    id: "3",
+    type: "Course Sale",
+    amount: 75,
+    status: "Completed",
+    createdAt: "Sep 4, 2026",
+  },
+  {
+    id: "4",
+    type: "Refund",
+    amount: 40,
+    status: "Completed",
+    createdAt: "Sep 3, 2026",
   },
 ];
 
@@ -28,17 +63,20 @@ const Wallet = () => {
   return (
     <main>
       <div className="container p-4">
-        <section className="mt-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {stats.map((stat, index) => (
-            <StatsCard key={stat.title + index} {...stat} />
+        {/* Stats */}
+        <section className="mt-4 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
+          {stats.map((stat) => (
+            <StatsCard key={stat.title} {...stat} />
           ))}
         </section>
 
         {/* Withdraw */}
         <Withdraw />
 
-        {/* History */}
-        <Table data={[]} columns={[]} showFilter={false} />
+        {/* Transaction History */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <TransactionHistory transactions={transactions} />
+        </Suspense>
       </div>
     </main>
   );

@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Suspense } from "react";
 
 import { categoryServerService } from "@/services/categories/category.server.service";

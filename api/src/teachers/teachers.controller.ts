@@ -66,6 +66,13 @@ export class TeachersController {
     return this.teachersService.getMyCourses(req.user.userId, query.status);
   }
 
+  @Get('me/statistics')
+  @Roles(Role.INSTRUCTOR)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  getMyStatistics(@Req() req: AuthenticatedRequest) {
+    return this.teachersService.getMyStatistics(req.user.userId);
+  }
+
   @Get(':id/courses')
   getCourses(@Param('id') id: string) {
     return this.teachersService.getPublicCourses(id);
@@ -83,18 +90,6 @@ export class TeachersController {
       teacherId,
       courseId,
       categories,
-    );
-  }
-
-  @Get(':teacherId/statistics')
-  @Roles(Role.ADMIN)
-  getTeacherStatistics(
-    @Param('teacherId') teacherId: string,
-    @Req() req: AuthenticatedRequest,
-  ) {
-    return this.teachersService.getTeacherStatistics(
-      req.user.userId,
-      teacherId,
     );
   }
 
