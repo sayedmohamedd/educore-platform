@@ -7,7 +7,7 @@ const TeacherHomePage = async () => {
   try {
     statistics = await teachersService.getMyStatistics();
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
   return (
     <Suspense fallback={<div>Loading...</div>}>

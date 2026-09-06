@@ -22,8 +22,6 @@ const TopicsList = ({
 
     const query = params.toString();
 
-    console.log("PUSH:", `/${endpoint}?${query}`);
-
     router.push(`/${endpoint}?${query}`);
   };
 

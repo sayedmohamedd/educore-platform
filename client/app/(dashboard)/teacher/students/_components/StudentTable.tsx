@@ -35,10 +35,9 @@ const StudentsTable = ({ students }: StudentsTableProps) => {
     },
     {
       header: "Actions",
-      cell: (student) => (
+      cell: () => (
         <button
           type="button"
-          onClick={() => console.log(student.id)}
           className="text-sm font-medium text-primary hover:underline"
         >
           View Profile

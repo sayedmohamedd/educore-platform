@@ -40,7 +40,6 @@ const Users = async () => {
   try {
     const data = await adminServerService.getAllUsers();
     users = data.users;
-    console.log("Fetched users data:", users);
   } catch (error) {
     errorMessage =
       error instanceof Error ? error.message : "Failed to fetch users data.";

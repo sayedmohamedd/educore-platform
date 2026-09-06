@@ -15,8 +15,6 @@ const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
   let meta: any = {};
   let errorMessage = "";
 
-  console.log("COURSES RENDER");
-
   try {
     const data = await courseServerService.getCourses(params);
     courses = data.courses;

@@ -9,7 +9,6 @@ const PaymentRequestsList = async () => {
   try {
     const data = await adminServerService.getPaymentRequests();
     requests = data.payments;
-    console.log("Fetched payment requests:", data);
   } catch (error) {
     errorMessage = error instanceof Error ? error.message : "";
   }

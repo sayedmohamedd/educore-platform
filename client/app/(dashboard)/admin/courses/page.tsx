@@ -9,7 +9,7 @@ const AdminCoursesPage = async () => {
     const response = await adminServerService.getAdminCourses();
     courses = response.courses;
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 
   return (

@@ -53,8 +53,6 @@ const Settings = () => {
 
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log("Profile:", profile);
   };
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -64,8 +62,6 @@ const Settings = () => {
       alert("Passwords do not match");
       return;
     }
-
-    console.log("Password:", password);
   };
 
   return (

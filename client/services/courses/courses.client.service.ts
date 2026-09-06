@@ -55,7 +55,7 @@ export const courseClientService = {
   updateLesson: (lessonId: string, body: any, options?: RequestInit) =>
     apiClient<any>(`/lessons/${lessonId}`, {
       ...options,
-      method: "PUT",
+      method: "PATCH",
       body: JSON.stringify(body),
     }),
 

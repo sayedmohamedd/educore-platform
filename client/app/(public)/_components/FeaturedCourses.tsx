@@ -10,7 +10,6 @@ const FeaturedCourses = async () => {
   try {
     const data = await courseServerService.getCourses();
     courses = data.courses;
-    console.log(courses);
   } catch (error: unknown) {
     errorMessage = (error as Error).message;
   }

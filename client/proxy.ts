@@ -1,8 +1,6 @@
-import { NextRequest, NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
-export function proxy(req: NextRequest) {
-  console.log("PROXY:", req.nextUrl.pathname);
-
+export function proxy() {
   return NextResponse.next();
 }
 

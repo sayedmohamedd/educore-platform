@@ -101,9 +101,7 @@ const QuizPage = () => {
     }
   };
 
-  const handleSubmit = () => {
-    console.log("Quiz submitted:", answers);
-  };
+  const handleSubmit = () => {};
 
   return (
     <main className="min-h-[calc(100vh-80px)] bg-slate-50 py-5 sm:py-8">

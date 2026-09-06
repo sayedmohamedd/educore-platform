@@ -46,6 +46,7 @@ const LessonVideo = ({ data, onChange }: LessonVideoProps) => {
 
         {/* Upload */}
         <UploadForm
+          accept="video/mp4"
           value={data.videoUrl}
           onChange={(fileId) => handleVideoUpload(fileId)}
           title="Lesson Video"

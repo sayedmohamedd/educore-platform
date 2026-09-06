@@ -24,8 +24,6 @@ const AssignmentPage = () => {
 
   const handleSubmit = () => {
     if (!file) return;
-
-    console.log("Submitting:", file.name);
   };
 
   return (

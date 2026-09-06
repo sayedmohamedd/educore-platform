@@ -8,7 +8,6 @@ export async function apiServer<T>(
   options?: RequestInit,
 ): Promise<T> {
   const cookieStore = await cookies();
-  console.log(endpoint);
   const res = await fetch(`${BASE_URL}${endpoint}`, {
     ...options,
     headers: {
@@ -19,12 +18,9 @@ export async function apiServer<T>(
     credentials: "include",
   });
 
-  console.log("API SERVER STATUS:", res.status);
-
   const json = await res.json();
 
   if (!res.ok) {
-    console.log("API SERVER ERROR:", json);
     throw new Error(json?.message || "Something went wrong");
   }
 

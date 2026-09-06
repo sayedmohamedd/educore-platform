@@ -144,17 +144,13 @@ const EnrollPage = () => {
         mimeType: receipt.type,
       });
 
-      console.log("Media record created:", media);
-
       // 3. Create Payment record in database
-      const payment = await studentClientService.createPayment({
+      await studentClientService.createPayment({
         courseId: course?.id,
         amount: Number(amount),
         recipientId: media.id,
         transactionId,
       });
-
-      console.log("Payment record created:", payment);
 
       router.replace("/my-courses");
     } catch (error: any) {

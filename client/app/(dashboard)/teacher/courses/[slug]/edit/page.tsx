@@ -1,20 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { X } from "lucide-react";
+import { BookOpen, X } from "lucide-react";
 import Link from "next/link";
 import { Suspense } from "react";
+
 import UpdateCourseForm from "../../_components/UpdateCourseForm";
 import { courseServerService } from "@/services/courses/course.server.service";
 
 const EditCoursePage = async ({ params }: { params: Promise<any> }) => {
   const { slug } = await params;
-  console.log(slug);
+
   let errorMessage = "";
   let course: any = {};
+
   try {
     course = await courseServerService.getCourse(slug);
   } catch (error: any) {
     errorMessage = error?.message;
   }
+
   return (
     <main className="px-8 py-4">
       {/* Header */}
@@ -27,16 +30,27 @@ const EditCoursePage = async ({ params }: { params: Promise<any> }) => {
           </p>
         </div>
 
-        <Link
-          href="/teacher/courses"
-          className="flex-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
-        >
-          <X size={18} />
-          Cancel
-        </Link>
+        <div className="flex items-center gap-3">
+          <Link
+            href={`/teacher/courses/${slug}/curriculum`}
+            className="flex-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          >
+            <BookOpen size={18} />
+            Curriculum
+          </Link>
+
+          <Link
+            href="/teacher/courses"
+            className="flex-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-medium text-slate-700 transition hover:bg-slate-50"
+          >
+            <X size={18} />
+            Cancel
+          </Link>
+        </div>
       </header>
 
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+      {errorMessage && <p className="mt-4 text-red-500">{errorMessage}</p>}
+
       <Suspense fallback={<h3>Loading...</h3>}>
         <UpdateCourseForm course={course} />
       </Suspense>

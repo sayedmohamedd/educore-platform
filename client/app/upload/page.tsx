@@ -23,13 +23,8 @@ export default function UploadTest() {
         onProgress: setProgress,
       });
 
-      console.log("Cloudinary result:", result);
-
-      // هنا Cloudinary خلص 100%
-      // دلوقتي ابعت metadata للـNestJS
-
       // 2. Create Media in database
-      const media = await mediaService.uploadMetadata({
+      await mediaService.uploadMetadata({
         url: result.secure_url,
         publicId: result.public_id,
         resourceType: result.resource_type,
@@ -37,8 +32,6 @@ export default function UploadTest() {
         size: file.size,
         mimeType: file.type,
       });
-
-      console.log(media, "Media created in database");
     } catch (error) {
       console.error(error);
     } finally {

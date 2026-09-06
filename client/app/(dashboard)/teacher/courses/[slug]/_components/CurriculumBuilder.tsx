@@ -14,6 +14,7 @@ import {
 import IconButton from "@/components/ui/IconButton";
 import { courseClientService } from "@/services/courses/courses.client.service";
 import Link from "next/link";
+import { Course } from "@/services/courses/types";
 
 type Lesson = {
   id: string;
@@ -32,13 +33,6 @@ type Section = {
   slug: string;
   order: number;
   lessons: Lesson[];
-};
-
-type Course = {
-  id: string;
-  title: string;
-  description?: string | null;
-  sections?: Section[];
 };
 
 const CurriculumBuilder = ({ course }: { course: Course }) => {
@@ -378,7 +372,7 @@ const CurriculumBuilder = ({ course }: { course: Course }) => {
 
                           <div className="flex shrink-0 items-center gap-1">
                             <Link
-                              href={`/teacher/courses/erd-course/curriculum/lessons/${lesson.id}`}
+                              href={`/teacher/courses/${course.slug}/curriculum/lessons/${lesson.id}`}
                               type="button"
                               className="rounded-lg p-2 text-slate-500 transition hover:bg-white hover:text-primary"
                             >

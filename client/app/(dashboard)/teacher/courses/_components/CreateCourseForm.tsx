@@ -201,6 +201,7 @@ export default function CreateCourseForm({
 
       {/* Thumbnail */}
       <UploadForm
+        accept="image/png,image/jpeg,image/webp"
         value={formData.thumbnailId}
         onChange={(fileId) =>
           setFormData((prev) => ({

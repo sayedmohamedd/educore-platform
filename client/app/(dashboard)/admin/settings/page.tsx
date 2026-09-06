@@ -75,14 +75,10 @@ const Settings = () => {
 
   const handleProfileSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log("Admin Profile:", profile);
   };
 
   const handlePlatformSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-
-    console.log("Platform Settings:", platform);
   };
 
   const handlePasswordSubmit = (e: React.FormEvent) => {
@@ -92,8 +88,6 @@ const Settings = () => {
       alert("Passwords do not match");
       return;
     }
-
-    console.log("Password:", password);
   };
 
   return (

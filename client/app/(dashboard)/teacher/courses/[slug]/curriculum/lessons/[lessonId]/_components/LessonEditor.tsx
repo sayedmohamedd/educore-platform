@@ -55,7 +55,7 @@ const LessonEditor = ({ lesson, courseId }: LessonEditorProps) => {
         title: formData.title.trim(),
         description: formData.description.trim() || undefined,
         videoUrl: formData.videoUrl.trim() || undefined,
-        duration: formData.duration,
+        duration: Number(formData.duration),
         isFree: formData.isFree,
       });
 
