@@ -3,13 +3,14 @@ import { Suspense } from "react";
 import CoursesList from "./CoursesList";
 import { courseServerService } from "@/services/courses/course.server.service";
 import { Course } from "@/services/courses/types";
-
+export const dynamic = "force-dynamic";
 const FeaturedCourses = async () => {
   let courses: Course[] = [];
   let errorMessage = "";
   try {
     const data = await courseServerService.getCourses();
     courses = data.courses;
+    console.log(courses);
   } catch (error: unknown) {
     errorMessage = (error as Error).message;
   }

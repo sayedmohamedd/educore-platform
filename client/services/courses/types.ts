@@ -35,9 +35,9 @@ export type Course = {
   duration: number;
   description: string;
   price: string;
-  status: CourseStatus;
+  status?: CourseStatus;
   teacherId?: string;
-  thumbnailId: string;
+  thumbnailId?: string;
   createdAt: string;
   updatedAt?: string;
   sections?: Section[];
@@ -49,10 +49,14 @@ export type Course = {
     user: {
       id: string;
       fullName: string;
+      email?: string;
       avatar: {
         url: string;
       };
     };
+  };
+  thumbnail?: {
+    url: string;
   };
   categories: Category[];
   rating?: number;
@@ -61,14 +65,14 @@ export type Course = {
 
 export type Enrollment = {
   id: string;
-  createdAt: string;
   course: Course;
+  createdAt: string;
 };
 
 export type Meta = {
-  total: number;
-  page: number;
-  lastPage: number;
+  total?: number;
+  page?: number;
+  lastPage?: number;
 };
 
 type Section = {

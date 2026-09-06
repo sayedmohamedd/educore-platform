@@ -54,7 +54,14 @@ export class CoursesService {
         skip,
         take: limit,
         orderBy,
-        include: {
+        select: {
+          id: true,
+          title: true,
+          slug: true,
+          description: true,
+          price: true,
+          duration: true,
+          createdAt: true,
           teacher: {
             select: {
               id: true,
@@ -71,7 +78,18 @@ export class CoursesService {
             },
           },
           categories: {
-            include: { category: true },
+            select: {
+              courseId: false,
+              categoryId: false,
+              category: {
+                select: {
+                  id: true,
+                  name: true,
+                  slug: true,
+                  description: true,
+                },
+              },
+            },
           },
           thumbnail: { select: { url: true } },
         },
@@ -85,8 +103,13 @@ export class CoursesService {
       lastPage: Math.ceil(total / limit),
     };
 
+    const formattedCourses = courses.map((course) => ({
+      ...course,
+      categories: course.categories.map((cat) => cat.category),
+    }));
+
     return new ApiResponse(true, 'Courses retrieved successfully', {
-      courses,
+      courses: formattedCourses,
       meta,
     });
   }
