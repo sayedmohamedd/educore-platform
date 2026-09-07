@@ -27,37 +27,49 @@ const Tabs = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
 
-  const currentStatus = searchParams.get("status") ?? "active";
+  const currentStatus = searchParams.get("status") ?? "";
 
   const handleTabChange = (status: string) => {
     const params = new URLSearchParams(searchParams.toString());
 
-    if (status === "ALL") {
+    if (!status) {
       params.delete("status");
     } else {
       params.set("status", status);
     }
 
-    router.push(`/teacher/courses?${params.toString()}`);
+    const query = params.toString();
+
+    router.push(`/teacher/courses${query ? `?${query}` : ""}`);
   };
 
   return (
-    <ul className="mx-auto my-4 flex items-center gap-2 rounded-lg bg-gray-100 px-6 py-4">
-      {tabs.map(({ label, value }) => (
-        <li
-          key={value}
-          onClick={() => handleTabChange(value)}
-          className={cn(
-            "flex-center flex-1 cursor-pointer gap-2 rounded-sm py-2 font-medium text-slate-700 transition",
-            {
-              "bg-white text-primary shadow": currentStatus === value,
-            },
-          )}
-        >
-          <span>{label}</span>
-        </li>
-      ))}
-    </ul>
+    <div className="my-6 border-b border-slate-200">
+      <nav className="flex items-center gap-6">
+        {tabs.map(({ label, value }) => {
+          const isActive = currentStatus === value;
+
+          return (
+            <button
+              key={value}
+              type="button"
+              onClick={() => handleTabChange(value)}
+              className={cn(
+                "relative pb-3 text-sm font-medium text-slate-500 transition-colors",
+                "hover:text-slate-700",
+                isActive && "text-primary",
+              )}
+            >
+              {label}
+
+              {isActive && (
+                <span className="absolute inset-x-0 -bottom-px h-0.5 rounded-full bg-primary" />
+              )}
+            </button>
+          );
+        })}
+      </nav>
+    </div>
   );
 };
 

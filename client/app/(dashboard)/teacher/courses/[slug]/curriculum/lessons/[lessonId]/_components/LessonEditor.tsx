@@ -21,7 +21,10 @@ const LessonEditor = ({ lesson, courseId }: LessonEditorProps) => {
   const [formData, setFormData] = useState<LessonEditorData>({
     title: lesson.title ?? "",
     description: lesson.description ?? "",
-    videoUrl: lesson.videoUrl ?? "",
+
+    videoId: lesson.video?.id ?? lesson.videoId ?? "",
+    videoUrl: lesson.video?.url ?? "",
+
     duration: lesson.duration ?? 0,
     isFree: lesson.isFree ?? false,
   });
@@ -54,7 +57,7 @@ const LessonEditor = ({ lesson, courseId }: LessonEditorProps) => {
       await courseClientService.updateLesson(lesson.id, {
         title: formData.title.trim(),
         description: formData.description.trim() || undefined,
-        videoUrl: formData.videoUrl.trim() || undefined,
+        videoId: formData.videoId || undefined,
         duration: Number(formData.duration),
         isFree: formData.isFree,
       });
@@ -71,27 +74,22 @@ const LessonEditor = ({ lesson, courseId }: LessonEditorProps) => {
 
   return (
     <div className="mt-8 max-w-5xl space-y-6">
-      {/* Error */}
       {errorMessage && (
         <div className="rounded-xl border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
           {errorMessage}
         </div>
       )}
 
-      {/* Success */}
       {successMessage && (
         <div className="rounded-xl border border-green-200 bg-green-50 px-4 py-3 text-sm text-green-700">
           {successMessage}
         </div>
       )}
 
-      {/* Basic Information */}
       <LessonBasicInfo data={formData} onChange={updateField} />
 
-      {/* Video */}
       <LessonVideo data={formData} onChange={updateField} />
 
-      {/* Lesson Settings */}
       <section className="rounded-2xl border border-slate-200 bg-white p-4 shadow-sm sm:p-6">
         <div className="mb-6">
           <h3 className="text-lg font-semibold text-slate-700">
@@ -122,7 +120,6 @@ const LessonEditor = ({ lesson, courseId }: LessonEditorProps) => {
         </label>
       </section>
 
-      {/* Actions */}
       <div className="flex flex-col-reverse gap-3 pb-6 sm:flex-row sm:justify-end">
         <Link
           href={`/teacher/courses/${courseId}/curriculum`}

@@ -41,6 +41,7 @@ export class LessonsService {
     const lesson = await this.prisma.lesson.findUnique({
       where: { id: lessonId },
       include: {
+        video: true,
         section: {
           include: {
             course: true,

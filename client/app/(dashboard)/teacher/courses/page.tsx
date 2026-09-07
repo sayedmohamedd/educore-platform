@@ -28,7 +28,9 @@ const TeacherCourses = async ({
 
       <header className="my-6 flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <h3 className="mb-2 text-lg font-medium text-muted">My Courses</h3>
+          <h3 className="mb-2 text-lg font-medium text-muted text-right">
+            My Courses
+          </h3>
 
           <p className="text-sm text-muted-foreground">
             Manage and monitor your ongoing educational programs.
