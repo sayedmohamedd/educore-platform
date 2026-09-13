@@ -216,7 +216,7 @@ const WalletStatCard = ({ title, value, Icon, iconStyle }: Stat) => {
           <p className="text-sm font-medium text-slate-500">{title}</p>
 
           <p className="mt-2 text-2xl font-bold text-slate-700">
-            ${value.toFixed(2)}
+            ${Number(value).toFixed(2)}
           </p>
         </div>
 

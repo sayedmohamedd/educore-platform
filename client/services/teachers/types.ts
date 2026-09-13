@@ -24,3 +24,20 @@ export interface Enrollment {
   };
   enrolledAt: string;
 }
+
+// export type Teacher = {
+//   id: string;
+//   userId: string;
+//   bio: string;
+//   title: string;
+//   expertise: string;
+//   phone: string;
+//   status: string;
+//   createdAt: string;
+//   updatedAt: string;
+//   user: {
+//     id: string;
+//     fullName: string;
+//     email: string;
+//   };
+// };

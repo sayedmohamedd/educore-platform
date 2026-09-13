@@ -1,6 +1,7 @@
 import { apiServer } from "@/lib/apiServer";
 import { Course } from "../courses/types";
 import { ResponseData } from "../admin/types";
+import { Teacher } from "./types";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const teachersService = {
@@ -30,21 +31,4 @@ export const teachersService = {
 
   getMyStatistics: (options?: RequestInit) =>
     apiServer<any>(`/teachers/me/statistics`, options),
-};
-
-export type Teacher = {
-  id: string;
-  userId: string;
-  bio: string;
-  title: string;
-  expertise: string;
-  phone: string;
-  status: string;
-  createdAt: string;
-  updatedAt: string;
-  user: {
-    id: string;
-    fullName: string;
-    email: string;
-  };
 };

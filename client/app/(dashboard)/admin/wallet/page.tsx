@@ -21,9 +21,9 @@ const PlatformWalletList = async ({ searchParams }: Props) => {
   const limit = Number(params.limit) || 10;
 
   let transactions: WalletTransaction[] = [];
-  let meta = {} as Meta;
   let stats: WalletStats = {} as WalletStats;
   let wallet: Wallet = {} as Wallet;
+  let meta = {} as Meta;
   try {
     const response = await adminServerService.getPlatformWalletAndTransactions({
       page,

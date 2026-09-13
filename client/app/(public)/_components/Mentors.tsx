@@ -1,17 +1,16 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import { teachersService } from "@/services/teachers/teacher.server.service";
 import { Suspense } from "react";
 import MentorsList from "./MentorsList";
+import { Teacher } from "@/services/teachers/types";
 
 const Mentors = async () => {
-  let teachers: any = [];
-  let errorCatched: any;
+  let teachers: Teacher[] = [];
   try {
     const data = await teachersService.getTeachers();
     teachers = data.teachers;
-  } catch (error: any) {
-    errorCatched = error;
+  } catch (error: unknown) {
+    console.error(error);
   }
   return (
     <section>
@@ -35,10 +34,6 @@ const Mentors = async () => {
             انضم كمدرب
           </Link>
         </header>
-
-        {errorCatched && (
-          <p className="text-red-500">{errorCatched?.message}</p>
-        )}
         <Suspense fallback={<h3>Loading Teachers...</h3>}>
           <MentorsList teachers={teachers} />
         </Suspense>
