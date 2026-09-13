@@ -18,22 +18,14 @@ import { RolesGuard } from '../auth/guards/jwt-auth.guard/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import type { AuthenticatedRequest } from '../common/types/authenticated-request.js';
 import { Role } from '../generated/prisma/client.js';
+import { CourseQueryDto } from './dtos/course-query.dto.js';
 
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Get()
-  findAll(
-    @Query()
-    query: {
-      page: number;
-      limit: number;
-      search: string;
-      status: string;
-      maxPrice: number;
-    },
-  ) {
+  findAll(@Query() query: CourseQueryDto) {
     return this.coursesService.findAll(query);
   }
 
@@ -49,7 +41,7 @@ export class CoursesController {
     return this.coursesService.findOne(slug);
   }
 
-  @Patch(':courseId')
+  @Patch(':id')
   @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   update(

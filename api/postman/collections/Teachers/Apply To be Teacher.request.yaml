@@ -1,0 +1,17 @@
+$kind: http-request
+url: "{{url}}/teachers/apply"
+method: POST
+body:
+  type: json
+  content: "{\r
+
+    \    \"title\":\"Senior Physics Instructor\",\r
+
+    \    \"bio\":\"Senior Physics Instructor\",\r
+
+    \    \"phone\":\"+201102128186\",\r
+
+    \    \"expertise\":\"5+ Years of Educating\"\r
+
+    }"
+order: 9000

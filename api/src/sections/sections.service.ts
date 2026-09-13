@@ -13,25 +13,6 @@ export class SectionsService {
     private readonly instructorHelper: InstructorHelperService,
   ) {}
 
-  // By Admin
-  async findAll(courseId: string) {
-    const sections = await this.prisma.section.findMany({
-      where: { courseId },
-      include: {
-        lessons: {
-          orderBy: {
-            order: 'asc',
-          },
-        },
-      },
-      orderBy: {
-        order: 'asc',
-      },
-    });
-
-    return new ApiResponse(true, 'Sections retrieved successfully', sections);
-  }
-
   async findOne(sectionId: string) {
     const section = await this.prisma.section.findUnique({
       where: { id: sectionId },
@@ -44,9 +25,7 @@ export class SectionsService {
       },
     });
 
-    if (!section) {
-      throw new NotFoundException('Section not found');
-    }
+    if (!section) throw new NotFoundException('Section not found');
 
     return new ApiResponse(true, 'Section retrieved successfully', section);
   }
@@ -56,11 +35,9 @@ export class SectionsService {
     // check course and teacher Authorization
     await this.instructorHelper.getTeacherCourse(userId, courseId);
 
-    const slug = slugify(dto.title, { lower: true });
-
     const section = await this.prisma.section.create({
       data: {
-        slug,
+        slug: slugify(dto.title, { lower: true }),
         courseId,
         title: dto.title,
         order: dto.order,
@@ -83,7 +60,7 @@ export class SectionsService {
 
     const updated = await this.prisma.section.update({
       where: { id: sectionId },
-      data: dto,
+      data: { ...dto, slug: dto.title && slugify(dto.title, { lower: true }) },
     });
 
     return new ApiResponse(true, 'Section updated successfully', updated);

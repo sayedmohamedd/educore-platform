@@ -43,7 +43,8 @@ const EditCategoryDialog = ({ category, onClose, onUpdated }: Props) => {
         name: name.trim(),
         description: description.trim(),
       });
-      onUpdated({ ...response, coursesCount: category.coursesCount });
+
+      onUpdated({ ...response.category, coursesCount: category.coursesCount });
       onClose();
     } catch (error) {
       setError(

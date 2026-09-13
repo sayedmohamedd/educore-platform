@@ -6,6 +6,7 @@ import Withdraw from "./_components/Withdraw";
 import { Transaction } from "./_components/types";
 import TransactionHistory from "./_components/TransactionHistory";
 import { Suspense } from "react";
+import { Meta } from "@/services/helpers";
 
 const stats = [
   {
@@ -59,6 +60,8 @@ const transactions: Transaction[] = [
   },
 ];
 
+const meta: Meta = {} as Meta;
+
 const Wallet = () => {
   return (
     <main>
@@ -75,7 +78,7 @@ const Wallet = () => {
 
         {/* Transaction History */}
         <Suspense fallback={<div>Loading...</div>}>
-          <TransactionHistory transactions={transactions} />
+          <TransactionHistory transactions={transactions} meta={meta} />
         </Suspense>
       </div>
     </main>

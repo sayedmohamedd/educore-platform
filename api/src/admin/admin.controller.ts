@@ -6,6 +6,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
   // UseGuards,
@@ -19,6 +20,9 @@ import type { AuthenticatedRequest } from '../common/types/authenticated-request
 import { RejectionDto } from '../payments/dtos/reject-payment.dto.js';
 import { CreateCategoryDto } from '../categories/dto/create-category.dto.js';
 import { UpdateCategoryDto } from '../categories/dto/update-category.dto.js';
+import { QueryDto } from '../payments/dtos/query-dto.js';
+import { PaginationDto } from '../common/pagination/pagination.dto.js';
+import { CourseQueryDto } from '../courses/dtos/course-query.dto.js';
 
 @Controller('admin')
 @Roles(Role.ADMIN)
@@ -28,14 +32,14 @@ export class AdminController {
 
   //   Statistics
   @Get('statistics')
-  getStudents() {
+  getStatistics() {
     return this.adminService.getStatistics();
   }
 
   //   Teachers - done
   @Get('teachers')
-  getTeachers() {
-    return this.adminService.getTeachers();
+  getTeachers(@Query() query: QueryDto) {
+    return this.adminService.getTeachers(query);
   }
 
   @Get('admin/teachers/:teacherId/statistics')
@@ -59,8 +63,8 @@ export class AdminController {
 
   //   Payments - done
   @Get('payments')
-  getAllPayments() {
-    return this.adminService.getAllPayments();
+  getAllPayments(@Query() query: QueryDto) {
+    return this.adminService.getAllPayments(query);
   }
 
   @Patch('payments/:id/approve')
@@ -94,10 +98,9 @@ export class AdminController {
   }
 
   // Courses
-
   @Get('courses')
-  getAllCourses() {
-    return this.adminService.getAllCourses();
+  getAllCourses(@Query() query: CourseQueryDto) {
+    return this.adminService.getAllCourses(query);
   }
 
   @Patch('courses/:id/approve')
@@ -113,8 +116,8 @@ export class AdminController {
   // Users
 
   @Get('users')
-  getAllUsers() {
-    return this.adminService.getAllUsers();
+  getAllUsers(@Query() query: QueryDto) {
+    return this.adminService.getAllUsers(query);
   }
 
   @Patch('users/:id')
@@ -129,8 +132,8 @@ export class AdminController {
   }
 
   @Get('/platform-wallet')
-  getPlatformWallet() {
-    return this.adminService.getPlatformWallet();
+  getPlatformWalletAndTransactions(@Query() query: PaginationDto) {
+    return this.adminService.getPlatformWalletAndTransactions(query);
   }
 
   //   Withdrawals

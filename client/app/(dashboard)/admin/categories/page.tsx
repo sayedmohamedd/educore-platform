@@ -10,14 +10,13 @@ const CategoriesPage = async () => {
   let categories: CategoryWithCoursesCount[] = [];
 
   try {
-    const data = await categoryServerService.getAllWithCoursesCount();
+    const data = await categoryServerService.getAllWithCoursesCount({
+      cache: "force-cache",
+      next: { revalidate: 3600 },
+    });
     categories = data.categories;
   } catch (error) {
-    console.error(
-      error instanceof Error
-        ? error.message
-        : "Failed to fetch categories data.",
-    );
+    console.error(error);
   }
 
   return (

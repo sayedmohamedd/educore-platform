@@ -1,4 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ApiResponse } from '../helper/APIResponse.js';
 
@@ -72,10 +76,15 @@ export class CategoriesService {
   }
 
   async findOne(categoryId: string) {
+    if (!categoryId) throw new BadRequestException('Category id is required');
+
     const category = await this.prisma.category.findUnique({
       where: { id: categoryId },
       select: { id: true, name: true, slug: true },
     });
+
+    if (!category) throw new NotFoundException('Category not found');
+
     return new ApiResponse(true, 'Category retrieved successfully', category);
   }
 }

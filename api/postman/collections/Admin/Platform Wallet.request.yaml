@@ -1,4 +1,4 @@
 $kind: http-request
-url: ""
+url: "{{url}}/admin/platform-wallet"
 method: GET
 order: 4401232385503964

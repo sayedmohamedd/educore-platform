@@ -12,7 +12,7 @@ import {
   XCircle,
 } from "lucide-react";
 
-import { AdminCourse } from "./typs";
+import { AdminCourse } from "./types";
 
 type CoursePreviewProps = {
   course: AdminCourse;
@@ -136,7 +136,7 @@ const CoursePreview = ({ course, onClose }: CoursePreviewProps) => {
               </div>
 
               {/* Categories */}
-              {course.categories.length > 0 && (
+              {/* {course.categories.length > 0 && (
                 <div className="mt-4 flex flex-wrap gap-2">
                   {course.categories.map(({ category }) => (
                     <span
@@ -147,7 +147,7 @@ const CoursePreview = ({ course, onClose }: CoursePreviewProps) => {
                     </span>
                   ))}
                 </div>
-              )}
+              )} */}
 
               {/* Meta */}
               <div className="mt-5 flex flex-wrap gap-5 text-sm text-slate-500">

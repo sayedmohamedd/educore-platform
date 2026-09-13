@@ -5,13 +5,13 @@ import { Suspense } from "react";
 import MentorsList from "./MentorsList";
 
 const Mentors = async () => {
-  let errorMessage = "";
   let teachers: any = [];
+  let errorCatched: any;
   try {
     const data = await teachersService.getTeachers();
     teachers = data.teachers;
   } catch (error: any) {
-    errorMessage = error?.message;
+    errorCatched = error;
   }
   return (
     <section>
@@ -36,7 +36,9 @@ const Mentors = async () => {
           </Link>
         </header>
 
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+        {errorCatched && (
+          <p className="text-red-500">{errorCatched?.message}</p>
+        )}
         <Suspense fallback={<h3>Loading Teachers...</h3>}>
           <MentorsList teachers={teachers} />
         </Suspense>

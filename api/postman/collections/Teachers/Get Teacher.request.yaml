@@ -1,9 +1,6 @@
 $kind: http-request
-name: Get Teacher
 url: "{{url}}/teachers/cmtah76wp0000mgf3lgo63mxt"
 method: GET
 auth:
-  type: bearer
-  credentials:
-    token: "{{access_token}}"
-order: 1000000000011
+  type: noauth
+order: 2000

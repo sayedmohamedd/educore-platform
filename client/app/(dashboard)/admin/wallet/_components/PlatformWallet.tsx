@@ -3,99 +3,69 @@
 import { useMemo } from "react";
 import {
   ArrowDownToLine,
+  ArrowUpFromLine,
   CircleDollarSign,
   RotateCcw,
-  WalletCards,
+  type LucideIcon,
 } from "lucide-react";
-import { Column, TableFilter } from "@/components/shared/Table/types";
-import StatsCard from "../../courses/_components/StatsCard";
+
 import Table from "@/components/shared/Table/Table";
-import {
-  PlatformWalletData,
-  PlatformTransaction,
-  TransactionType,
-} from "./types";
+import { Column, TableFilter } from "@/components/shared/Table/types";
 
-const PlatformWallet = () => {
-  const wallet: PlatformWalletData = {
-    id: "platform-wallet",
-    balance: "12500.00",
-    updatedAt: new Date().toISOString(),
+import { TransactionType, WalletData, WalletTransaction } from "./types";
 
-    transactions: [
+type FilterType = "ALL" | TransactionType;
+
+type Stat = {
+  title: string;
+  value: number;
+  Icon: LucideIcon;
+  iconStyle: string;
+};
+
+const PlatformWallet = ({ wallet, transactions, stats }: WalletData) => {
+  const statsData: Stat[] = useMemo(
+    () => [
       {
-        id: "tx_001",
-        walletId: "",
-        platformWalletId: "platform-wallet",
-        paymentId: "payment_001",
-        withdrawalId: null,
-        amount: "150.00",
-        type: TransactionType.PLATFORM_EARNING,
-        createdAt: new Date().toISOString(),
+        title: "Platform Balance",
+        value: Number(wallet.balance),
+        Icon: CircleDollarSign,
+        iconStyle: "bg-blue-50 text-blue-600",
       },
       {
-        id: "tx_002",
-        walletId: "",
-        platformWalletId: "platform-wallet",
-        paymentId: "payment_002",
-        withdrawalId: null,
-        amount: "50.00",
-        type: TransactionType.REFUND,
-        createdAt: new Date().toISOString(),
+        title: "Platform Earnings",
+        value: Number(stats.totalEarnings),
+        Icon: ArrowUpFromLine,
+        iconStyle: "bg-emerald-50 text-emerald-600",
       },
       {
-        id: "tx_003",
-        walletId: "",
-        platformWalletId: "platform-wallet",
-        paymentId: null,
-        withdrawalId: "withdrawal_001",
-        amount: "500.00",
-        type: TransactionType.WITHDRAWAL,
-        createdAt: new Date().toISOString(),
+        title: "Refunds",
+        value: Number(stats.totalRefunds),
+        Icon: RotateCcw,
+        iconStyle: "bg-amber-50 text-amber-600",
+      },
+      {
+        title: "Withdrawals",
+        value: Number(stats.totalWithdrawals),
+        Icon: ArrowDownToLine,
+        iconStyle: "bg-red-50 text-red-600",
       },
     ],
-  };
+    [stats, wallet.balance],
+  );
 
-  const transactions = wallet?.transactions ?? [];
-
-  const stats = useMemo(() => {
-    const platformEarnings = transactions
-      .filter(
-        (transaction) => transaction.type === TransactionType.PLATFORM_EARNING,
-      )
-      .reduce((total, transaction) => total + Number(transaction.amount), 0);
-
-    const refunds = transactions
-      .filter((transaction) => transaction.type === TransactionType.REFUND)
-      .reduce((total, transaction) => total + Number(transaction.amount), 0);
-
-    const withdrawals = transactions
-      .filter((transaction) => transaction.type === TransactionType.WITHDRAWAL)
-      .reduce((total, transaction) => total + Number(transaction.amount), 0);
-
-    return {
-      platformEarnings,
-      refunds,
-      withdrawals,
-    };
-  }, [transactions]);
-
-  const filters: TableFilter[] = [
+  const filters: TableFilter<FilterType>[] = [
     {
       key: "type",
-      label: "Transaction Type",
+      label: "Type",
       options: [
         {
           value: "ALL",
           label: "All Transactions",
         },
         {
-          value: TransactionType.COURSE_EARNING,
-          label: "Course Earning",
-        },
-        {
           value: TransactionType.PLATFORM_EARNING,
-          label: "Platform Earning",
+          label: "Platform Earnings",
         },
         {
           value: TransactionType.REFUND,
@@ -105,53 +75,25 @@ const PlatformWallet = () => {
           value: TransactionType.WITHDRAWAL,
           label: "Withdrawal",
         },
+        {
+          value: TransactionType.COURSE_EARNING,
+          label: "Course Earnings",
+        },
       ],
     },
   ];
 
-  const typeLabels: Record<TransactionType, string> = {
-    COURSE_EARNING: "Course Earning",
-    PLATFORM_EARNING: "Platform Earning",
-    REFUND: "Refund",
-    WITHDRAWAL: "Withdrawal",
-  };
-
-  const getTypeClass = (type: TransactionType) => {
-    switch (type) {
-      case TransactionType.COURSE_EARNING:
-        return "bg-blue-50 text-blue-700";
-
-      case TransactionType.PLATFORM_EARNING:
-        return "bg-emerald-50 text-emerald-700";
-
-      case TransactionType.REFUND:
-        return "bg-red-50 text-red-700";
-
-      case TransactionType.WITHDRAWAL:
-        return "bg-amber-50 text-amber-700";
-
-      default:
-        return "bg-slate-100 text-slate-700";
-    }
-  };
-
-  const columns: Column<PlatformTransaction>[] = [
+  const columns: Column<WalletTransaction>[] = [
     {
       key: "transaction",
       label: "Transaction",
       render: (transaction) => (
         <div>
           <p className="text-sm font-semibold text-slate-700">
-            #{transaction.id.slice(0, 8)}
+            {getTransactionLabel(transaction.type)}
           </p>
 
-          <p className="mt-1 text-xs text-slate-400">
-            {transaction.paymentId
-              ? `Payment #${transaction.paymentId.slice(0, 8)}`
-              : transaction.withdrawalId
-                ? `Withdrawal #${transaction.withdrawalId.slice(0, 8)}`
-                : "No reference"}
-          </p>
+          <p className="mt-1 text-xs text-slate-400">{transaction.id}</p>
         </div>
       ),
     },
@@ -159,30 +101,38 @@ const PlatformWallet = () => {
     {
       key: "type",
       label: "Type",
-      render: (transaction) => (
-        <span
-          className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${getTypeClass(
-            transaction.type,
-          )}`}
-        >
-          {typeLabels[transaction.type]}
-        </span>
-      ),
+      render: (transaction) => {
+        const styles: Record<TransactionType, string> = {
+          COURSE_EARNING: "bg-blue-50 text-blue-700",
+          PLATFORM_EARNING: "bg-emerald-50 text-emerald-700",
+          REFUND: "bg-amber-50 text-amber-700",
+          WITHDRAWAL: "bg-red-50 text-red-700",
+        };
+
+        return (
+          <span
+            className={`inline-flex rounded-full px-3 py-1 text-xs font-medium ${styles[transaction.type]}`}
+          >
+            {getTransactionLabel(transaction.type)}
+          </span>
+        );
+      },
     },
 
     {
       key: "amount",
       label: "Amount",
       render: (transaction) => {
-        const isRefund = transaction.type === TransactionType.REFUND;
+        const isNegative =
+          transaction.type === "REFUND" || transaction.type === "WITHDRAWAL";
 
         return (
           <p
             className={`text-sm font-semibold ${
-              isRefund ? "text-red-600" : "text-slate-700"
+              isNegative ? "text-red-600" : "text-emerald-600"
             }`}
           >
-            {isRefund ? "-" : "+"}${Number(transaction.amount).toFixed(2)}
+            {isNegative ? "-" : "+"}${Number(transaction.amount).toFixed(2)}
           </p>
         );
       },
@@ -193,11 +143,7 @@ const PlatformWallet = () => {
       label: "Date",
       render: (transaction) => (
         <p className="text-sm text-slate-600">
-          {new Date(transaction.createdAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
+          {formatDate(transaction.createdAt)}
         </p>
       ),
     },
@@ -205,59 +151,29 @@ const PlatformWallet = () => {
     {
       key: "reference",
       label: "Reference",
-      render: (transaction) => {
-        if (transaction.paymentId) {
-          return <span className="text-sm text-slate-500">Payment</span>;
-        }
-
-        if (transaction.withdrawalId) {
-          return <span className="text-sm text-slate-500">Withdrawal</span>;
-        }
-
-        return <span className="text-sm text-slate-400">—</span>;
-      },
+      render: (transaction) => (
+        <p className="max-w-45 truncate text-sm text-slate-500">
+          {transaction?.payment.id || transaction?.withdrawalId || "-"}
+        </p>
+      ),
     },
   ];
 
   return (
     <main className="px-4 py-4 sm:px-6 lg:px-8">
-      <header className="mb-6">
+      <div className="mb-6">
         <h1 className="text-2xl font-bold text-slate-700">Platform Wallet</h1>
 
         <p className="mt-1 text-sm text-slate-500">
-          Monitor the platform balance and financial transactions.
+          Monitor platform balance, earnings, refunds, and withdrawals.
         </p>
-      </header>
+      </div>
 
-      <section className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <StatsCard
-          Icon={WalletCards}
-          stats={`$${Number(wallet.balance).toFixed(2)}`}
-          title="Platform Balance"
-          iconStyle="bg-blue-50 text-blue-600"
-        />
-
-        <StatsCard
-          Icon={CircleDollarSign}
-          stats={`$${stats.platformEarnings.toFixed(2)}`}
-          title="Platform Earnings"
-          iconStyle="bg-emerald-50 text-emerald-600"
-        />
-
-        <StatsCard
-          Icon={RotateCcw}
-          stats={`$${stats.refunds.toFixed(2)}`}
-          title="Refunds"
-          iconStyle="bg-red-50 text-red-600"
-        />
-
-        <StatsCard
-          Icon={ArrowDownToLine}
-          stats={`$${stats.withdrawals.toFixed(2)}`}
-          title="Withdrawals"
-          iconStyle="bg-amber-50 text-amber-600"
-        />
-      </section>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        {statsData.map((stat) => (
+          <WalletStatCard key={stat.title} {...stat} />
+        ))}
+      </div>
 
       <Table
         data={transactions}
@@ -266,23 +182,71 @@ const PlatformWallet = () => {
         search={{
           placeholder: "Search transactions...",
         }}
-        filterData={(transaction, { search, type }) => {
-          const matchesType = type === "ALL" || transaction.type === type;
+        // filterData={(transaction, { search, type }) => {
+        //   const matchesType = type === "ALL" || transaction.type === type;
 
-          const matchesSearch =
-            !search ||
-            transaction.id.toLowerCase().includes(search) ||
-            transaction.paymentId?.toLowerCase().includes(search) ||
-            transaction.withdrawalId?.toLowerCase().includes(search) ||
-            typeLabels[transaction.type].toLowerCase().includes(search);
+        //   const reference =
+        //     transaction.reference ||
+        //     transaction.paymentId ||
+        //     transaction.withdrawalId ||
+        //     "";
 
-          return matchesType && Boolean(matchesSearch);
-        }}
+        //   const matchesSearch =
+        //     !search ||
+        //     transaction.id.toLowerCase().includes(search) ||
+        //     reference.toLowerCase().includes(search) ||
+        //     getTransactionLabel(transaction.type)
+        //       .toLowerCase()
+        //       .includes(search);
+
+        //   return matchesType && matchesSearch;
+        // }}
         getRowKey={(transaction) => transaction.id}
         emptyMessage="No transactions found."
       />
     </main>
   );
+};
+
+const WalletStatCard = ({ title, value, Icon, iconStyle }: Stat) => {
+  return (
+    <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+      <div className="flex items-start justify-between">
+        <div>
+          <p className="text-sm font-medium text-slate-500">{title}</p>
+
+          <p className="mt-2 text-2xl font-bold text-slate-700">
+            ${value.toFixed(2)}
+          </p>
+        </div>
+
+        <div
+          className={`flex h-11 w-11 items-center justify-center rounded-xl ${iconStyle}`}
+        >
+          <Icon size={21} />
+        </div>
+      </div>
+    </div>
+  );
+};
+
+const getTransactionLabel = (type: TransactionType) => {
+  const labels: Record<TransactionType, string> = {
+    COURSE_EARNING: "Course Earnings",
+    PLATFORM_EARNING: "Platform Earnings",
+    REFUND: "Refund",
+    WITHDRAWAL: "Withdrawal",
+  };
+
+  return labels[type];
+};
+
+const formatDate = (date: string) => {
+  return new Intl.DateTimeFormat("en-US", {
+    year: "numeric",
+    month: "short",
+    day: "numeric",
+  }).format(new Date(date));
 };
 
 export default PlatformWallet;

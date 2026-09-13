@@ -1,0 +1,11 @@
+$kind: http-request
+url: "{{url}}/teachers/me"
+method: PATCH
+body:
+  type: json
+  content: "{\r
+
+    \    \"phone\": \"+201102128186\"\r
+
+    }"
+order: 11000

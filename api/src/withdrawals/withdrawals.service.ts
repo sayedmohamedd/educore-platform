@@ -1,8 +1,22 @@
-import { Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { CreateWithdrawalDto } from './dtos/create-withdrawal.dto.js';
 import { ApiResponse } from '../helper/APIResponse.js';
 import { RejectWithdrawalDto } from './dtos/rejection-withdrawal.dto.js';
+import {
+  TransactionType,
+  WithdrawalStatus,
+} from '../generated/prisma/enums.js';
+import { WithdrawalQueryDto } from './dtos/withdrawal-query.dto.js';
+import { Prisma } from '../generated/prisma/client.js';
+import {
+  getPagination,
+  getPaginationMeta,
+} from '../common/pagination/pagination.util.js';
 
 @Injectable()
 export class WithdrawalsService {
@@ -16,11 +30,11 @@ export class WithdrawalsService {
     });
 
     if (!teacherProfile) {
-      throw new Error('Teacher profile not found');
+      throw new NotFoundException('Teacher profile not found');
     }
 
     if (teacherProfile.status !== 'APPROVED') {
-      throw new Error('Teacher profile is not approved');
+      throw new BadRequestException('Teacher profile is not approved');
     }
 
     const wallet = await this.prisma.wallet.findUnique({
@@ -28,11 +42,11 @@ export class WithdrawalsService {
     });
 
     if (!wallet) {
-      throw new Error('Teacher profile wallet not found');
+      throw new NotFoundException('Teacher profile wallet not found');
     }
 
     if (Number(wallet.balance) < dto.amount) {
-      throw new Error('Teacher profile balance is not enough');
+      throw new BadRequestException('Teacher profile balance is not enough');
     }
 
     const withdrawal = await this.prisma.withdrawal.create({
@@ -46,51 +60,46 @@ export class WithdrawalsService {
     return new ApiResponse(true, 'Withdrawal created successfully', withdrawal);
   }
 
-  async findAll() {
-    const withdrawals = await this.prisma.withdrawal.findMany({
-      include: {
-        teacherProfile: {
-          include: {
-            user: {
-              select: {
-                id: true,
-                fullName: true,
+  async findAll(query: WithdrawalQueryDto) {
+    const { page = 1, limit = 10 } = query;
+
+    const { skip, take } = getPagination(page, limit);
+
+    const where: Prisma.WithdrawalWhereInput = {
+      ...(query.status && {
+        status: query.status,
+      }),
+      ...(query.teacherId && {
+        teacherProfileId: query.teacherId,
+      }),
+    };
+
+    const [withdrawals, total] = await Promise.all([
+      this.prisma.withdrawal.findMany({
+        where,
+        include: {
+          teacherProfile: {
+            include: {
+              user: {
+                select: {
+                  id: true,
+                  fullName: true,
+                },
               },
             },
           },
         },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-    return new ApiResponse(
-      true,
-      'Withdrawals retrieved successfully',
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take,
+      }),
+      this.prisma.withdrawal.count({ where }),
+    ]);
+    const meta = getPaginationMeta(page, limit, total);
+    return new ApiResponse(true, 'Withdrawals retrieved successfully', {
       withdrawals,
-    );
-  }
-
-  async myWithdrawals(userId: string) {
-    const teacherProfile = await this.prisma.teacherProfile.findUnique({
-      where: {
-        userId,
-        status: 'APPROVED',
-      },
+      meta,
     });
-
-    if (!teacherProfile) {
-      throw new Error('Teacher profile not found');
-    }
-
-    const withdrawals = await this.prisma.withdrawal.findMany({
-      where: { teacherProfileId: teacherProfile.id },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    return new ApiResponse(
-      true,
-      'Withdrawals retrieved successfully',
-      withdrawals,
-    );
   }
 
   async approveByAdmin(withdrawalId: string) {
@@ -103,33 +112,26 @@ export class WithdrawalsService {
       },
     });
 
-    if (!withdrawal) {
-      throw new Error('Withdrawal not found');
-    }
+    if (!withdrawal) throw new NotFoundException('Withdrawal not found');
 
-    if (withdrawal.status !== 'PENDING') {
-      throw new Error('Withdrawal is not pending');
+    if (withdrawal.status !== WithdrawalStatus.PENDING) {
+      throw new BadRequestException('Withdrawal is not pending');
     }
 
     const wallet = withdrawal.teacherProfile.wallet;
 
-    if (!wallet) {
-      throw new Error('Teacher wallet not found');
-    }
+    if (!wallet) throw new NotFoundException('Teacher wallet not found');
 
     if (Number(wallet.balance) < Number(withdrawal.amount)) {
-      throw new Error('Teacher profile balance is not enough');
+      throw new BadRequestException('Teacher profile balance is not enough');
     }
 
-    // 3. تنفيذ العمليات المالية داخل Transaction لضمان الأمان التام
     const result = await this.prisma.$transaction(async (tx) => {
-      // أ. تحديث حالة طلب السحب إلى APPROVED
       const updatedWithdrawal = await tx.withdrawal.update({
         where: { id: withdrawalId },
-        data: { status: 'APPROVED' },
+        data: { status: WithdrawalStatus.APPROVED },
       });
 
-      // ب. خصم المبلغ من محفظة المدرس
       await tx.wallet.update({
         where: { id: wallet.id },
         data: {
@@ -139,13 +141,12 @@ export class WithdrawalsService {
         },
       });
 
-      // ج. تسجيل الحركة في دفتر الأستاذ (Transaction Ledger)
       await tx.transaction.create({
         data: {
           walletId: wallet.id,
           withdrawalId: withdrawal.id,
           amount: withdrawal.amount,
-          type: 'WITHDRAWAL',
+          type: TransactionType.WITHDRAWAL,
         },
       });
 
@@ -164,18 +165,16 @@ export class WithdrawalsService {
       where: { id: withdrawalId },
     });
 
-    if (!withdrawal) {
-      throw new Error('Withdrawal not found');
-    }
+    if (!withdrawal) throw new NotFoundException('Withdrawal not found');
 
-    if (withdrawal.status !== 'PENDING') {
-      throw new Error('Withdrawal is not pending');
+    if (withdrawal.status !== WithdrawalStatus.PENDING) {
+      throw new BadRequestException('Withdrawal is not pending');
     }
 
     const updatedWithdrawal = await this.prisma.withdrawal.update({
       where: { id: withdrawalId },
       data: {
-        status: 'REJECTED',
+        status: WithdrawalStatus.REJECTED,
         rejectionReason: dto.rejectionReason,
       },
     });

@@ -9,6 +9,7 @@ export class TeacherApplicationDto {
 
   @ApiProperty({ type: String, description: 'The title of the teacher' })
   @IsString()
+  @IsNotEmpty()
   title!: string;
 
   @ApiProperty({ type: String, description: 'The expertise of the teacher' })

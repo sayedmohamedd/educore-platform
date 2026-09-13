@@ -1,50 +1,41 @@
 "use client";
 
 import { CheckCircle2, Clock3, CreditCard, XCircle } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 
 import PaymentRequestCard from "./PaymentRequestCard";
 import PaymentRequestDialog from "./PaymentRequestDialog";
-import PaymentRequestFilters from "./PaymentRequestFilters";
 import PaymentRequestsTable from "./PaymentRequestsTable";
+
 import { adminClientService } from "@/services/admin/admin.client.service";
-import { PaymentRequest, PaymentRequestFilter } from "@/services/admin/types";
+import { PaymentRequest } from "@/services/admin/types";
+import { Meta } from "@/services/helpers";
 
 type Props = {
   initialRequests: PaymentRequest[];
+  meta: Meta;
 };
 
-const PaymentRequests = ({ initialRequests }: Props) => {
+const PaymentRequests = ({ initialRequests, meta }: Props) => {
   const [requests, setRequests] = useState<PaymentRequest[]>(initialRequests);
+
+  useEffect(() => {
+    const func = () => {
+      setRequests(initialRequests);
+    };
+
+    func();
+  }, [initialRequests]);
 
   const [selectedRequest, setSelectedRequest] = useState<PaymentRequest | null>(
     null,
   );
 
-  const [search, setSearch] = useState("");
-  const [filter, setFilter] = useState<PaymentRequestFilter>("ALL");
-
   const [isApproving, setIsApproving] = useState(false);
-
-  const filteredRequests = useMemo(() => {
-    const normalizedSearch = search.trim().toLowerCase();
-
-    return requests.filter((request) => {
-      const matchesFilter = filter === "ALL" || request.status === filter;
-
-      const matchesSearch =
-        !normalizedSearch ||
-        request.user.fullName.toLowerCase().includes(normalizedSearch) ||
-        request.user.email.toLowerCase().includes(normalizedSearch) ||
-        request.course.title.toLowerCase().includes(normalizedSearch);
-
-      return matchesFilter && matchesSearch;
-    });
-  }, [requests, search, filter]);
 
   const stats = useMemo(() => {
     return {
-      total: requests.length,
+      total: meta.total,
 
       pending: requests.filter((request) => request.status === "PENDING")
         .length,
@@ -55,7 +46,7 @@ const PaymentRequests = ({ initialRequests }: Props) => {
       rejected: requests.filter((request) => request.status === "REJECTED")
         .length,
     };
-  }, [requests]);
+  }, [requests, meta.total]);
 
   const handleApprove = async (id: string) => {
     try {
@@ -109,7 +100,6 @@ const PaymentRequests = ({ initialRequests }: Props) => {
       </div>
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {/* Total */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
@@ -128,7 +118,6 @@ const PaymentRequests = ({ initialRequests }: Props) => {
           </div>
         </div>
 
-        {/* Pending */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
@@ -147,7 +136,6 @@ const PaymentRequests = ({ initialRequests }: Props) => {
           </div>
         </div>
 
-        {/* Approved */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
@@ -166,7 +154,6 @@ const PaymentRequests = ({ initialRequests }: Props) => {
           </div>
         </div>
 
-        {/* Rejected */}
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="flex items-center justify-between">
             <div>
@@ -186,24 +173,16 @@ const PaymentRequests = ({ initialRequests }: Props) => {
         </div>
       </div>
 
-      <div className="space-y-5">
-        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-          <PaymentRequestFilters
-            search={search}
-            filter={filter}
-            onSearchChange={setSearch}
-            onFilterChange={setFilter}
-          />
-        </div>
-
+      <div>
         <PaymentRequestsTable
-          requests={filteredRequests}
+          requests={requests}
+          meta={meta}
           onSelect={setSelectedRequest}
         />
 
-        <div className="space-y-4">
-          {filteredRequests.length === 0 ? (
-            <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm md:hidden">
+        <div className="mt-5 space-y-4 md:hidden">
+          {requests.length === 0 ? (
+            <div className="rounded-2xl border border-slate-200 bg-white p-12 text-center shadow-sm">
               <p className="text-sm font-medium text-slate-600">
                 No payment requests found.
               </p>
@@ -213,7 +192,7 @@ const PaymentRequests = ({ initialRequests }: Props) => {
               </p>
             </div>
           ) : (
-            filteredRequests.map((request) => (
+            requests.map((request) => (
               <PaymentRequestCard
                 key={request.id}
                 request={request}

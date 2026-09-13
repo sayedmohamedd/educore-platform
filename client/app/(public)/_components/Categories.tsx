@@ -6,12 +6,12 @@ import { categoryServerService } from "@/services/categories/category.server.ser
 
 const Categories = async () => {
   let categories: CategoryWithCoursesCount[] = [];
-  let errorMessage: string = "";
+  let error: any;
   try {
     const data = await categoryServerService.getAllWithCoursesCount();
     categories = data.categories;
   } catch (error: any) {
-    errorMessage = error?.message;
+    console.error(error);
   }
 
   return (
@@ -31,7 +31,7 @@ const Categories = async () => {
           </p>
         </div>
 
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
+        {error && <p className="text-red-500">{error?.message || ""}</p>}
         <Suspense fallback={<h3>Loading Categories...</h3>}>
           <CategoriesList categories={categories} />
         </Suspense>

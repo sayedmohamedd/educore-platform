@@ -1,6 +1,3 @@
-
-
-
 export const handleResponse = async <T>(res: Response): Promise<T> => {
   const json = await res.json();
 
@@ -9,4 +6,19 @@ export const handleResponse = async <T>(res: Response): Promise<T> => {
   }
 
   return json.data;
+};
+
+export type ResponseData<K extends string, T> = {
+  [P in K]: T;
+};
+
+export type ResponseDataWithMeta<K extends string, T> = ResponseData<K, T> & {
+  meta: Meta;
+};
+
+export type Meta = {
+  total: number;
+  page: number;
+  limit: number;
+  lastPage: number;
 };

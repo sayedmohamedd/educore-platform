@@ -15,123 +15,111 @@ import { JwtAuthGuard } from '../auth/guards/jwt-auth.guard/jwt-auth.guard.js';
 import { RolesGuard } from '../auth/guards/jwt-auth.guard/roles.guard.js';
 import { Roles } from '../auth/decorators/roles.decorator.js';
 import type { AuthenticatedRequest } from '../common/types/authenticated-request.js';
-import { Role, CourseStatus } from '../generated/prisma/client.js';
-import { AssignCategoryDto } from '../courses/dtos/assign-category.dto.js';
+import { Role } from '../generated/prisma/client.js';
+import { QueryDto } from '../payments/dtos/query-dto.js';
+import { UpdateTeacherProfileDto } from './dtos/update-teacher-profile.dto.js';
 
 @Controller('teachers')
 export class TeachersController {
   constructor(private readonly teachersService: TeachersService) {}
 
-  @Get()
-  getAllTeachers() {
-    return this.teachersService.getAll();
+  @Get() // done
+  getAllTeachers(@Query() query: QueryDto) {
+    return this.teachersService.getAll(query);
   }
 
-  @Get(':id')
-  getTeacher(@Param('id') id: string) {
-    return this.teachersService.findOne(id);
-  }
-
-  @Post('apply')
-  @Roles(Role.INSTRUCTOR)
+  @Post('apply') // done
+  @Roles(Role.STUDENT)
   @UseGuards(JwtAuthGuard, RolesGuard)
   apply(@Req() req: AuthenticatedRequest, @Body() dto: TeacherApplicationDto) {
     return this.teachersService.apply(req.user.userId, dto);
   }
 
-  @Get('me')
+  @Get('me') // done
+  @Roles(Role.INSTRUCTOR)
+  @UseGuards(JwtAuthGuard, RolesGuard)
   getMyProfile(@Req() req: AuthenticatedRequest) {
     return this.teachersService.getProfile(req.user.userId);
   }
 
-  @Patch('me')
-  update(@Req() req: AuthenticatedRequest, @Body() dto: TeacherApplicationDto) {
+  @Patch('me') // done
+  @Roles(Role.INSTRUCTOR)
+  @UseGuards(JwtAuthGuard, RolesGuard)
+  update(
+    @Req() req: AuthenticatedRequest,
+    @Body() dto: UpdateTeacherProfileDto,
+  ) {
     return this.teachersService.update(req.user.userId, dto);
   }
 
-  @Get('me/students')
+  @Get(':id') // done
+  getTeacher(@Param('id') id: string) {
+    return this.teachersService.findOne(id);
+  }
+
+  @Get('me/students') // done
   @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getTeacherStudents(@Req() req: AuthenticatedRequest) {
-    return this.teachersService.getTeacherStudents(req.user.userId);
+    return this.teachersService.getMyStudents(req.user.userId);
   }
 
-  @Get('me/courses')
+  @Get('me/courses') // done
   @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
-  getTeacherCourses(
-    @Req() req: AuthenticatedRequest,
-    @Query() query: { status: CourseStatus },
-  ) {
-    return this.teachersService.getMyCourses(req.user.userId, query.status);
+  getTeacherCourses(@Req() req: AuthenticatedRequest) {
+    return this.teachersService.getMyCourses(req.user.userId);
   }
 
-  @Get('me/statistics')
+  @Get('me/statistics') // done
   @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getMyStatistics(@Req() req: AuthenticatedRequest) {
     return this.teachersService.getMyStatistics(req.user.userId);
   }
 
-  @Get(':id/courses')
-  getCourses(@Param('id') id: string) {
-    return this.teachersService.getPublicCourses(id);
-  }
-
-  @Patch(':teacherId/courses/:courseId/categories')
-  @Roles(Role.INSTRUCTOR)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  updateCourseCategories(
-    @Param('teacherId') teacherId: string,
-    @Param('courseId') courseId: string,
-    @Body() categories: AssignCategoryDto,
-  ) {
-    return this.teachersService.assignCategoryToCourse(
-      teacherId,
-      courseId,
-      categories,
-    );
-  }
-
-  @Get(':teacherId/courses/:courseId/students/:studentId/progress')
-  getCourseStudentProgress(
-    @Param('teacherId') teacherId: string,
-    @Param('courseId') courseId: string,
-    @Param('studentId') studentId: string,
-  ) {
-    return this.teachersService.getCourseStudentProgress(
-      teacherId,
-      courseId,
-      studentId,
-    );
-  }
-
   // Wallet
-  @Get(':teacherId/wallet')
+  @Get('me/wallet') // done
   @Roles(Role.INSTRUCTOR, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getTeacherWallet(@Req() req: AuthenticatedRequest) {
     return this.teachersService.getWallet(req.user.userId);
   }
 
-  @Get(':teacherId/wallet/transactions')
+  @Get('me/wallet/transactions') // done
   @Roles(Role.INSTRUCTOR, Role.ADMIN)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getTeacherWalletTransactions(@Req() req: AuthenticatedRequest) {
-    return this.teachersService.getTeacherWalletTransactions(req.user.userId);
+    return this.teachersService.getMyTransactions(req.user.userId);
   }
 
-  @Get(':teacherId/wallet/earnings')
-  @Roles(Role.INSTRUCTOR, Role.ADMIN)
+  // done
+  @Get('me/wallet/earnings') // done
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getTeacherWalletEarnings(@Req() req: AuthenticatedRequest) {
-    return this.teachersService.getTeacherWalletEarnings(req.user.userId);
+    return this.teachersService.getMyEarnings(req.user.userId);
   }
 
-  @Get(':teacherId/wallet/withdrawals')
-  @Roles(Role.INSTRUCTOR, Role.ADMIN)
+  @Get('me/wallet/withdrawals') // done
+  @Roles(Role.INSTRUCTOR)
   @UseGuards(JwtAuthGuard, RolesGuard)
   getTeacherWalletWithdrawals(@Req() req: AuthenticatedRequest) {
-    return this.teachersService.getTeacherWalletWithdrawals(req.user.userId);
+    return this.teachersService.getMyWithdrawals(req.user.userId);
   }
 }
+
+// @Get(':teacherId/courses/:courseId/students/:studentId/progress')
+// @Roles(Role.INSTRUCTOR)
+// @UseGuards(JwtAuthGuard, RolesGuard)
+// getCourseStudentProgress(
+//   @Param('teacherId') teacherId: string,
+//   @Param('courseId') courseId: string,
+//   @Param('studentId') studentId: string,
+// ) {
+//   return this.teachersService.getCourseStudentProgress(
+//     teacherId,
+//     courseId,
+//     studentId,
+//   );
+// }

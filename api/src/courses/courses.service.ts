@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-unsafe-assignment */
 import {
   BadRequestException,
   ConflictException,
@@ -11,6 +10,12 @@ import { UpdateCourseDto } from './dtos/update-course.dto.js';
 import { CreateCourseDto } from './dtos/create-course.dto.js';
 import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
 import slugify from 'slugify';
+import {
+  getPagination,
+  getPaginationMeta,
+} from '../common/pagination/pagination.util.js';
+import { Prisma } from '../generated/prisma/client.js';
+import { CourseQueryDto } from './dtos/course-query.dto.js';
 
 @Injectable()
 export class CoursesService {
@@ -19,41 +24,42 @@ export class CoursesService {
     private readonly instructorHelper: InstructorHelperService,
   ) {}
 
-  async findAll(query: {
-    page: number;
-    limit: number;
-    search: string;
-    status: string;
-    maxPrice: number;
-  }) {
-    const { page, limit, skip } = ApiFeatures.getPagination(query);
-    const orderBy = ApiFeatures.getSorting(query);
+  async findAll(query: CourseQueryDto) {
+    const { page = 1, limit = 10 } = query;
+    const { skip, take } = getPagination(page, limit);
 
-    const where: any = {};
+    const where: Prisma.CourseWhereInput = {
+      status: 'PUBLISHED',
 
-    if (query.search) {
-      where.OR = [
-        { title: { contains: query.search, mode: 'insensitive' } },
-        { description: { contains: query.search, mode: 'insensitive' } },
-      ];
-    }
+      ...(query.search && {
+        OR: [
+          {
+            title: {
+              contains: query.search,
+              mode: 'insensitive',
+            },
+          },
+          {
+            description: {
+              contains: query.search,
+              mode: 'insensitive',
+            },
+          },
+        ],
+      }),
 
-    if (query.status) {
-      where.status = query.status;
-    }
+      ...(query.maxPrice && {
+        price: {
+          gte: 0,
+          lte: parseFloat(String(query.maxPrice)),
+        },
+      }),
+    };
 
-    if (query.maxPrice) {
-      where.price = {
-        gte: 0, // من أول 0 (مجاني)
-        lte: parseFloat(String(query.maxPrice)), // لحد أقصى السعر المختار
-      };
-    }
     const [courses, total] = await Promise.all([
       this.prisma.course.findMany({
         where,
-        skip,
-        take: limit,
-        orderBy,
+
         select: {
           id: true,
           title: true,
@@ -62,25 +68,33 @@ export class CoursesService {
           price: true,
           duration: true,
           createdAt: true,
+
           teacher: {
             select: {
               id: true,
               bio: true,
               title: true,
               expertise: true,
+
               user: {
                 select: {
                   id: true,
                   fullName: true,
-                  avatar: { select: { url: true } },
+                  avatar: {
+                    select: {
+                      url: true,
+                    },
+                  },
                 },
               },
             },
           },
+
           categories: {
             select: {
               courseId: false,
               categoryId: false,
+
               category: {
                 select: {
                   id: true,
@@ -91,17 +105,25 @@ export class CoursesService {
               },
             },
           },
-          thumbnail: { select: { url: true } },
+
+          thumbnail: {
+            select: {
+              url: true,
+            },
+          },
         },
+
+        orderBy: ApiFeatures.getSorting(query),
+        skip,
+        take,
       }),
-      this.prisma.course.count({ where }),
+
+      this.prisma.course.count({
+        where,
+      }),
     ]);
 
-    const meta = {
-      total,
-      page,
-      lastPage: Math.ceil(total / limit),
-    };
+    const meta = getPaginationMeta(page, limit, total);
 
     const formattedCourses = courses.map((course) => ({
       ...course,
@@ -222,6 +244,7 @@ export class CoursesService {
       },
       data: {
         title: dto.title,
+        slug: dto.title && slugify(dto.title, { lower: true }),
         description: dto.description,
         price: dto.price,
         thumbnailId: dto.thumbnailId,

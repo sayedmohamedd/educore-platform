@@ -13,7 +13,7 @@ export class UsersService {
     return new ApiResponse(true, 'User fetched successfully', user);
   }
 
-  async updateProfile(dto: UpdateProfileDto, id: string) {
+  async updateMyProfile(dto: UpdateProfileDto, id: string) {
     const user = await this.prisma.user.update({
       where: { id },
       data: dto,
@@ -22,7 +22,7 @@ export class UsersService {
     return new ApiResponse(true, 'User updated successfully', user);
   }
 
-  async delete(id: string) {
+  async deleteMyProfile(id: string) {
     if (!id) return new ApiResponse(false, 'User not found');
 
     await this.prisma.refreshToken.deleteMany({
@@ -34,12 +34,5 @@ export class UsersService {
     });
 
     return new ApiResponse(true, 'User deleted successfully');
-  }
-  async getUserCourses(userId: string) {
-    const courses = await this.prisma.enrollment.findMany({
-      where: { userId },
-      include: { course: true },
-    });
-    return new ApiResponse(true, 'Courses fetched successfully', courses);
   }
 }

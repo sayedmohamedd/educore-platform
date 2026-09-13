@@ -6,6 +6,10 @@ const CategoriesList = ({
 }: {
   categories: CategoryWithCoursesCount[];
 }) => {
+  if (!categories || categories.length === 0) {
+    return <div className="text-center py-10">لا توجد مجالات متاحة حالياً</div>;
+  }
+
   return (
     <div className="flex flex-wrap justify-center gap-4">
       {categories.map((category) => (

@@ -4,28 +4,31 @@ import {
   ArrowDownToLine,
   ArrowUpFromLine,
   CircleDollarSign,
-  type LucideIcon,
   RotateCcw,
+  type LucideIcon,
 } from "lucide-react";
 
-import { Column, TableFilter } from "@/components/shared/Table/types";
 import Table from "@/components/shared/Table/Table";
-import { PlatformTransaction, TransactionType } from "./types";
+import { Column, TableFilter } from "@/components/shared/Table/types";
+
+import { TransactionType, WalletTransaction } from "./types";
+import { Meta } from "@/services/helpers";
 
 type Props = {
-  transactions: PlatformTransaction[];
+  transactions: WalletTransaction[];
+  meta: Meta;
 };
 
-type FilterType = "ALL" | TransactionType;
+type FilterType = "" | TransactionType;
 
-const PlatformTransactionsTable = ({ transactions }: Props) => {
+const PlatformTransactionsTable = ({ transactions, meta }: Props) => {
   const filters: TableFilter<FilterType>[] = [
     {
       key: "type",
-      label: "Transaction Type",
+      label: "Type",
       options: [
         {
-          value: "ALL",
+          value: "",
           label: "All Transactions",
         },
         {
@@ -49,29 +52,35 @@ const PlatformTransactionsTable = ({ transactions }: Props) => {
   ];
 
   const getTypeLabel = (type: TransactionType) => {
-    const labels: Record<TransactionType, string> = {
-      COURSE_EARNING: "Course Earning",
-      PLATFORM_EARNING: "Platform Earning",
-      REFUND: "Refund",
-      WITHDRAWAL: "Withdrawal",
-    };
+    switch (type) {
+      case TransactionType.COURSE_EARNING:
+        return "Course Earning";
 
-    return labels[type];
+      case TransactionType.PLATFORM_EARNING:
+        return "Platform Earning";
+
+      case TransactionType.REFUND:
+        return "Refund";
+
+      case TransactionType.WITHDRAWAL:
+        return "Withdrawal";
+
+      default:
+        return type;
+    }
   };
 
   const getTypeIcon = (type: TransactionType): LucideIcon => {
     switch (type) {
-      case "COURSE_EARNING":
-        return ArrowUpFromLine;
+      case TransactionType.COURSE_EARNING:
+      case TransactionType.PLATFORM_EARNING:
+        return ArrowDownToLine;
 
-      case "PLATFORM_EARNING":
-        return CircleDollarSign;
-
-      case "REFUND":
+      case TransactionType.REFUND:
         return RotateCcw;
 
-      case "WITHDRAWAL":
-        return ArrowDownToLine;
+      case TransactionType.WITHDRAWAL:
+        return ArrowUpFromLine;
 
       default:
         return CircleDollarSign;
@@ -80,35 +89,36 @@ const PlatformTransactionsTable = ({ transactions }: Props) => {
 
   const getTypeClass = (type: TransactionType) => {
     switch (type) {
-      case "COURSE_EARNING":
-        return "bg-blue-50 text-blue-700";
-
-      case "PLATFORM_EARNING":
+      case TransactionType.COURSE_EARNING:
+      case TransactionType.PLATFORM_EARNING:
         return "bg-emerald-50 text-emerald-700";
 
-      case "REFUND":
+      case TransactionType.REFUND:
         return "bg-red-50 text-red-700";
 
-      case "WITHDRAWAL":
+      case TransactionType.WITHDRAWAL:
         return "bg-amber-50 text-amber-700";
+
+      default:
+        return "bg-slate-50 text-slate-700";
     }
   };
 
-  const columns: Column<PlatformTransaction>[] = [
+  const columns: Column<WalletTransaction>[] = [
     {
       key: "transaction",
       label: "Transaction",
       render: (transaction) => (
         <div>
-          <p className="text-sm font-semibold text-slate-700">
+          <p className="font-medium text-slate-800">
             #{transaction.id.slice(0, 8)}
           </p>
 
-          <p className="mt-1 text-xs text-slate-400">
-            {transaction.paymentId
-              ? `Payment #${transaction.paymentId.slice(0, 8)}`
+          <p className="text-xs text-muted-foreground">
+            {transaction.payment.id
+              ? `Payment: ${transaction.payment.id}`
               : transaction.withdrawalId
-                ? `Withdrawal #${transaction.withdrawalId.slice(0, 8)}`
+                ? `Withdrawal: ${transaction.withdrawalId}`
                 : "No reference"}
           </p>
         </div>
@@ -123,11 +133,11 @@ const PlatformTransactionsTable = ({ transactions }: Props) => {
 
         return (
           <span
-            className={`inline-flex items-center gap-2 rounded-full px-3 py-1.5 text-xs font-medium ${getTypeClass(
+            className={`inline-flex items-center gap-1.5 rounded-full px-2.5 py-1 text-xs font-medium ${getTypeClass(
               transaction.type,
             )}`}
           >
-            <Icon size={14} />
+            <Icon className="size-3.5" />
 
             {getTypeLabel(transaction.type)}
           </span>
@@ -139,32 +149,33 @@ const PlatformTransactionsTable = ({ transactions }: Props) => {
       key: "amount",
       label: "Amount",
       render: (transaction) => {
-        const isRefund = transaction.type === "REFUND";
+        const isNegative =
+          transaction.type === TransactionType.REFUND ||
+          transaction.type === TransactionType.WITHDRAWAL;
 
         return (
-          <p
-            className={`text-sm font-semibold ${
-              isRefund ? "text-red-600" : "text-slate-700"
-            }`}
+          <span
+            className={
+              isNegative
+                ? "font-medium text-red-600"
+                : "font-medium text-emerald-600"
+            }
           >
-            {isRefund ? "-" : "+"}${Number(transaction.amount).toFixed(2)}
-          </p>
+            {isNegative ? "-" : "+"}${Number(transaction.amount).toFixed(2)}
+          </span>
         );
       },
     },
 
     {
-      key: "date",
+      key: "createdAt",
       label: "Date",
-      render: (transaction) => (
-        <p className="text-sm text-slate-600">
-          {new Date(transaction.createdAt).toLocaleDateString("en-US", {
-            year: "numeric",
-            month: "short",
-            day: "numeric",
-          })}
-        </p>
-      ),
+      render: (transaction) =>
+        new Date(transaction.createdAt).toLocaleDateString("en-US", {
+          year: "numeric",
+          month: "short",
+          day: "numeric",
+        }),
     },
   ];
 
@@ -176,17 +187,7 @@ const PlatformTransactionsTable = ({ transactions }: Props) => {
       search={{
         placeholder: "Search transactions...",
       }}
-      filterData={(transaction, { search, type }) => {
-        const matchesType = type === "ALL" || transaction.type === type;
-
-        const matchesSearch =
-          !search ||
-          transaction.id.toLowerCase().includes(search) ||
-          transaction.paymentId?.toLowerCase().includes(search) ||
-          transaction.withdrawalId?.toLowerCase().includes(search);
-
-        return matchesType && Boolean(matchesSearch);
-      }}
+      meta={meta}
       getRowKey={(transaction) => transaction.id}
       emptyMessage="No transactions found."
     />

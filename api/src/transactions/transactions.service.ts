@@ -1,62 +1,64 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import { ApiResponse } from '../helper/APIResponse.js';
+import {
+  getPagination,
+  getPaginationMeta,
+} from '../common/pagination/pagination.util.js';
+import { TransactionQueryDto } from './dtos/transaction-query.dto.js';
+import { Prisma } from '../generated/prisma/client.js';
 
 @Injectable()
 export class TransactionsService {
   constructor(readonly prisma: PrismaService) {}
 
-  async getAll() {
-    const transactions = await this.prisma.transaction.findMany({
-      include: {
-        payment: {
-          include: { course: true },
+  async getAll(query: TransactionQueryDto) {
+    const { page = 1, limit = 10, status } = query;
+
+    const where: Prisma.TransactionWhereInput = {
+      ...(status && {
+        type: status,
+      }),
+    };
+    const { skip, take } = getPagination(page, limit);
+
+    const [transactions, total] = await Promise.all([
+      this.prisma.transaction.findMany({
+        where,
+        select: {
+          id: true,
+          type: true,
+          amount: true,
+          createdAt: true,
+          payment: {
+            select: {
+              user: {
+                select: {
+                  id: true,
+                  fullName: true,
+                  email: true,
+                },
+              },
+              course: {
+                select: {
+                  title: true,
+                },
+              },
+            },
+          },
         },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
+        orderBy: { createdAt: 'desc' },
+        skip,
+        take,
+      }),
+      this.prisma.transaction.count({ where }),
+    ]);
 
-    return new ApiResponse(
-      true,
-      'Transactions fetched successfully',
+    const meta = getPaginationMeta(page, limit, total);
+
+    return new ApiResponse(true, 'Transactions fetched successfully', {
       transactions,
-    );
-  }
-
-  async getMyTransactions(userId: string) {
-    // get teacher profile
-    const profile = await this.prisma.teacherProfile.findUnique({
-      where: { userId },
+      meta,
     });
-
-    if (!profile) {
-      throw new Error('Profile not found');
-    }
-
-    // get wallet
-    const wallet = await this.prisma.wallet.findUnique({
-      where: { teacherProfileId: profile.id },
-    });
-
-    if (!wallet) {
-      throw new Error('Wallet not found');
-    }
-
-    // get transactions
-    const transactions = await this.prisma.transaction.findMany({
-      where: { walletId: wallet.id },
-      include: {
-        payment: {
-          include: { course: true },
-        },
-      },
-      orderBy: { createdAt: 'desc' },
-    });
-
-    return new ApiResponse(
-      true,
-      'Transactions fetched successfully',
-      transactions,
-    );
   }
 }

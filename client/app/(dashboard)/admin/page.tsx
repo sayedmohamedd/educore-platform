@@ -1,44 +1,12 @@
-import StatsCard from "@/components/shared/cards/StatsCard";
 import RecentActivityItem from "@/components/features/dashboard/RecentActivityItem";
-import { CircleDollarSign, Clock3, UserPen, Users } from "lucide-react";
+// import { CircleDollarSign, Clock3, UserPen, Users } from "lucide-react";
 import Link from "next/link";
-
-const stats = [
-  {
-    title: "Total Revenue",
-    number: "$12,345",
-    percentage: 10,
-    Icon: CircleDollarSign,
-  },
-  {
-    title: "Active Teachers",
-    number: "564",
-    percentage: 17.8,
-    Icon: UserPen,
-  },
-  {
-    title: "Total Students",
-    number: "11,185",
-    percentage: 12.5,
-    Icon: Users,
-  },
-  {
-    title: "Pending Payments",
-    number: "24",
-    percentage: 8.4,
-    Icon: Clock3,
-  },
-];
-
-const AdminDashboard = () => {
+import Statistics from "./_components/Statistics";
+const AdminDashboard = async () => {
   return (
     <div className="p-4">
       {/* Stats */}
-      <div className="my-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        {stats.map((stat) => (
-          <StatsCard key={stat.title} {...stat} />
-        ))}
-      </div>
+      <Statistics />
 
       {/* Analytics + Recent Activity */}
       <div className="my-6 grid grid-cols-1 gap-6 xl:grid-cols-12">

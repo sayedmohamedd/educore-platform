@@ -1,30 +1,55 @@
-import PaymentRequests from "./PaymentRequests";
-import { Suspense } from "react";
 import { adminServerService } from "@/services/admin/admin.server.service";
-import { PaymentRequest } from "@/services/admin/types";
+import { PaymentRequest, PaymentRequestStatus } from "@/services/admin/types";
 
-const PaymentRequestsList = async () => {
+import PaymentRequests from "./PaymentRequests";
+import { Meta } from "@/services/helpers";
+
+type Props = {
+  searchParams: Promise<{
+    page?: string;
+    limit?: string;
+    search?: string;
+    status?: string;
+  }>;
+};
+
+const PaymentRequestsList = async ({ searchParams }: Props) => {
+  const params = await searchParams;
+
+  const page = Number(params.page) || 1;
+  const limit = Number(params.limit) || 10;
+
+  const validStatuses: PaymentRequestStatus[] = [
+    "PENDING",
+    "APPROVED",
+    "REJECTED",
+  ];
+
+  const status = validStatuses.includes(params.status as PaymentRequestStatus)
+    ? (params.status as PaymentRequestStatus)
+    : undefined;
+
   let requests: PaymentRequest[] = [];
-  let errorMessage: string = "";
+  let meta = {} as Meta;
+
   try {
-    const data = await adminServerService.getPaymentRequests();
-    requests = data.payments;
+    const response = await adminServerService.getPaymentRequests(
+      {
+        page,
+        limit,
+        search: params.search || "",
+        ...(status && { status }),
+      },
+      { cache: "force-cache", next: { revalidate: 3600 } },
+    );
+
+    requests = response.payments;
+    meta = response.meta;
   } catch (error) {
-    errorMessage = error instanceof Error ? error.message : "";
+    console.error(error);
   }
 
-  return (
-    <div className="px-8 py-4">
-      {errorMessage && (
-        <p className="mt-1 text-sm text-red-600">
-          Something went wrong while loading payment requests.
-        </p>
-      )}
-      <Suspense fallback={<div>Loading payment requests...</div>}>
-        <PaymentRequests initialRequests={requests} />
-      </Suspense>
-    </div>
-  );
+  return <PaymentRequests initialRequests={requests} meta={meta} />;
 };
 
 export default PaymentRequestsList;

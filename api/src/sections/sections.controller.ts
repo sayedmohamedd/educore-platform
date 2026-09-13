@@ -18,18 +18,13 @@ import { Roles } from '../auth/decorators/roles.decorator.js';
 import { RolesGuard } from '../auth/guards/jwt-auth.guard/roles.guard.js';
 import { Role } from '../generated/prisma/client.js';
 
-@Controller('')
+@Controller()
+@Roles(Role.INSTRUCTOR)
+@UseGuards(JwtAuthGuard, RolesGuard)
 export class SectionsController {
   constructor(private readonly sectionsService: SectionsService) {}
 
-  @Get('courses/:courseId/sections')
-  findAll(@Param('courseId') courseId: string) {
-    return this.sectionsService.findAll(courseId);
-  }
-
   @Post('courses/:courseId/sections')
-  @Roles(Role.INSTRUCTOR)
-  @UseGuards(JwtAuthGuard, RolesGuard)
   create(
     @Req() req: AuthenticatedRequest,
     @Param('courseId') courseId: string,
@@ -38,31 +33,22 @@ export class SectionsController {
     return this.sectionsService.create(req.user.userId, courseId, dto);
   }
 
-  @Get('sections/:sectionId')
-  @Roles(Role.INSTRUCTOR, Role.ADMIN)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  findOne(@Param('sectionId') sectionId: string) {
-    return this.sectionsService.findOne(sectionId);
+  @Get('sections/:id')
+  findOne(@Param('id') id: string) {
+    return this.sectionsService.findOne(id);
   }
 
-  @Patch('sections/:sectionId')
-  @Roles(Role.INSTRUCTOR)
-  @UseGuards(JwtAuthGuard, RolesGuard)
+  @Patch('sections/:id')
   update(
     @Req() req: AuthenticatedRequest,
-    @Param('sectionId') sectionId: string,
+    @Param('id') id: string,
     @Body() dto: UpdateSectionDto,
   ) {
-    return this.sectionsService.update(req.user.userId, sectionId, dto);
+    return this.sectionsService.update(req.user.userId, id, dto);
   }
 
-  @Delete('sections/:sectionId')
-  @Roles(Role.INSTRUCTOR)
-  @UseGuards(JwtAuthGuard, RolesGuard)
-  remove(
-    @Req() req: AuthenticatedRequest,
-    @Param('sectionId') sectionId: string,
-  ) {
-    return this.sectionsService.remove(req.user.userId, sectionId);
+  @Delete('sections/:id')
+  remove(@Req() req: AuthenticatedRequest, @Param('id') id: string) {
+    return this.sectionsService.remove(req.user.userId, id);
   }
 }

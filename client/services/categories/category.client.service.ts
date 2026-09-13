@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { apiClient } from "@/lib/apiClient";
-import { CreateCategory } from "./types";
+import { Category, CreateCategory } from "./types";
+import { ResponseData } from "../helpers";
 
 export const categoryClientService = {
   create: (body: CreateCategory, options?: RequestInit) =>
@@ -11,14 +12,17 @@ export const categoryClientService = {
     }),
 
   update: (categoryId: string, body: CreateCategory, options?: RequestInit) =>
-    apiClient<any>(`/admin/categories/${categoryId}`, {
-      ...options,
-      method: "PATCH",
-      body: JSON.stringify(body),
-    }),
+    apiClient<ResponseData<"category", Category>>(
+      `/admin/categories/${categoryId}`,
+      {
+        ...options,
+        method: "PATCH",
+        body: JSON.stringify(body),
+      },
+    ),
 
   delete: (categoryId: string, options?: RequestInit) =>
-    apiClient<any>(`/admin/categories/${categoryId}`, {
+    apiClient<null>(`/admin/categories/${categoryId}`, {
       ...options,
       method: "DELETE",
     }),

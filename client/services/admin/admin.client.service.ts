@@ -1,10 +1,11 @@
 import { apiClient } from "@/lib/apiClient";
 import { PaymentRequest, ResponseData } from "./types";
 import { Course } from "../courses/types";
+import { ResponseDataWithMeta } from "../helpers";
 
 export const adminClientService = {
   approvePayment: (paymentId: string, options?: RequestInit) =>
-    apiClient<{ payment: PaymentRequest }>(
+    apiClient<ResponseData<"payments", PaymentRequest>>(
       `/admin/payments/${paymentId}/approve`,
       {
         ...options,
@@ -15,5 +16,8 @@ export const adminClientService = {
   // Courses
 
   getAllCourses: async (options?: RequestInit) =>
-    apiClient<ResponseData<"courses", Course[]>>(`/admin/courses`, options),
+    apiClient<ResponseDataWithMeta<"courses", Course[]>>(
+      `/admin/courses`,
+      options,
+    ),
 };

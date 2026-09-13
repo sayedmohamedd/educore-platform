@@ -4,6 +4,7 @@ import {
   CategoryWithCourses,
   CategoryWithCoursesCount,
 } from "./types";
+import { ResponseData } from "../helpers";
 
 export const categoryServerService = {
   getAll: (options?: RequestInit) =>
@@ -13,7 +14,7 @@ export const categoryServerService = {
     }),
 
   getAllWithCourses: (options?: RequestInit) =>
-    apiServer<{ categories: CategoryWithCourses[] }>(
+    apiServer<ResponseData<"categories", CategoryWithCourses[]>>(
       "/categories/with-courses",
       {
         ...options,
@@ -22,7 +23,7 @@ export const categoryServerService = {
     ),
 
   getAllWithCoursesCount: (options?: RequestInit) =>
-    apiServer<{ categories: CategoryWithCoursesCount[] }>(
+    apiServer<ResponseData<"categories", CategoryWithCoursesCount[]>>(
       "/categories/with-courses-count",
       {
         ...options,

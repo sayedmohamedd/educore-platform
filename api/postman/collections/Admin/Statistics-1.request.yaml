@@ -1,0 +1,5 @@
+$kind: http-request
+name: Statistics
+url: "{{url}}/admin/statistics"
+method: GET
+order: 4440214494148318

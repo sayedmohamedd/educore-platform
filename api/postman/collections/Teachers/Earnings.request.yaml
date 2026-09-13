@@ -1,0 +1,4 @@
+$kind: http-request
+url: "{{url}}/teachers/me/wallet/earnings"
+method: GET
+order: 14000

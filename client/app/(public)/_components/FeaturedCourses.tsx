@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import { Suspense } from "react";
 import CoursesList from "./CoursesList";
@@ -6,12 +7,11 @@ import { Course } from "@/services/courses/types";
 export const dynamic = "force-dynamic";
 const FeaturedCourses = async () => {
   let courses: Course[] = [];
-  let errorMessage = "";
   try {
     const data = await courseServerService.getCourses();
     courses = data.courses;
-  } catch (error: unknown) {
-    errorMessage = (error as Error).message;
+  } catch (error: any) {
+    console.log(error);
   }
   return (
     <section className="py-16">
@@ -23,7 +23,6 @@ const FeaturedCourses = async () => {
             accelerate your learning journey.
           </p>
         </header>
-        {errorMessage && <p className="text-red-500">{errorMessage}</p>}
         <Suspense fallback={<h3>Loading Courses...</h3>}>
           <CoursesList courses={courses} />
         </Suspense>

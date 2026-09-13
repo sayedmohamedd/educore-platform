@@ -7,8 +7,13 @@ import { PrismaService } from '../prisma/prisma.service.js';
 import { TeacherApplicationDto } from './dtos/teacher-application.dto.js';
 import { ApiResponse } from '../helper/APIResponse.js';
 import { InstructorHelperService } from '../common/services/instructor-helper/instructor-helper.service.js';
-import { AssignCategoryDto } from '../courses/dtos/assign-category.dto.js';
-import { CourseStatus } from '../generated/prisma/enums.js';
+import { QueryDto } from '../payments/dtos/query-dto.js';
+import {
+  getPagination,
+  getPaginationMeta,
+} from '../common/pagination/pagination.util.js';
+import { UpdateTeacherProfileDto } from './dtos/update-teacher-profile.dto.js';
+import { TransactionType } from '../generated/prisma/enums.js';
 
 @Injectable()
 export class TeachersService {
@@ -17,46 +22,63 @@ export class TeachersService {
     readonly instructorHelper: InstructorHelperService,
   ) {}
 
-  // Find All Teachers - done
-  async getAll() {
-    const teachers = await this.prisma.teacherProfile.findMany({
-      where: {
-        status: 'APPROVED',
-      },
-      select: {
-        id: true,
-        title: true,
-        bio: true,
-        expertise: true,
+  // done
+  async getAll(query: QueryDto) {
+    const { page = 1, limit = 10 } = query;
 
-        user: {
-          select: {
-            fullName: true,
-            avatar: {
-              select: {
-                url: true,
+    const { skip, take } = getPagination(page, limit);
+
+    const [teachers, total] = await Promise.all([
+      this.prisma.teacherProfile.findMany({
+        where: {
+          status: 'APPROVED',
+        },
+        select: {
+          id: true,
+          title: true,
+          bio: true,
+          expertise: true,
+
+          user: {
+            select: {
+              fullName: true,
+              avatar: {
+                select: {
+                  url: true,
+                },
+              },
+            },
+          },
+          _count: {
+            select: {
+              courses: {
+                where: {
+                  status: 'PUBLISHED',
+                },
               },
             },
           },
         },
+        skip,
+        take,
+      }),
 
-        _count: {
-          select: {
-            courses: {
-              where: {
-                status: 'PUBLISHED',
-              },
-            },
-          },
+      this.prisma.teacherProfile.count({
+        where: {
+          status: 'APPROVED',
         },
-      },
-    });
+      }),
+    ]);
+
+    const meta = getPaginationMeta(page, limit, total);
 
     return new ApiResponse(true, 'Teachers retrieved successfully', {
       teachers,
+      meta,
     });
   }
 
+  // done
   async findOne(teacherId: string) {
     const teacher = await this.prisma.teacherProfile.findUnique({
       where: {
@@ -84,11 +106,29 @@ export class TeachersService {
           where: {
             status: 'PUBLISHED',
           },
-          include: {
+          select: {
+            id: true,
+            slug: true,
+            title: true,
+            description: true,
+            price: true,
+            duration: true,
+            createdAt: true,
+            thumbnail: {
+              select: {
+                url: true,
+              },
+            },
             categories: {
-              include: {
+              select: {
+                courseId: false,
+                categoryId: false,
                 category: {
-                  select: { id: true, name: true },
+                  select: {
+                    id: true,
+                    name: true,
+                    slug: true,
+                  },
                 },
               },
             },
@@ -107,30 +147,20 @@ export class TeachersService {
       },
     });
 
-    return new ApiResponse(true, 'Teachers retrieved successfully', teacher);
+    const formatted = teacher
+      ? {
+          ...teacher,
+          courses: teacher.courses.map((course) => ({
+            ...course,
+            categories: course.categories.map((cat) => cat.category),
+          })),
+        }
+      : null;
+
+    return new ApiResponse(true, 'Teachers retrieved successfully', formatted);
   }
 
-  async getPublicCourses(teacherId: string) {
-    const courses = await this.prisma.course.findMany({
-      where: {
-        teacherId,
-        status: 'PUBLISHED',
-      },
-      include: {
-        categories: {
-          include: {
-            category: {
-              select: { id: true, name: true },
-            },
-          },
-        },
-      },
-    });
-
-    return new ApiResponse(true, 'Courses retrieved successfully', { courses });
-  }
-
-  // Apply for Teacher - done
+  // done
   async apply(userId: string, dto: TeacherApplicationDto) {
     const existing = await this.prisma.teacherProfile.findUnique({
       where: {
@@ -159,26 +189,33 @@ export class TeachersService {
     );
   }
 
-  // Find Teacher - done
+  // My Teacher Profile - done
   async getProfile(userId: string) {
     const profile = await this.prisma.teacherProfile.findUnique({
-      where: {
-        userId,
-      },
-      include: {
+      where: { userId },
+      select: {
+        id: true,
+        title: true,
+        bio: true,
+        expertise: true,
+        phone: true,
+        createdAt: true,
         user: {
           select: {
             id: true,
             fullName: true,
             email: true,
+            avatar: {
+              select: {
+                url: true,
+              },
+            },
           },
         },
       },
     });
 
-    if (!profile) {
-      throw new NotFoundException('Teacher profile not found');
-    }
+    if (!profile) throw new NotFoundException('Teacher profile not found');
 
     return new ApiResponse(
       true,
@@ -187,7 +224,7 @@ export class TeachersService {
     );
   }
 
-  async update(userId: string, dto: TeacherApplicationDto) {
+  async update(userId: string, dto: UpdateTeacherProfileDto) {
     // check teacher
     const teacher = await this.instructorHelper.getTeacher(userId);
 
@@ -206,53 +243,13 @@ export class TeachersService {
     );
   }
 
-  // Find Teacher - done
-  async getPublicProfile(teacherId: string) {
-    const profile = await this.prisma.teacherProfile.findUnique({
-      where: {
-        id: teacherId,
-      },
-      include: {
-        user: {
-          select: {
-            id: true,
-            fullName: true,
-          },
-        },
-      },
-    });
-
-    if (!profile || profile.status !== 'APPROVED') {
-      throw new NotFoundException('Teacher not found');
-    }
-
-    return new ApiResponse(
-      true,
-      'Teacher profile retrieved successfully',
-      profile,
-    );
-  }
-
-  // Find Teacher Students
-  async getTeacherStudents(userId: string) {
+  // Find My Students - done
+  async getMyStudents(userId: string) {
     const teacher = await this.instructorHelper.getTeacher(userId);
-    // const students = await this.prisma.user.findMany({
-    //   where: {
-    //     role: 'STUDENT',
-    //     enrollments: {
-    //       some: {
-    //         course: {
-    //           teacherId: teacher.id,
-    //         },
-    //       },
-    //     },
-    //   },
-    // });
 
     const students = await this.prisma.user.findMany({
       where: {
         role: 'STUDENT',
-
         enrollments: {
           some: {
             course: {
@@ -266,7 +263,11 @@ export class TeachersService {
         id: true,
         fullName: true,
         email: true,
-
+        avatar: {
+          select: {
+            url: true,
+          },
+        },
         enrollments: {
           where: {
             course: {
@@ -275,23 +276,16 @@ export class TeachersService {
           },
 
           select: {
+            course: {
+              select: {
+                title: true,
+              },
+            },
             enrolledAt: true,
           },
 
           orderBy: {
             enrolledAt: 'asc',
-          },
-        },
-
-        _count: {
-          select: {
-            enrollments: {
-              where: {
-                course: {
-                  teacherId: teacher.id,
-                },
-              },
-            },
           },
         },
       },
@@ -306,15 +300,21 @@ export class TeachersService {
     });
   }
 
-  // Find Teacher Courses - done
-  async getMyCourses(userId: string, status: CourseStatus) {
+  // Find My Courses - done
+  async getMyCourses(userId: string) {
     // check if teacher is exists and approved or not
     const teacher = await this.instructorHelper.getTeacher(userId);
 
-    // get teacher courses
     const rawCourses = await this.prisma.course.findMany({
-      where: { teacherId: teacher.id, status: status },
-      include: {
+      where: { teacherId: teacher.id },
+      select: {
+        id: true,
+        title: true,
+        price: true,
+        duration: true,
+        createdAt: true,
+        updatedAt: true,
+        status: true,
         thumbnail: {
           select: {
             url: true,
@@ -323,22 +323,7 @@ export class TeachersService {
         categories: {
           include: {
             category: {
-              select: { id: true, name: true }, // هات الـ id والـ name من جدول الـ category
-            },
-          },
-        },
-        sections: {
-          include: {
-            lessons: true,
-          },
-        },
-        teacher: {
-          select: {
-            user: {
-              select: {
-                id: true,
-                fullName: true,
-              },
+              select: { id: true, name: true, slug: true },
             },
           },
         },
@@ -348,16 +333,13 @@ export class TeachersService {
     // format
     const courses = rawCourses.map((course) => ({
       ...course,
-      categories: course.categories.map((item) => ({
-        id: item.category.id,
-        name: item.category.name,
-      })),
+      categories: course.categories.map((cat) => cat.category),
     }));
 
     return new ApiResponse(true, 'Courses retrieved successfully', { courses });
   }
 
-  // Find Course Students
+  // Find specific Course Students
   async getCourseStudents(userId: string, courseId: string) {
     // check course and teacher Authorization
     await this.instructorHelper.getTeacherCourse(userId, courseId);
@@ -373,6 +355,16 @@ export class TeachersService {
           },
         },
       },
+      select: {
+        id: true,
+        fullName: true,
+        email: true,
+        avatar: {
+          select: {
+            url: true,
+          },
+        },
+      },
     });
 
     return new ApiResponse(true, 'Students retrieved successfully', {
@@ -380,11 +372,11 @@ export class TeachersService {
     });
   }
 
-  // teacher statistics - done
+  // My statistics - done
   async getMyStatistics(userId: string) {
     const teacher = await this.instructorHelper.getTeacher(userId);
 
-    const students = await this.prisma.user.findMany({
+    const students = await this.prisma.user.count({
       where: {
         role: 'STUDENT',
         enrollments: {
@@ -456,7 +448,7 @@ export class TeachersService {
 
     return new ApiResponse(true, 'Statistics retrieved successfully', {
       courses,
-      students: students.length,
+      students,
       publishedCourses: publishedCourses.length,
       totalRevenue: totalRevenue?.balance,
       enrollments,
@@ -510,7 +502,7 @@ export class TeachersService {
     return new ApiResponse(true, 'Students retrieved successfully', course);
   }
 
-  // wallet - done
+  // done
   async getWallet(userId: string) {
     // check teacher
     const teacher = await this.instructorHelper.getTeacher(userId);
@@ -520,15 +512,13 @@ export class TeachersService {
       where: { teacherProfileId: teacher.id },
     });
 
-    if (!wallet) {
-      throw new NotFoundException('Wallet not found');
-    }
+    if (!wallet) throw new NotFoundException('Wallet not found');
 
     return new ApiResponse(true, 'Wallet retrieved successfully', wallet);
   }
 
-  // wallet transactions - done
-  async getTeacherWalletTransactions(userId: string) {
+  // done
+  async getMyTransactions(userId: string) {
     // check teacher
     const teacher = await this.instructorHelper.getTeacher(userId);
 
@@ -552,25 +542,26 @@ export class TeachersService {
     );
   }
 
-  async getTeacherWalletEarnings(userId: string) {
+  // done
+  async getMyEarnings(userId: string) {
     const teacher = await this.instructorHelper.getTeacher(userId);
 
     const wallet = await this.prisma.wallet.findUnique({
       where: { teacherProfileId: teacher.id },
     });
 
-    if (!wallet) {
-      throw new NotFoundException('Wallet not found');
-    }
+    if (!wallet) throw new NotFoundException('Wallet not found');
 
     const transactions = await this.prisma.transaction.findMany({
       where: {
         walletId: wallet.id,
-        type: 'COURSE_EARNING',
+        type: TransactionType.COURSE_EARNING,
       },
-      include: {
+
+      select: {
+        amount: true,
         payment: {
-          include: {
+          select: {
             course: {
               select: {
                 id: true,
@@ -580,6 +571,7 @@ export class TeachersService {
           },
         },
       },
+
       orderBy: {
         createdAt: 'desc',
       },
@@ -626,7 +618,8 @@ export class TeachersService {
     });
   }
 
-  async getTeacherWalletWithdrawals(userId: string) {
+  // done
+  async getMyWithdrawals(userId: string) {
     // check teacher
     const teacher = await this.instructorHelper.getTeacher(userId);
 
@@ -635,26 +628,16 @@ export class TeachersService {
       where: { teacherProfileId: teacher.id },
     });
 
-    if (!wallet) {
-      throw new NotFoundException('Wallet not found');
-    }
+    if (!wallet) throw new NotFoundException('Wallet not found');
 
-    const transactions = await this.prisma.transaction.findMany({
-      where: {
-        walletId: wallet.id,
-        type: 'WITHDRAWAL',
-      },
-      include: {
-        payment: {
-          include: {
-            course: {
-              select: {
-                id: true,
-                title: true,
-              },
-            },
-          },
-        },
+    const withdrawals = await this.prisma.withdrawal.findMany({
+      where: { teacherProfileId: teacher.id },
+      select: {
+        id: true,
+        amount: true,
+        status: true,
+        rejectionReason: true,
+        createdAt: true,
       },
       orderBy: {
         createdAt: 'desc',
@@ -662,44 +645,7 @@ export class TeachersService {
     });
 
     return new ApiResponse(true, 'Teacher withdrawals retrieved successfully', {
-      transactions,
+      withdrawals,
     });
-  }
-
-  async assignCategoryToCourse(
-    userId: string,
-    courseId: string,
-    dto: AssignCategoryDto,
-  ) {
-    //
-    await this.instructorHelper.getTeacherCourse(userId, courseId);
-
-    const updatedCourse = await this.prisma.course.update({
-      where: { id: courseId },
-      data: {
-        categories: {
-          create: {
-            category: {
-              connect: {
-                id: dto.categoryId,
-              },
-            },
-          },
-        },
-      },
-      include: {
-        categories: {
-          include: {
-            category: true,
-          },
-        },
-      },
-    });
-
-    return new ApiResponse(
-      true,
-      'Category Assigned Successfully',
-      updatedCourse,
-    );
   }
 }

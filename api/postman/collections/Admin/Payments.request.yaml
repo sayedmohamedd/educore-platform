@@ -1,0 +1,6 @@
+$kind: http-request
+url: "{{url}}/admin/payments?search=omar"
+method: GET
+queryParams:
+  search: omar
+order: 4457472102450406

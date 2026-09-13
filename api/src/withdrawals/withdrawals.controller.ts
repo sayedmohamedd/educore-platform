@@ -5,6 +5,7 @@ import {
   Param,
   Patch,
   Post,
+  Query,
   Req,
   UseGuards,
 } from '@nestjs/common';
@@ -16,13 +17,24 @@ import { WithdrawalsService } from './withdrawals.service.js';
 import { CreateWithdrawalDto } from './dtos/create-withdrawal.dto.js';
 import { RejectWithdrawalDto } from './dtos/rejection-withdrawal.dto.js';
 import { Role } from '../generated/prisma/client.js';
+import { WithdrawalQueryDto } from './dtos/withdrawal-query.dto.js';
 
 @Controller('withdrawals')
 @UseGuards(JwtAuthGuard)
 export class WithdrawalsController {
   constructor(readonly withdrawalsService: WithdrawalsService) {}
-  //
+
+  @Get()
+  @Roles(Role.ADMIN)
+  @UseGuards(RolesGuard)
+  findAll(@Query() query: WithdrawalQueryDto) {
+    return this.withdrawalsService.findAll(query);
+  }
+
+  // INSTRUCTOR
   @Post()
+  @Roles(Role.INSTRUCTOR)
+  @UseGuards(RolesGuard)
   create(
     @Req() req: AuthenticatedRequest & { user: { userId: string } },
     @Body() dto: CreateWithdrawalDto,
@@ -30,22 +42,7 @@ export class WithdrawalsController {
     return this.withdrawalsService.create(req.user.userId, dto);
   }
 
-  //
-  @Get('me')
-  @Roles(Role.INSTRUCTOR)
-  @UseGuards(RolesGuard)
-  me(@Req() req: AuthenticatedRequest & { user: { userId: string } }) {
-    return this.withdrawalsService.myWithdrawals(req.user.userId);
-  }
-
-  //
-  @Get()
-  @Roles(Role.ADMIN)
-  @UseGuards(RolesGuard)
-  findAll() {
-    return this.withdrawalsService.findAll();
-  }
-
+  // ADMIN
   @Patch(':id/approve')
   @Roles(Role.ADMIN)
   @UseGuards(RolesGuard)
