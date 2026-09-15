@@ -1,11 +1,7 @@
 import { Teacher } from "@/services/teachers/types";
 import TeacherCard from "./TeacherCard";
 
-type Props = {
-  teachers: Teacher[];
-};
-
-const TeachersList = ({ teachers }: Props) => {
+const TeachersList = ({ teachers }: { teachers: Teacher[] }) => {
   if (!teachers.length) {
     return (
       <div className="rounded-xl border border-slate-200 bg-white py-16 text-center">

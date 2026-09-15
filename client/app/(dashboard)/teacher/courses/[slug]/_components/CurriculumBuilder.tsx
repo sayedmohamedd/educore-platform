@@ -484,10 +484,6 @@ const CurriculumBuilder = ({ course }: { course: Course }) => {
           Icon={Plus}
           text="Continue"
           className="w-full bg-primary text-white hover:bg-secondary sm:w-auto"
-          onClick={() => {
-            console.log("courseId:", course.id);
-            console.log("sections:", sections);
-          }}
         />
       </div>
     </div>

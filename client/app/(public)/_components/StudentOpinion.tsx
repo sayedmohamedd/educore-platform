@@ -7,10 +7,12 @@ type StudentOpinionProps = {
 
 const StudentOpinion = ({ studentName, content }: StudentOpinionProps) => {
   return (
-    <div className="bg-white p-6 rounded-lg shadow-md flex flex-col items-center text-center">
-      <Quote className="text-secondary w-8 h-8 mb-4" />
-      <p className="text-lg text-muted mb-4">{content}</p>
-      <p className="font-bold text-lg text-slate-600">{studentName}</p>
+    <div className="flex flex-col items-center rounded-lg bg-white p-6 text-center shadow-md">
+      <Quote className="mb-4 h-8 w-8 text-secondary" />
+
+      <p className="mb-4 text-lg leading-8 text-muted">{content}</p>
+
+      <p className="text-lg font-bold text-slate-600">{studentName}</p>
     </div>
   );
 };

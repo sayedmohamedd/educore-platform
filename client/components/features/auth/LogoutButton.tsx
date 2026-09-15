@@ -4,7 +4,7 @@ import { useAuthStore } from "@/store/auth.store";
 import { useLogout } from "./hooks/useLogout";
 import { LogOut } from "lucide-react";
 
-const LogoutButton = ({ className }: { className?: string }) => {
+const LogoutButton = () => {
   const { signout, loading } = useLogout();
   const { user } = useAuthStore();
 

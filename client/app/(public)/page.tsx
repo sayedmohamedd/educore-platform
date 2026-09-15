@@ -78,11 +78,13 @@ export default async function Home() {
       {/* Student Opinions */}
       <section className="bg-[#ecedf9]" id="testimonials">
         <div className="container py-20">
-          <h3 className="section-title">What Our Students Say</h3>
-          <p className="text-lg text-muted mb-8">
-            Real experiences from students who transformed their careers.
+          <h3 className="section-title">ماذا يقول طلابنا؟</h3>
+
+          <p className="mb-8 text-lg text-muted">
+            تجارب حقيقية لطلاب طوروا مهاراتهم وحققوا أهدافهم المهنية.
           </p>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 mt-4">
+
+          <div className="mt-4 grid grid-cols-1 gap-8 md:grid-cols-2 lg:grid-cols-3">
             {studentOpinions.map((opinion) => (
               <StudentOpinion key={opinion.studentName} {...opinion} />
             ))}

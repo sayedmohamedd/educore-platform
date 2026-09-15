@@ -14,7 +14,7 @@ const StudentStatCard = ({ Icon, title, value }: Props) => {
         <div>
           <p className="text-sm text-muted-foreground">{title}</p>
 
-          <h3 className="mt-2 text-2xl font-bold text-slate-700">5</h3>
+          <h3 className="mt-2 text-2xl font-bold text-slate-700">{value || 0}</h3>
         </div>
 
         <div className="flex size-11 items-center justify-center rounded-xl bg-primary/10 text-primary">

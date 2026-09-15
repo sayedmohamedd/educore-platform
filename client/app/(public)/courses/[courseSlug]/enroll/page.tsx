@@ -29,7 +29,7 @@ const EnrollPage = () => {
   const [amount, setAmount] = useState<string | number>();
 
   const [transactionId, setTransactionId] = useState("");
-  const [transferDate, setTransferDate] = useState("");
+  // const [transferDate, setTransferDate] = useState("");
 
   const [receipt, setReceipt] = useState<File | null>(null);
   const [receiptPreview, setReceiptPreview] = useState<string | null>(null);
@@ -114,7 +114,7 @@ const EnrollPage = () => {
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!amount || !transactionId || !transferDate || !receipt) {
+    if (!amount || !transactionId || !receipt) {
       setUploadError("Please complete all payment details.");
       return;
     }
@@ -151,7 +151,6 @@ const EnrollPage = () => {
         recipientId: media.id,
         transactionId,
       });
-
       router.replace("/my-courses");
     } catch (error: any) {
       console.error("Enrollment error:", error);
@@ -356,7 +355,7 @@ const EnrollPage = () => {
                   </div>
 
                   {/* Transfer Date */}
-                  <div className="sm:col-span-2">
+                  {/* <div className="sm:col-span-2">
                     <label className="mb-1.5 block text-sm font-medium text-slate-700">
                       Transfer Date
                     </label>
@@ -367,7 +366,7 @@ const EnrollPage = () => {
                       onChange={(e) => setTransferDate(e.target.value)}
                       className="h-11 w-full rounded-xl border border-slate-200 bg-white px-4 text-sm text-slate-700 outline-none transition focus:border-primary focus:ring-2 focus:ring-primary/10"
                     />
-                  </div>
+                  </div> */}
                 </div>
               </div>
 

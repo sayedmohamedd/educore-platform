@@ -1,15 +1,17 @@
 export type Teacher = {
   id: string;
+  title: string;
+  bio: string;
+  expertise: string;
+  phone?: string;
+  createdAt?: string;
   user: {
     fullName: string;
     avatar: {
       url: string;
-    } | null;
+    };
   };
-  title: string | null;
-  bio: string | null;
-  expertise: string | null;
-  _count: {
+  _count?: {
     courses: number;
   };
 };

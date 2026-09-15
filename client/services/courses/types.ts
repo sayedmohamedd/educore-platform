@@ -41,6 +41,7 @@ export type Course = {
   createdAt: string;
   updatedAt?: string;
   sections?: Section[];
+  enrolled?: boolean;
   teacher?: {
     id: string;
     bio: string;
@@ -65,8 +66,31 @@ export type Course = {
 
 export type Enrollment = {
   id: string;
-  course: Course;
+  course: EnrollmentCourse;
   createdAt: string;
+};
+
+export type EnrollmentCourse = {
+  id: string;
+  title: string;
+  slug: string;
+  duration: number;
+  totalLessons: number;
+  thumbnail: {
+    url: string;
+  };
+  teacher: {
+    id: string;
+    title: string;
+    user: {
+      id: string;
+      fullName: string;
+      email: string;
+      avatar: {
+        url: string;
+      };
+    };
+  };
 };
 
 export type Meta = {

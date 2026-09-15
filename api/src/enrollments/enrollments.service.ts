@@ -27,9 +27,16 @@ export class EnrollmentsService {
               id: true,
               title: true,
               duration: true,
+              slug: true,
+              thumbnail: {
+                select: {
+                  url: true,
+                },
+              },
 
               teacher: {
                 select: {
+                  title: true,
                   user: {
                     select: {
                       id: true,

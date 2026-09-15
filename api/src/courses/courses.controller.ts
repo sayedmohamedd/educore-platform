@@ -19,14 +19,17 @@ import { Roles } from '../auth/decorators/roles.decorator.js';
 import type { AuthenticatedRequest } from '../common/types/authenticated-request.js';
 import { Role } from '../generated/prisma/client.js';
 import { CourseQueryDto } from './dtos/course-query.dto.js';
+import { OptionalJwtAuthGuard } from '../auth/guards/jwt-auth.guard/optional-jwt-auth.guard.js';
 
 @Controller('courses')
 export class CoursesController {
   constructor(private readonly coursesService: CoursesService) {}
 
   @Get()
-  findAll(@Query() query: CourseQueryDto) {
-    return this.coursesService.findAll(query);
+  @UseGuards(OptionalJwtAuthGuard)
+  findAll(@Req() req: AuthenticatedRequest, @Query() query: CourseQueryDto) {
+    console.log(req?.user);
+    return this.coursesService.findAll(query, req?.user?.userId);
   }
 
   @Post()
@@ -37,8 +40,9 @@ export class CoursesController {
   }
 
   @Get(':slug')
-  findOne(@Param('slug') slug: string) {
-    return this.coursesService.findOne(slug);
+  @UseGuards(OptionalJwtAuthGuard)
+  findOne(@Param('slug') slug: string, @Req() req: AuthenticatedRequest) {
+    return this.coursesService.findOne(slug, req?.user?.userId);
   }
 
   @Patch(':id')

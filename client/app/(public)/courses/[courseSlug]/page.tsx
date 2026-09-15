@@ -1,13 +1,17 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
+import Link from "next/link";
+import { Suspense } from "react";
+// Icons
+import { CircleCheck, ChevronLeft, Star } from "lucide-react";
+// Components
 import EnrollCourseAside from "@/app/(public)/courses/_components/EnrollCourseAside";
 import TeacherCard from "@/app/(public)/courses/_components/TeacherCard";
-import { CircleCheck, ChevronLeft, Star } from "lucide-react";
-import Link from "next/link";
-import { courseServerService } from "@/services/courses/course.server.service";
-import { Suspense } from "react";
 import CourseContent from "../_components/CourseContent";
 import CoursesList from "../../_components/CoursesList";
+// Services
 import { Course } from "@/services/courses/types";
+import { courseServerService } from "@/services/courses/course.server.service";
+import EnrollCourseAsideSkeleton from "../_components/EnrollCourseAsideSkeleton";
+import CoursesListSkeleton from "@/components/shared/cards/CoursesListSkeleton";
 
 const CoursePage = async ({
   params,
@@ -15,20 +19,19 @@ const CoursePage = async ({
   params: Promise<{ courseSlug: string }>;
 }) => {
   const { courseSlug } = await params;
-  let courses: any = [];
-  let errorMessage = "";
-  let course: Course | any = {};
+  let courses: Course[] = [];
+  let course: Course = {} as Course;
   try {
     const data = await courseServerService.getCourses();
     courses = data.courses.slice(0, 3);
-  } catch (error: any) {
-    errorMessage = error?.message;
+  } catch (error: unknown) {
+    console.error(error);
   }
 
   try {
     course = await courseServerService.getCourse(courseSlug);
-  } catch (error: any) {
-    errorMessage = error?.message;
+  } catch (error: unknown) {
+    console.error(error);
   }
 
   return (
@@ -145,27 +148,25 @@ const CoursePage = async ({
         <CourseContent />
 
         {/* Instructor */}
-        <TeacherCard />
+        <TeacherCard teacher={course?.teacher} />
 
         {/* Related Courses */}
         <section className="mt-10 sm:mt-12">
           <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
             <h2 className="heading-3">دورات قد تعجبك</h2>
 
-            <Link href="" className="text-primary hover:underline">
+            <Link href="/courses" className="text-primary hover:underline">
               عرض جميع الدورات
             </Link>
           </div>
 
-          {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-
-          <Suspense fallback={<h3>Loading Courses...</h3>}>
+          <Suspense fallback={<CoursesListSkeleton />}>
             <CoursesList courses={courses} />
           </Suspense>
         </section>
       </main>
 
-      <Suspense fallback={<h3>Loading...</h3>}>
+      <Suspense fallback={<EnrollCourseAsideSkeleton />}>
         <EnrollCourseAside course={course} />
       </Suspense>
     </div>

@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Plus } from "lucide-react";
 import Tabs from "./[slug]/_components/Tabs";
 import IconButton from "@/components/ui/IconButton";
@@ -7,20 +6,21 @@ import CoursesList from "@/app/(public)/_components/CoursesList";
 import { teachersService } from "@/services/teachers/teacher.server.service";
 import { Role } from "@/store/auth.store";
 import TablePagination from "@/components/features/dashboard/table/TablePagination";
+import { Course } from "@/services/courses/types";
+import CoursesListSkeleton from "@/components/shared/cards/CoursesListSkeleton";
 
 const TeacherCourses = async ({
   searchParams,
 }: {
-  searchParams: Promise<any>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) => {
   const params = await searchParams;
-  let errorMessage = "";
-  let courses: any = [];
+  let courses: Course[] = [];
   try {
     const data = await teachersService.getMyCourses(params);
     courses = data.courses;
-  } catch (error: any) {
-    errorMessage = error?.message;
+  } catch (error: unknown) {
+    console.error(error);
   }
   return (
     <main className="container mx-auto px-4 py-4 sm:px-6 lg:px-8">
@@ -45,9 +45,7 @@ const TeacherCourses = async ({
         />
       </header>
 
-      {errorMessage && <p className="text-red-500">{errorMessage}</p>}
-
-      <Suspense fallback={<h3>Loading...</h3>}>
+      <Suspense fallback={<CoursesListSkeleton />}>
         <CoursesList role={Role.TEACHER} courses={courses} />
       </Suspense>
 

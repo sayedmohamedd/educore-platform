@@ -1,8 +1,6 @@
 $kind: http-request
-url: "{{url}}/courses?search=react"
+url: "{{url}}/courses"
 method: GET
-queryParams:
-  search: react
 auth:
   type: noauth
 order: 1000000000001

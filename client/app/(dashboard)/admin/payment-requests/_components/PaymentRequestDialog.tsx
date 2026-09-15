@@ -132,7 +132,7 @@ const PaymentRequestDialog = ({
               <img
                 src={request.receiptFile.url}
                 alt="Payment receipt"
-                className="max-h-[400px] w-full object-contain"
+                className="max-h-100 w-full object-contain"
               />
             </a>
           </div>

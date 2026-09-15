@@ -2,11 +2,12 @@ import { apiServer } from "@/lib/apiServer";
 import { Course } from "../courses/types";
 import { ResponseData } from "../admin/types";
 import { Teacher } from "./types";
+import { ResponseDataWithMeta } from "../helpers";
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
 export const teachersService = {
   getTeachers: (params: any = {}, options?: RequestInit) =>
-    apiServer<ResponseData<"teachers", Teacher[]>>(
+    apiServer<ResponseDataWithMeta<"teachers", Teacher[]>>(
       `/teachers?${new URLSearchParams(params)}`,
       options,
     ),
@@ -21,7 +22,7 @@ export const teachersService = {
     ),
 
   getMyCourses: (options?: RequestInit) =>
-    apiServer<ResponseData<"courses", Course[]>>(
+    apiServer<ResponseDataWithMeta<"courses", Course[]>>(
       `/teachers/me/courses`,
       options,
     ),

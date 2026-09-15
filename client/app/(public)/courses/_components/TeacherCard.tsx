@@ -1,9 +1,10 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @next/next/no-img-element */
 
 import { BookOpen, GraduationCap, Star, BriefcaseBusiness } from "lucide-react";
 import Link from "next/link";
 
-const TeacherCard = () => {
+const TeacherCard = ({ teacher }: any) => {
   return (
     <section className="mt-10 border-t border-slate-200 pt-10 sm:mt-12 sm:pt-12">
       <div className="mb-6 sm:mb-8">
@@ -18,7 +19,7 @@ const TeacherCard = () => {
           {/* Avatar */}
           <img
             loading="lazy"
-            src="/mentors/sayed.jpeg"
+            src={teacher?.user?.avatar?.url || "/mentors/sayed.jpeg"}
             alt="Sayed Mohamed"
             className="size-20 shrink-0 rounded-full object-cover shadow-sm sm:size-24"
           />
@@ -26,12 +27,10 @@ const TeacherCard = () => {
           {/* Content */}
           <div className="min-w-0 flex-1">
             <h4 className="text-xl font-bold text-slate-800 sm:text-2xl">
-              سيد محمد
+              {teacher?.user?.fullName}
             </h4>
 
-            <p className="mt-1 font-medium text-primary">
-              مطور Full Stack | React • Next.js • NestJS
-            </p>
+            <p className="mt-1 font-medium text-primary">{teacher?.title}</p>
 
             {/* Stats */}
             <div className="mt-5 grid grid-cols-2 gap-3 sm:flex sm:flex-wrap sm:gap-x-8 sm:gap-y-3">
@@ -47,7 +46,7 @@ const TeacherCard = () => {
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
                 <BookOpen className="size-4 shrink-0 text-primary" />
-                <span>8 دورات</span>
+                <span>{teacher?._count?.courses || "8 دورات"}</span>
               </div>
 
               <div className="flex items-center gap-2 text-sm text-muted-foreground">
@@ -58,10 +57,14 @@ const TeacherCard = () => {
 
             {/* Bio */}
             <p className="mt-6 max-w-4xl text-sm leading-8 text-muted-foreground sm:text-base">
-              مطور ويب متخصص في بناء تطبيقات الويب الحديثة باستخدام React و
-              Next.js و NestJS، مع خبرة في تطوير منصات SaaS وأنظمة إدارة التعلم.
-              أؤمن أن أفضل طريقة لتعلم البرمجة هي بناء مشاريع حقيقية تحاكي بيئة
-              العمل الفعلية.
+              {teacher?.bio || (
+                <>
+                  مطور ويب متخصص في بناء تطبيقات الويب الحديثة باستخدام React و
+                  Next.js و NestJS، مع خبرة في تطوير منصات SaaS وأنظمة إدارة
+                  التعلم. أؤمن أن أفضل طريقة لتعلم البرمجة هي بناء مشاريع حقيقية
+                  تحاكي بيئة العمل الفعلية.
+                </>
+              )}
             </p>
 
             {/* Links */}
@@ -77,14 +80,14 @@ const TeacherCard = () => {
                 href="#"
                 className="text-sm font-medium text-primary transition hover:underline"
               >
-                GitHub
+                Facebook
               </Link>
 
               <Link
                 href="#"
                 className="text-sm font-medium text-primary transition hover:underline"
               >
-                LinkedIn
+                Whatsapp
               </Link>
             </div>
           </div>

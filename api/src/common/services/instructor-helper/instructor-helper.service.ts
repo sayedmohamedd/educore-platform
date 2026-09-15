@@ -65,4 +65,13 @@ export class InstructorHelperService {
       },
     });
   }
+
+  isEnrolled(courseId: string, userId?: string) {
+    return this.prisma.enrollment.findFirst({
+      where: {
+        userId,
+        courseId,
+      },
+    });
+  }
 }

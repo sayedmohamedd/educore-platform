@@ -7,6 +7,8 @@ import { Suspense } from "react";
 import { courseServerService } from "@/services/courses/course.server.service";
 import CoursesList from "../_components/CoursesList";
 import SearchInput from "@/components/layout/Navbar/SearchInput";
+import { Role } from "@/store/auth.store";
+import CoursesListSkeleton from "@/components/shared/cards/CoursesListSkeleton";
 
 const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
   const params = await searchParams;
@@ -65,8 +67,8 @@ const Courses = async ({ searchParams }: { searchParams: Promise<any> }) => {
                 />
               </Suspense>
 
-              <Suspense fallback={<div>Loading...</div>}>
-                <CoursesList courses={courses} />
+              <Suspense fallback={<CoursesListSkeleton />}>
+                <CoursesList role={Role.STUDENT} courses={courses} />
               </Suspense>
             </div>
           </div>

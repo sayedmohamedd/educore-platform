@@ -24,7 +24,7 @@ export class CoursesService {
     private readonly instructorHelper: InstructorHelperService,
   ) {}
 
-  async findAll(query: CourseQueryDto) {
+  async findAll(query: CourseQueryDto, userId?: string) {
     const { page = 1, limit = 10 } = query;
     const { skip, take } = getPagination(page, limit);
 
@@ -92,9 +92,6 @@ export class CoursesService {
 
           categories: {
             select: {
-              courseId: false,
-              categoryId: false,
-
               category: {
                 select: {
                   id: true,
@@ -125,9 +122,32 @@ export class CoursesService {
 
     const meta = getPaginationMeta(page, limit, total);
 
+    let enrolledCourseIds = new Set<string>();
+
+    if (userId && courses.length > 0) {
+      const courseIds = courses.map((course) => course.id);
+
+      const enrollments = await this.prisma.enrollment.findMany({
+        where: {
+          userId,
+          courseId: {
+            in: courseIds,
+          },
+        },
+        select: {
+          courseId: true,
+        },
+      });
+
+      enrolledCourseIds = new Set(
+        enrollments.map((enrollment) => enrollment.courseId),
+      );
+    }
+
     const formattedCourses = courses.map((course) => ({
       ...course,
       categories: course.categories.map((cat) => cat.category),
+      enrolled: enrolledCourseIds.has(course.id),
     }));
 
     return new ApiResponse(true, 'Courses retrieved successfully', {
@@ -136,46 +156,98 @@ export class CoursesService {
     });
   }
 
-  async findOne(courseSlug: string) {
+  async findOne(courseSlug: string, userId?: string) {
     const rawCourse = await this.prisma.course.findUnique({
       where: {
         slug: courseSlug,
       },
-      include: {
+      select: {
+        id: true,
+        title: true,
+        slug: true,
+        description: true,
+        price: true,
+        duration: true,
+        createdAt: true,
+
         teacher: {
-          include: {
+          select: {
+            id: true,
+            bio: true,
+            title: true,
+            expertise: true,
+
             user: {
               select: {
                 id: true,
                 fullName: true,
+                avatar: {
+                  select: {
+                    url: true,
+                  },
+                },
               },
             },
           },
         },
+
         categories: {
-          include: {
-            category: true,
+          select: {
+            courseId: false,
+            categoryId: false,
+            category: {
+              select: {
+                id: true,
+                name: true,
+                slug: true,
+                description: true,
+              },
+            },
           },
         },
-        sections: {
-          include: {
-            lessons: true,
-          },
-          orderBy: {
-            order: 'asc',
-          },
-        },
+
         thumbnail: {
           select: {
             url: true,
           },
         },
       },
+      // include: {
+      //   teacher: {
+      //     include: {
+      //       user: {
+      //         select: {
+      //           id: true,
+      //           fullName: true,
+      //         },
+      //       },
+      //     },
+      //   },
+      //   categories: {
+      //     include: {
+      //       category: true,
+      //     },
+      //   },
+      //   sections: {
+      //     include: {
+      //       lessons: true,
+      //     },
+      //     orderBy: {
+      //       order: 'asc',
+      //     },
+      //   },
+      //   thumbnail: {
+      //     select: {
+      //       url: true,
+      //     },
+      //   },
+      // },
     });
 
-    if (!rawCourse) {
-      throw new NotFoundException('Course not found');
-    }
+    if (!rawCourse) throw new NotFoundException('Course not found');
+
+    const enrolled =
+      userId && (await this.instructorHelper.isEnrolled(rawCourse.id, userId));
 
     const course = {
       ...rawCourse,
@@ -185,7 +257,10 @@ export class CoursesService {
       })),
     };
 
-    return new ApiResponse(true, 'Course retrieved successfully', course);
+    return new ApiResponse(true, 'Course retrieved successfully', {
+      ...course,
+      enrolled,
+    });
   }
 
   // create course by teacher
@@ -374,3 +449,115 @@ export class CoursesService {
     return new ApiResponse(true, 'Category removed from course successfully');
   }
 }
+
+// async findAll(query: CourseQueryDto) {
+//   const { page = 1, limit = 10 } = query;
+//   const { skip, take } = getPagination(page, limit);
+
+//   const where: Prisma.CourseWhereInput = {
+//     status: 'PUBLISHED',
+
+//     ...(query.search && {
+//       OR: [
+//         {
+//           title: {
+//             contains: query.search,
+//             mode: 'insensitive',
+//           },
+//         },
+//         {
+//           description: {
+//             contains: query.search,
+//             mode: 'insensitive',
+//           },
+//         },
+//       ],
+//     }),
+
+//     ...(query.maxPrice && {
+//       price: {
+//         gte: 0,
+//         lte: parseFloat(String(query.maxPrice)),
+//       },
+//     }),
+//   };
+
+//   const [courses, total] = await Promise.all([
+//     this.prisma.course.findMany({
+//       where,
+
+//       select: {
+//         id: true,
+//         title: true,
+//         slug: true,
+//         description: true,
+//         price: true,
+//         duration: true,
+//         createdAt: true,
+
+//         teacher: {
+//           select: {
+//             id: true,
+//             bio: true,
+//             title: true,
+//             expertise: true,
+
+//             user: {
+//               select: {
+//                 id: true,
+//                 fullName: true,
+//                 avatar: {
+//                   select: {
+//                     url: true,
+//                   },
+//                 },
+//               },
+//             },
+//           },
+//         },
+
+//         categories: {
+//           select: {
+//             courseId: false,
+//             categoryId: false,
+
+//             category: {
+//               select: {
+//                 id: true,
+//                 name: true,
+//                 slug: true,
+//                 description: true,
+//               },
+//             },
+//           },
+//         },
+
+//         thumbnail: {
+//           select: {
+//             url: true,
+//           },
+//         },
+//       },
+
+//       orderBy: ApiFeatures.getSorting(query),
+//       skip,
+//       take,
+//     }),
+
+//     this.prisma.course.count({
+//       where,
+//     }),
+//   ]);
+
+//   const meta = getPaginationMeta(page, limit, total);
+
+//   const formattedCourses = courses.map((course) => ({
+//     ...course,
+//     categories: course.categories.map((cat) => cat.category),
+//   }));
+
+//   return new ApiResponse(true, 'Courses retrieved successfully', {
+//     courses: formattedCourses,
+//     meta,
+//   });
+// }

@@ -164,49 +164,71 @@ export class AdminService {
   }
 
   async approvePayment(paymentId: string, adminId: string) {
-    return await this.prisma.$transaction(async (tx) => {
-      // check if payment exists
-      const payment = await tx.payment.findUnique({
-        where: { id: paymentId },
-        include: { course: true },
-      });
-
-      if (!payment) {
-        throw new NotFoundException('Payment not found');
-      }
-
-      if (payment.status !== 'PENDING') {
-        throw new ConflictException('Payment is not pending');
-      }
-
-      // check if user is already enrolled in this course
-      const enrollment = await tx.enrollment.findUnique({
-        where: {
-          userId_courseId: {
-            userId: payment.userId,
-            courseId: payment.courseId,
+    const payment = await this.prisma.payment.findUnique({
+      where: { id: paymentId },
+      select: {
+        id: true,
+        status: true,
+        userId: true,
+        courseId: true,
+        amount: true,
+        course: {
+          select: {
+            teacherId: true,
           },
         },
+      },
+    });
+
+    if (!payment) {
+      throw new NotFoundException('Payment not found');
+    }
+
+    if (payment.status !== 'PENDING') {
+      throw new ConflictException('Payment is not pending');
+    }
+
+    // check if user is already enrolled in this course
+    const enrollment = await this.prisma.enrollment.findUnique({
+      where: {
+        userId_courseId: {
+          userId: payment.userId,
+          courseId: payment.courseId,
+        },
+      },
+    });
+
+    if (enrollment) {
+      await this.prisma.payment.update({
+        where: { id: paymentId },
+        data: {
+          status: PaymentStatus.REJECTED,
+          rejectionReason: 'User already enrolled in this course',
+          adminId,
+        },
       });
+      throw new ConflictException('User already enrolled in this course');
+    }
 
-      if (enrollment) {
-        await this.prisma.payment.update({
-          where: { id: paymentId },
-          data: {
-            status: PaymentStatus.REJECTED,
-            rejectionReason: 'User already enrolled in this course',
-            adminId,
-          },
-        });
-        throw new ConflictException('User already enrolled in this course');
-      }
-
+    const result = await this.prisma.$transaction(async (tx) => {
       // update payment
-      await tx.payment.update({
+      const updatedPayment = await tx.payment.update({
         where: { id: paymentId },
         data: {
           status: PaymentStatus.APPROVED,
           adminId,
+        },
+        select: {
+          id: true,
+          status: true,
+          userId: true,
+          courseId: true,
+          amount: true,
+          course: {
+            select: {
+              teacherId: true,
+            },
+          },
         },
       });
 
@@ -235,11 +257,17 @@ export class AdminService {
         data: { balance: { increment: teacherAmount } },
       });
 
-      const platformWallet = await tx.platformWallet.findMany({});
+      const platformWallet = await tx.platformWallet.findFirst();
+
+      if (!platformWallet) {
+        throw new NotFoundException('Platform wallet not found');
+      }
 
       await tx.platformWallet.update({
-        where: { id: platformWallet[0].id },
-        data: { balance: { increment: teacherAmount } },
+        where: { id: platformWallet.id },
+        data: {
+          balance: { increment: Number(payment.amount) - teacherAmount },
+        },
       });
 
       // create transaction for teacher
@@ -252,20 +280,23 @@ export class AdminService {
         },
       });
 
+      // create transaction for platform
       await tx.transaction.create({
         data: {
-          walletId: platformWallet[0].id,
+          platformWalletId: platformWallet.id,
           paymentId: payment.id,
           amount: Number(payment.amount) - teacherAmount,
           type: TransactionType.PLATFORM_EARNING,
         },
       });
-
-      return new ApiResponse(
-        true,
-        'Payment approved and course unlocked successfully',
-      );
+      return updatedPayment;
     });
+
+    return new ApiResponse(
+      true,
+      'Payment approved and course unlocked successfully',
+      result,
+    );
   }
 
   async rejectPayment(paymentId: string, adminId: string, dto: RejectionDto) {

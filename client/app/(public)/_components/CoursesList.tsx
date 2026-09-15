@@ -1,5 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import CourseCard from "@/components/shared/cards/CourseCard";
+import { Course } from "@/services/courses/types";
 import { Role } from "@/store/auth.store";
 import Link from "next/link";
 const CoursesList = ({ courses, role }: { courses: any[]; role?: Role }) => {
@@ -28,7 +29,7 @@ const CoursesList = ({ courses, role }: { courses: any[]; role?: Role }) => {
 
 export default CoursesList;
 
-const actions = (course: any, role?: Role) => {
+const actions = (course: Course, role?: Role) => {
   switch (role) {
     case Role.TEACHER:
       return (
@@ -37,6 +38,22 @@ const actions = (course: any, role?: Role) => {
           className="btn bg-primary text-white hover:bg-primary/80 transition duration-300"
         >
           Edit
+        </Link>
+      );
+    case Role.STUDENT:
+      return course.enrolled ? (
+        <Link
+          href={`/my-courses/${course?.slug}`}
+          className="btn bg-primary text-white hover:bg-primary/80 transition duration-300"
+        >
+          continue learning
+        </Link>
+      ) : (
+        <Link
+          href={`/courses/${course?.slug}`}
+          className="btn bg-primary text-white hover:bg-primary/80 transition duration-300"
+        >
+          View Details
         </Link>
       );
     default:

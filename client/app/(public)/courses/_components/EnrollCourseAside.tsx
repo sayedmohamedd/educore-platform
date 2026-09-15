@@ -2,11 +2,11 @@
 
 "use client";
 
+import { formatSecondsToDuration } from "@/lib/utils";
 import { Course } from "@/services/courses/types";
 import {
   BadgeCheck,
   Clock3,
-  FileImage,
   PlayCircle,
   Smartphone,
   Upload,
@@ -14,14 +14,16 @@ import {
 import Link from "next/link";
 
 const EnrollCourseAside = ({ course }: { course: Course }) => {
+  const image =
+    "https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop";
   return (
     <aside className="order-first min-w-0 lg:order-0 lg:col-span-3">
       <div className="overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-sm lg:sticky lg:top-24">
         {/* Course Preview */}
         <div className="relative aspect-video bg-slate-100">
           <img
-          loading="lazy"
-            src="https://images.unsplash.com/photo-1516321318423-f06f85e504b3?q=80&w=1200&auto=format&fit=crop"
+            loading="lazy"
+            src={course?.thumbnail?.url || image}
             alt="Course Preview"
             className="h-full w-full object-cover"
           />
@@ -39,9 +41,9 @@ const EnrollCourseAside = ({ course }: { course: Course }) => {
         <div className="p-5 sm:p-6">
           {/* Price */}
           <div>
-            <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
+            {/* <span className="inline-flex rounded-full bg-primary/10 px-3 py-1 text-xs font-semibold text-primary">
               الأكثر مبيعًا
-            </span>
+            </span> */}
 
             <div className="mt-3 flex flex-wrap items-end gap-3">
               <span className="text-3xl font-bold text-slate-800 sm:text-4xl">
@@ -49,7 +51,7 @@ const EnrollCourseAside = ({ course }: { course: Course }) => {
               </span>
 
               <span className="text-base text-muted-foreground line-through">
-                EG {course?.price + 200}
+                EG {Number(course?.price) + 200}
               </span>
             </div>
 
@@ -61,13 +63,23 @@ const EnrollCourseAside = ({ course }: { course: Course }) => {
 
           {/* Enrollment CTA */}
           <div className="mt-6">
-            <Link
-              href={`/courses/${course?.slug}/enroll`}
-              className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-semibold text-white transition hover:opacity-90"
-            >
-              <Upload className="size-5" />
-              طلب التسجيل في الدورة
-            </Link>
+            {course.enrolled ? (
+              <Link
+                href={`/my-courses/${course?.slug}`}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-semibold text-white transition hover:opacity-90"
+              >
+                <BadgeCheck className="size-5" />
+                تم التسجيل في الدورة
+              </Link>
+            ) : (
+              <Link
+                href={`/courses/${course?.slug}/enroll`}
+                className="flex w-full items-center justify-center gap-2 rounded-xl bg-primary py-3.5 font-semibold text-white transition hover:opacity-90"
+              >
+                <Upload className="size-5" />
+                طلب التسجيل في الدورة
+              </Link>
+            )}
 
             <p className="mt-3 text-center text-xs leading-5 text-muted-foreground">
               بعد الدفع، أرسل بيانات التحويل وصورة الإيصال لمراجعة طلبك.
@@ -118,13 +130,15 @@ const EnrollCourseAside = ({ course }: { course: Course }) => {
             <ul className="grid grid-cols-1 gap-3 text-sm text-muted-foreground sm:grid-cols-2 lg:grid-cols-1">
               <li className="flex items-center gap-3">
                 <PlayCircle className="size-5 shrink-0 text-primary" />
-                <span>{course?.duration} ساعة فيديو</span>
+                <span dir="rtl">
+                  {formatSecondsToDuration(course?.duration || 0)} وقت
+                </span>
               </li>
 
-              <li className="flex items-center gap-3">
+              {/* <li className="flex items-center gap-3">
                 <FileImage className="size-5 shrink-0 text-primary" />
                 <span>15 ملفًا وموارد</span>
-              </li>
+              </li> */}
 
               <li className="flex items-center gap-3">
                 <BadgeCheck className="size-5 shrink-0 text-primary" />

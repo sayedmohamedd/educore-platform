@@ -1,4 +1,5 @@
 import { BookOpen } from "lucide-react";
+import Link from "next/link";
 
 const EmptyCoursesState = () => {
   return (
@@ -7,18 +8,18 @@ const EmptyCoursesState = () => {
         <BookOpen className="size-5" />
       </div>
 
-      <h4 className="font-semibold text-slate-700">No courses yet</h4>
+      <h4 className="font-semibold text-slate-700">لسه مفيش كورسات</h4>
 
       <p className="mt-1 text-sm text-muted-foreground">
-        You are not enrolled in any courses yet.
+        أنت مش مشترك في أي كورسات.
       </p>
 
-      <button
-        type="button"
+      <Link
+        href="/courses"
         className="mt-5 rounded-xl bg-primary px-5 py-2.5 text-sm font-semibold text-white transition hover:bg-secondary"
       >
-        Browse Courses
-      </button>
+        تصفح الكورسات
+      </Link>
     </div>
   );
 };

@@ -7,7 +7,13 @@ import { Teacher } from "@/services/teachers/types";
 const Mentors = async () => {
   let teachers: Teacher[] = [];
   try {
-    const data = await teachersService.getTeachers();
+    const data = await teachersService.getTeachers(
+      {},
+      {
+        cache: "force-cache",
+        next: { revalidate: 3600 },
+      },
+    );
     teachers = data.teachers;
   } catch (error: unknown) {
     console.error(error);

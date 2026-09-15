@@ -420,19 +420,19 @@ model PlatformWallet {
 }
 
 model Transaction {
-  id        String          @id @default(cuid())
-  walletId  String
-  paymentId String?
-  amount    Decimal         @db.Decimal(10, 2)
-  type      TransactionType
-  createdAt DateTime        @default(now())
-
-  wallet           Wallet          @relation(fields: [walletId], references: [id])
-  payment          Payment?        @relation(fields: [paymentId], references: [id])
-  platformWallet   PlatformWallet? @relation(fields: [platformWalletId], references: [id])
+  id               String          @id @default(cuid())
+  walletId         String?
   platformWalletId String?
-  withdrawal       Withdrawal?     @relation(fields: [withdrawalId], references: [id], onDelete: SetNull)
+  paymentId        String?
   withdrawalId     String?         @unique
+  amount           Decimal         @db.Decimal(10, 2)
+  type             TransactionType
+  createdAt        DateTime        @default(now())
+
+  wallet         Wallet?         @relation(fields: [walletId], references: [id])
+  payment        Payment?        @relation(fields: [paymentId], references: [id])
+  platformWallet PlatformWallet? @relation(fields: [platformWalletId], references: [id])
+  withdrawal     Withdrawal?     @relation(fields: [withdrawalId], references: [id], onDelete: SetNull)
 }
 
 // Withdrawals

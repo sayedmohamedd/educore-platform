@@ -119,19 +119,19 @@ export const stats = [
 
 export const studentOpinions = [
   {
-    studentName: "Sarah Johnson",
+    studentName: "سارة أحمد",
     content:
-      "This platform has completely transformed the way I learn. The courses are engaging, and the mentors are incredibly supportive. I've gained skills that have opened up new career opportunities for me.",
+      "بجد المنصة فرقت معايا جدًا في طريقة التعلم. الكورسات شرحها حلو ومش مملة، والمدرسين متعاونين جدًا لو وقفت قدام حاجة. اتعلمت حاجات جديدة وقدرت أستخدمها في شغلي.",
   },
   {
-    studentName: "Michael Smith",
+    studentName: "محمد علي",
     content:
-      "I was skeptical at first, but after enrolling in a few courses, I can confidently say that this platform delivers on its promises. The content is top-notch, and the community of learners is inspiring.",
+      "في الأول كنت متردد أجرب، بس بعد ما اشتركت في كذا كورس اتفاجئت إن المحتوى كويس جدًا والشرح واضح. أكتر حاجة عجبتني إنك بتحس إنك بتتعلم حاجة مفيدة فعلًا ومش مجرد كلام نظري.",
   },
   {
-    studentName: "Emily Davis",
+    studentName: "منة خالد",
     content:
-      "The hands-on projects and real-world applications in the courses have been invaluable. I've not only learned new skills but also built a portfolio that showcases my abilities to potential employers.",
+      "أكتر حاجة عجبتني هي المشاريع العملية. بدل ما أفضل أذاكر وخلاص، بقيت بطبق اللي بتعلمه بإيدي، وفي الآخر قدرت أعمل كذا مشروع أضيفهم للـ portfolio بتاعي.",
   },
 ];
 

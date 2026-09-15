@@ -96,6 +96,10 @@ export class PaymentsService {
   private async getCourse(courseId: string) {
     const course = await this.prisma.course.findUnique({
       where: { id: courseId },
+      select: {
+        status: true,
+        price: true,
+      },
     });
 
     if (!course) {

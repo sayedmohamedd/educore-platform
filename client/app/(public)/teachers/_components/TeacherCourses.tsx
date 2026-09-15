@@ -17,7 +17,7 @@ const TeacherCourses = () => {
         </div>
 
         <Link
-          href="#"
+          href="/courses"
           className="flex items-center gap-2 font-medium text-primary transition hover:gap-3"
         >
           عرض جميع الدورات
