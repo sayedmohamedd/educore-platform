@@ -105,14 +105,13 @@ export default function LoginPage() {
                 <div className="h-px flex-1 bg-gray-200" />
               </div>
 
-              <div className="grid gap-4 sm:grid-cols-2">
-                <button className="rounded-xl border border-gray-200 py-3 font-medium transition hover:bg-gray-50">
+              <div className="flex-center rounded-xl border border-gray-200 py-3 font-medium transition hover:bg-gray-50">
+                <a
+                  href={process.env.NEXT_PUBLIC_BASE_URL + "/auth/google"}
+                  className="w-full h-full overflow-hidden"
+                >
                   Google
-                </button>
-
-                <button className="rounded-xl border border-gray-200 py-3 font-medium transition hover:bg-gray-50">
-                  GitHub
-                </button>
+                </a>
               </div>
 
               <p className="mt-10 text-center text-gray-500">

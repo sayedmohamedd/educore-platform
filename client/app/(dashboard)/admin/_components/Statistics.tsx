@@ -8,10 +8,10 @@ import {
 import { Suspense } from "react";
 
 import StatsCard from "../courses/_components/StatsCard";
-import StatsCardSkeleton from "./StatsCardSkeleton";
 
 import { adminServerService } from "@/services/admin/admin.server.service";
 import type { Statistics as Stats } from "@/services/admin/types";
+import StatsSkeleton from "./StatsSkeleton";
 
 type StatsData = {
   title: string;
@@ -76,13 +76,7 @@ const StatisticsContent = async () => {
 
 const Statistics = () => {
   return (
-    <Suspense
-      fallback={
-        <div className="my-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
-          <StatsCardSkeleton />
-        </div>
-      }
-    >
+    <Suspense fallback={<StatsSkeleton />}>
       <StatisticsContent />
     </Suspense>
   );

@@ -1,6 +1,6 @@
-const StatsCardSkeleton = () => {
+const StatsSkeleton = () => {
   return (
-    <>
+    <div className="my-4 grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
       {Array.from({ length: 4 }).map((_, index) => (
         <div
           key={index}
@@ -20,8 +20,8 @@ const StatsCardSkeleton = () => {
           </div>
         </div>
       ))}
-    </>
+    </div>
   );
 };
 
-export default StatsCardSkeleton;
+export default StatsSkeleton;

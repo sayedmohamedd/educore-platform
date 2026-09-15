@@ -1,8 +1,11 @@
-import { adminServerService } from "@/services/admin/admin.server.service";
-import AdminCourses from "./_components/AdminCourses";
 import { Suspense } from "react";
 import { AdminCourse } from "./_components/types";
 import { Meta } from "@/services/helpers";
+import CoursesStats from "./_components/CoursesStats";
+import TableSkeleton from "@/components/shared/Table/TableSkeleton";
+import CoursesTable from "./_components/CoursesTable";
+import { adminServerService } from "@/services/admin/admin.server.service";
+import StatsSkeleton from "../_components/StatsSkeleton";
 
 type Props = {
   searchParams: { [key: string]: string | string[] | undefined };
@@ -34,11 +37,23 @@ const AdminCoursesPage = async ({ searchParams }: Props) => {
   } finally {
     isLoading = false;
   }
-
   return (
-    <Suspense fallback={<div>Loading...</div>}>
-      <AdminCourses courses={courses} meta={meta} isLoading={isLoading} />
-    </Suspense>
+    <section className="px-4 py-4 sm:px-6 lg:px-8">
+      <header className="mb-6">
+        <h1 className="text-2xl font-bold text-slate-800">Courses</h1>
+        <p className="text-sm text-muted-foreground">
+          Manage and review courses submitted by teachers.
+        </p>
+      </header>
+
+      <Suspense fallback={<StatsSkeleton />}>
+        <CoursesStats courses={courses} />
+      </Suspense>
+
+      <Suspense fallback={<TableSkeleton />}>
+        <CoursesTable courses={courses} meta={meta} isLoading={isLoading} />
+      </Suspense>
+    </section>
   );
 };
 

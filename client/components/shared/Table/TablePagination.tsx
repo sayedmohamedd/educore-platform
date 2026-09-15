@@ -8,7 +8,7 @@ const TablePagination = ({ meta }: { meta: Meta }) => {
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
-  const { page, limit, total, lastPage } = meta;
+  const { page = 1, limit = 10, total, lastPage = 1 } = meta;
 
   if (total === 0 || lastPage <= 1) {
     return null;

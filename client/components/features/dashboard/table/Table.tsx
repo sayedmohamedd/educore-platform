@@ -37,7 +37,7 @@ const Table = <T extends { id: string | number }>({
       </div>
 
       <Suspense fallback={null}>
-        <TablePagination meta={meta} />
+        {meta && <TablePagination meta={meta} />}
       </Suspense>
     </div>
   );

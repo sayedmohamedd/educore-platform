@@ -1,4 +1,4 @@
-import TablePagination from "@/components/features/dashboard/table/TablePagination";
+import TablePagination from "@/components/shared/Table/TablePagination";
 import TeachersList from "./_components/TeachersList";
 import { Suspense } from "react";
 import { teachersService } from "@/services/teachers/teacher.server.service";
@@ -36,7 +36,7 @@ const Teachers = async () => {
 
         {/* Pagination */}
         <Suspense fallback={<div />}>
-          <TablePagination meta={meta} />
+          {meta && <TablePagination meta={meta} />}
         </Suspense>
       </div>
     </section>

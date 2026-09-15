@@ -13,6 +13,8 @@ import { AuthService } from './auth.service.js';
 import { JwtAuthGuard } from './guards/jwt-auth.guard/jwt-auth.guard.js';
 import type { Request, Response } from 'express';
 import { ApiResponse } from '../helper/APIResponse.js';
+import { GoogleAuthGuard } from './guards/google/google-auth.guard.js';
+import { GoogleUser } from './strategies/google.strategy.js';
 
 @Controller('auth')
 export class AuthController {
@@ -29,6 +31,21 @@ export class AuthController {
   @Post('login')
   login(@Body() dto: LoginDto, @Res({ passthrough: true }) res: Response) {
     return this.authService.login(dto, res);
+  }
+
+  @Get('google')
+  @UseGuards(GoogleAuthGuard)
+  googleLogin() {}
+
+  @Get('google/callback')
+  @UseGuards(GoogleAuthGuard)
+  async googleCallback(
+    @Req() req: Request & { user: GoogleUser },
+    @Res() res: Response,
+  ) {
+    await this.authService.googleLogin(req.user, res);
+
+    return res.redirect(`${process.env.FRONTEND_URL}`);
   }
 
   @Post('refresh')

@@ -1,14 +1,18 @@
 import { Suspense } from "react";
 import TeacherDashboard from "./_components/TeacherDashboardPage";
 import { teachersService } from "@/services/teachers/teacher.server.service";
+
 export const dynamic = "force-dynamic";
+
 const TeacherHomePage = async () => {
-  let statistics = [];
+  let statistics = null;
+
   try {
     statistics = await teachersService.getMyStatistics();
   } catch (error) {
     console.error(error);
   }
+
   return (
     <Suspense fallback={<div>Loading...</div>}>
       <TeacherDashboard statistics={statistics} />

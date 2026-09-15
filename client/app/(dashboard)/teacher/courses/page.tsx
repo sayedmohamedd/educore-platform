@@ -5,9 +5,10 @@ import { Suspense } from "react";
 import CoursesList from "@/app/(public)/_components/CoursesList";
 import { teachersService } from "@/services/teachers/teacher.server.service";
 import { Role } from "@/store/auth.store";
-import TablePagination from "@/components/features/dashboard/table/TablePagination";
 import { Course } from "@/services/courses/types";
 import CoursesListSkeleton from "@/components/shared/cards/CoursesListSkeleton";
+import TablePagination from "@/components/shared/Table/TablePagination";
+import { Meta } from "@/services/helpers";
 
 const TeacherCourses = async ({
   searchParams,
@@ -16,9 +17,11 @@ const TeacherCourses = async ({
 }) => {
   const params = await searchParams;
   let courses: Course[] = [];
+  let meta = {} as Meta;
   try {
     const data = await teachersService.getMyCourses(params);
     courses = data.courses;
+    meta = data.meta;
   } catch (error: unknown) {
     console.error(error);
   }
@@ -50,7 +53,7 @@ const TeacherCourses = async ({
       </Suspense>
 
       <Suspense fallback={<h3>Loading...</h3>}>
-        <TablePagination />
+        {meta && <TablePagination meta={meta} />}
       </Suspense>
     </main>
   );

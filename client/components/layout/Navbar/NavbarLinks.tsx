@@ -21,7 +21,7 @@ const NavbarLinks = ({ className, onClick }: NavbarLinksProps) => {
       </li>
 
       <li>
-        <Link href="/#" onClick={onClick}>
+        <Link href="/services" onClick={onClick}>
           الخدمات
         </Link>
       </li>

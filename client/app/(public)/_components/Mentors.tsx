@@ -34,7 +34,7 @@ const Mentors = async () => {
           </div>
 
           <Link
-            href="/signup"
+            href="/teacher/apply"
             className="rounded-full bg-tertiary px-6 py-3 font-semibold text-white transition duration-300 hover:bg-indigo-700"
           >
             انضم كمدرب

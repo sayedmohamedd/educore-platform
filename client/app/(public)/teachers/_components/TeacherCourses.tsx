@@ -1,7 +1,5 @@
 import Link from "next/link";
 import { ArrowLeft } from "lucide-react";
-import CourseCard from "../../../../components/shared/cards/CourseCard";
-import { courses } from "@/lib/data";
 
 const TeacherCourses = () => {
   return (
@@ -26,11 +24,11 @@ const TeacherCourses = () => {
       </div>
 
       {/* Grid */}
-      <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
+      {/* <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
         {courses.map((course) => (
           <CourseCard key={course.id} />
         ))}
-      </div>
+      </div> */}
     </section>
   );
 };

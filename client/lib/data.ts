@@ -11,92 +11,8 @@ import {
   LucideIcon,
   Settings,
   Star,
-  User,
   Wallet,
 } from "lucide-react";
-
-export const mentors = [
-  {
-    id: 1,
-    name: "Sayed",
-    image: "/mentors/sayed.jpeg",
-    role: "Software Engineer at TechCorp",
-    rating: 4.5,
-    numReviews: 5000,
-  },
-  {
-    id: 2,
-    name: "Sayed",
-    image: "/mentors/sayed.jpeg",
-    role: "Software Engineer at TechCorp",
-    rating: 4.5,
-    numReviews: 5000,
-  },
-  {
-    id: 3,
-    name: "Sayed",
-    image: "/mentors/sayed.jpeg",
-    role: "Software Engineer at TechCorp",
-    rating: 4.5,
-    numReviews: 5000,
-  },
-  {
-    id: 4,
-    name: "Sayed",
-    image: "/mentors/sayed.jpeg",
-    role: "Software Engineer at TechCorp",
-    rating: 4.5,
-    numReviews: 5000,
-  },
-];
-
-export const courses = [
-  {
-    id: 1,
-    image: "/courses/online-course.jpg",
-    title: "Advanced UI/UX Design Systems",
-    description:
-      "Master modern UI patterns and design systems using Figma and React.",
-    students: 1248,
-    status: "published" as const,
-  },
-  {
-    id: 2,
-    image: "/courses/online-course.jpg",
-    title: "Advanced UI/UX Design Systems",
-    description:
-      "Master modern UI patterns and design systems using Figma and React.",
-    students: 1248,
-    status: "published" as const,
-  },
-  {
-    id: 3,
-    image: "/courses/online-course.jpg",
-    title: "Advanced UI/UX Design Systems",
-    description:
-      "Master modern UI patterns and design systems using Figma and React.",
-    students: 1248,
-    status: "published" as const,
-  },
-  {
-    id: 4,
-    image: "/courses/online-course.jpg",
-    title: "Advanced UI/UX Design Systems",
-    description:
-      "Master modern UI patterns and design systems using Figma and React.",
-    students: 1248,
-    status: "published" as const,
-  },
-  {
-    id: 5,
-    image: "/courses/online-course.jpg",
-    title: "Advanced UI/UX Design Systems",
-    description:
-      "Master modern UI patterns and design systems using Figma and React.",
-    students: 1248,
-    status: "published" as const,
-  },
-];
 
 export const stats = [
   {
@@ -186,36 +102,6 @@ export const tabs: Tab[] = [
   },
 ];
 
-export const tableData = [
-  {
-    id: "#TRX-1025",
-    user: "John Doe",
-    role: "Student",
-    amount: "$99.00",
-    payment: "Visa",
-    date: "29 Jul 2026",
-    status: "Pending",
-  },
-  {
-    id: "#TRX-1024",
-    user: "Ahmed Ali",
-    role: "Teacher",
-    amount: "$149.00",
-    payment: "Mastercard",
-    date: "28 Jul 2026",
-    status: "Completed",
-  },
-  {
-    id: "#TRX-1023",
-    user: "Sarah Smith",
-    role: "Student",
-    amount: "$79.00",
-    payment: "PayPal",
-    date: "27 Jul 2026",
-    status: "Rejected",
-  },
-];
-
 export const menuItems = {
   admin: [
     {
@@ -292,45 +178,6 @@ export const menuItems = {
     },
   ],
 };
-
-export const categories = [
-  {
-    title: "UI/UX Design",
-    number: 42,
-  },
-  {
-    title: "Backend Development",
-    number: 42,
-  },
-  {
-    title: "Frontend Development",
-    number: 42,
-  },
-  {
-    title: "Physics",
-    number: 42,
-  },
-  {
-    title: "Chemistry",
-    number: 42,
-  },
-  {
-    title: "Data Science",
-    number: 42,
-  },
-  {
-    title: "Python",
-    number: 42,
-  },
-  {
-    title: "SEO",
-    number: 42,
-  },
-  {
-    title: "Prompt Engineering",
-    number: 42,
-  },
-];
 
 export const quizQuestions = [
   {

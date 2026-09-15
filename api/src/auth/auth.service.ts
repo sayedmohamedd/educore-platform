@@ -14,6 +14,7 @@ import { ApiResponse } from '../helper/APIResponse.js';
 import { LoginDto } from './dtos/login.dto.js';
 import type { Request } from 'express';
 import { JWTPayload } from './types/JwtUser.type.js';
+import { GoogleUser } from './strategies/google.strategy.js';
 
 @Injectable()
 export class AuthService {
@@ -86,7 +87,9 @@ export class AuthService {
       include: { avatar: true },
     });
 
-    if (!user) throw new UnauthorizedException('Invalid credentials');
+    if (!user || !user.password) {
+      throw new UnauthorizedException('Invalid credentials');
+    }
 
     // Check if the password is correct
     const isPasswordValid = await bcrypt.compare(dto.password, user.password);
@@ -121,6 +124,83 @@ export class AuthService {
     });
   }
 
+  async googleLogin(googleUser: GoogleUser, res: Response) {
+    let user = await this.prisma.user.findUnique({
+      where: {
+        googleId: googleUser.googleId,
+      },
+      include: {
+        avatar: true,
+      },
+    });
+
+    // Google account is already linked
+    if (!user) {
+      user = await this.prisma.user.findUnique({
+        where: {
+          email: googleUser.email,
+        },
+        include: {
+          avatar: true,
+        },
+      });
+
+      // Existing account -> link Google
+      if (user) {
+        user = await this.prisma.user.update({
+          where: {
+            id: user.id,
+          },
+          data: {
+            googleId: googleUser.googleId,
+          },
+          include: {
+            avatar: true,
+          },
+        });
+      }
+    }
+
+    // Completely new user
+    if (!user) {
+      user = await this.prisma.user.create({
+        data: {
+          fullName: googleUser.fullName,
+          email: googleUser.email,
+          googleId: googleUser.googleId,
+          password: null,
+          role: 'STUDENT',
+        },
+        include: {
+          avatar: true,
+        },
+      });
+    }
+
+    const { accessToken, hashedRefreshToken, refreshToken } =
+      this.generateTokens(user.id, user.role);
+
+    await this.prisma.refreshToken.create({
+      data: {
+        tokenHash: hashedRefreshToken,
+        userId: user.id,
+      },
+    });
+
+    this.setRefreshTokenCookie(res, refreshToken);
+
+    this.setAccessTokenCookie(res, accessToken);
+
+    return new ApiResponse(true, 'Google login successful', {
+      user: {
+        id: user.id,
+        fullName: user.fullName,
+        email: user.email,
+        role: user.role,
+        avatar: user.avatar?.url,
+      },
+    });
+  }
   async refresh(req: Request, res: Response) {
     const refreshToken = req.cookies.refreshToken;
 
