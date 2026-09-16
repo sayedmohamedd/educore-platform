@@ -14,6 +14,7 @@ const EditCoursePage = async ({ params }: { params: Promise<any> }) => {
 
   try {
     course = await courseServerService.getCourse(slug);
+    console.log(course)
   } catch (error: any) {
     errorMessage = error?.message;
   }

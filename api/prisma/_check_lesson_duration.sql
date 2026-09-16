@@ -1,0 +1,1 @@
+SELECT COUNT(*) AS null_durations FROM "Lesson" WHERE "duration" IS NULL;

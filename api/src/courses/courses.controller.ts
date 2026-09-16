@@ -28,7 +28,6 @@ export class CoursesController {
   @Get()
   @UseGuards(OptionalJwtAuthGuard)
   findAll(@Req() req: AuthenticatedRequest, @Query() query: CourseQueryDto) {
-    console.log(req?.user);
     return this.coursesService.findAll(query, req?.user?.userId);
   }
 
